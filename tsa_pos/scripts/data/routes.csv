@@ -1,0 +1,9 @@
+kode,path,name,status,file_name,class_name,template
+home,/,Home,1,home,Views,home.tpl
+login,/login,Login,1,login,Views,login.tpl
+logout,/logout,Logout,1,logout,Views,logout.tpl
+user,/user,User Profile,1,user,Views,list.tpl
+user-add,/user,User Profile,1,user,Views,form.tpl
+user-edit,/user/{id}/edit,User Profile,1,user,Views,form.tpl
+user-delete,/user/{id}/delete,User Profile,1,user,Views,form.tpl
+user-view,/user/{id}/view,User Profile,1,user,Views,form.tpl
