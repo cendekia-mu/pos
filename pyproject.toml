@@ -1,0 +1,73 @@
+[build-system]
+requires = ['setuptools >= 64', 'wheel']
+build-backend = 'setuptools.build_meta'
+
+[tool.setuptools]
+packages = ["opensipkd", "opensipkd.detable", "opensipkd.base"]
+
+[tool.mypy]
+exclude = [
+    'bak',
+]
+show_error_codes = true
+
+[project]
+name = 'tsa_pos'
+version = '0.1'
+dependencies = [
+    'deform',
+    'colander',
+    'google',
+    'google-api-python-client',
+    'pyramid',
+    'pyramid_tm',
+    "pyramid_beaker",
+    "pyramid_mailer",
+    'pyramid_chameleon',
+    'pyramid_rpc',
+    "pyramid-restful-framework",
+    'pytz',
+    'psycopg2-binary',
+    'requests',
+    'sqlalchemy',
+    'sqlalchemy-datatables',
+    'transaction',
+    'waitress',
+    'wheezy.captcha',
+    'ziggurat-foundations',
+    'zope.sqlalchemy',
+    ]
+requires-python = '>= 3.8'
+authors = [
+    {name='Cendekia Mandiri Utama', email='cendekia.mu@gmail.com'},
+    {email="cendekia.mu@gmail.com" },]
+
+maintainers = [
+    { name = "Ari", email = "ariagungprasetiyo@gmail.com" },
+    { name = "Owo Sugiana", email = "sugiana@gmail.com" },
+    ]
+
+description = 'Aplikasi Payment Online System'
+readme = 'README.md'
+# license = {text = 'Apache Software License'}
+keywords = ["pos", "mpos", "payment", "online", "system", "cendekia", "mandiri", "utama"]
+classifiers = [
+    'Development Status :: 5 - Beta',
+    'Programming Language :: Python :: 3',
+    'Operating System :: OS Independent',
+    'Framework :: Pylons',
+    'Topic :: Internet :: WWW/HTTP',
+    'Topic :: Internet :: WWW/HTTP :: WSGI :: Application',
+]
+
+[project.optional-dependencies]
+dev = [
+    'pyramid_debugtoolbar',
+    'pytest', 'webtest']
+
+[project.entry-points."paste.app_factory"]
+main = 'tsa_pos.main'
+
+[project.scripts]
+tsa-pos-db-init = 'tsa_pos.scripts.initializedb:main'
+tsa-pos-remove-captcha = 'tsa_pos.scripts.cron_remove_captcha:main'
