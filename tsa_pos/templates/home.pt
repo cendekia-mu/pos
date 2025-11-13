@@ -1,4 +1,5 @@
-<body>
+<html metal:use-macro="load: ./layout.pt">
+<div metal:fill-slot="content">
   <h1>Home</h1>
   <div tal:condition="request.user">
     <span>Welcome, ${request.user.user_name}(${request.user.email}) </span>
@@ -6,4 +7,6 @@
   <div tal:condition="not request.user">
     <span>Please <a href="${request.route_url('login')}">log in</a></span>
   </div>
-</body>
+</div>
+
+</html>

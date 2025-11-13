@@ -5,6 +5,15 @@ import deform
 from ..models import User
 from . import BaseViews
 
+class ListSchema(colander.Schema):    
+    id = colander.SchemaNode(colander.Integer(),
+                             missing=colander.drop,
+                             widget = widget.HiddenWidget())
+    user_name = colander.SchemaNode(colander.String())
+    email = colander.SchemaNode(colander.String(), validator=colander.Email())
+    last_login_date = colander.SchemaNode(colander.DateTime(),
+                                            missing=colander.drop)
+
 class CreateSchema(colander.Schema):    
     # Define your schema fields here
     user_name = colander.SchemaNode(colander.String())
@@ -23,5 +32,6 @@ class Views(BaseViews):
         self.CreateSchema = CreateSchema
         self.UpdateSchema = CreateSchema  # For simplicity, using the same schema
         self.ReadSchema = CreateSchema  # For simplicity, using the same schema
-        self.list_route_name = 'user-list'
+        self.ListSchema = ListSchema
+        self.list_route = 'user-list'
 

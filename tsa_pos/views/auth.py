@@ -137,7 +137,7 @@ class Views(BaseViews):
                 user = request.user
                 headers = get_login_headers(request, user)
                 return xhr_response(user, headers)
-            request.session.flash('Anda sudah login', 'error')
+            request.session.flash(message, 'error')
             return HTTPFound(location=f"{home}")
 
         # request.session["login"] = True
@@ -183,18 +183,21 @@ class Views(BaseViews):
 
     def logout(self):
         request = self.request
+        if self.request.authenticated_userid is None:
+            form = self.get_form(LogoutSchema, buttons=('home', 'login'))
+            if request.POST:
+                if 'home' in request.POST:
+                    return HTTPFound(location=request.route_url('home'))
+                elif 'login' in request.POST:   
+                    return HTTPFound(location=request.route_url('login'))
+            return {"form": form.render(), "scripts": ""}
+
         headers = forget(request)
         request.session.delete()
         request.response.headers.update(headers)
         set_user_log("Logout", self.request, _logging)
-        form = self.get_form(LogoutSchema, buttons=('home', 'login'))
-        if request.POST:
-            if 'home' in request.POST:
-                return HTTPFound(location=request.route_url('home'), headers=headers)
-            elif 'login' in request.POST:   
-                return HTTPFound(location=request.route_url('login'), headers=headers)
-        return {"form": form.render(), "scripts": ""}
-
+        return HTTPFound(location=request.route_url('logout'),headers=headers)
+        
 
 def security_code_age(user):
     now = create_now()

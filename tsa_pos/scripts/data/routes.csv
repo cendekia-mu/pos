@@ -4,8 +4,8 @@ login,/login,Login,1,auth,Views,login,form.pt,,
 logout,/logout,Logout,1,auth,Views,logout,form.pt,,
 profile,/profile,Profile,1,profile,Views,,form.pt,,
 password,/password,Ubah Password,1,password,,,form.pt,,
-user-list,/user,User Profile,1,user,Views,,list.pt,,1
-user-add,/user,User Profile,1,user,Views,,form.pt,,
-user-edit,/user/{id}/edit,User Profile,1,user,Views,,form.pt,,
-user-delete,/user/{id}/delete,User Profile,1,user,Views,,form.pt,,
-user-view,/user/{id}/view,User Profile,1,user,Views,,form.pt,,
+user-list,/user,User,1,user,Views,view_list,list.pt,,1
+user-add,/user/add,Create User,1,user,Views,view_create,form.pt,,
+user-edit,/user/{id}/edit,Edit User,1,user,Views,view_update,form.pt,,
+user-delete,/user/{id}/delete,Delete User,1,user,Views,view_delete,form.pt,,
+user-view,/user/{id}/view,Read User,1,user,Views,view_read,form.pt,,
