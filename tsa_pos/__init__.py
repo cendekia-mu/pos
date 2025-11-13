@@ -14,7 +14,7 @@ from pyramid_beaker import session_factory_from_settings
 from pyramid_mailer import mailer_factory_from_settings
 from pyramid.events import subscriber, BeforeRender
 from sqlalchemy.engine import engine_from_config
-from .tools import *
+from .tools import format_datetime, dmy, dmyhms, get_ext
 from .models import (DBSession, Base, init_model)
 from .security import MySecurityPolicy, get_user
 
@@ -154,11 +154,17 @@ def _add_view_config(config, paket, route):
             return
         
         views = getattr(_views, class_name)
+        func_name = route.get("func_name")
+        if not hasattr(views, func_name):
+            _logging.error(
+                f"Function {func_name} not found in {file_name}.{class_name}")
+            return
+        
         template = route.get("template", "form.pt")
         if not template:
-            if route.get("func_name") == "view_list":
+            if func_name == "view_list":
                 template = "list.pt"
-            elif route.get("func_name") == "view_act":
+            elif func_name == "view_act":
                 template = "json"
             else:
                 template = "form.pt"

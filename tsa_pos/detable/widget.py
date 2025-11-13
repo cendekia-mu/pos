@@ -37,4 +37,6 @@ class TableWidget(MappingWidget):
     template = "detable"
     readonly_template = "readonly/detable"
     requirements = (("deform", None),
-                    {"js": "tsa_pos:static/js/plugin/datatables/jquery.dataTables.min.js"})
+                    {"js": ["tsa_pos:static/plugin/datatables/1.10/media/js/jquery.dataTables.min.js",
+                            "tsa_pos:static/plugin/datatables/1.10/media/js/jquery.dataTables.ext.js",],
+                     "css": "tsa_pos:static/plugin/datatables/1.10/media/css/datatables.bootstrap.css"})

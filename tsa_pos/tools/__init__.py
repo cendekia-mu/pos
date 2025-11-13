@@ -2,13 +2,21 @@ import datetime
 import os
 import pytz
 from pyramid.threadlocal import get_current_registry
+import mimetypes
 import logging
 from email.message import Message
+from random import choice
+from string import (ascii_uppercase, ascii_lowercase, digits, )
 
 _logging = logging.getLogger(__name__)
 
 def get_settings():
     return get_current_registry().settings
+
+def get_params(key, default=None):
+    settings = get_settings()
+    params = settings.get(key, default)
+    return params
 
 def dmy(tgl):
     """
@@ -104,5 +112,72 @@ from datetime import timedelta
 
 one_hour = timedelta(1.0 / 24)
 two_minutes = timedelta(1.0 / 24 / 60)
+
+
+########
+# File #
+########
+# http://stackoverflow.com/questions/2257441/random-string-generation-with-upper-case-letters-and-digits-in-python
+def get_random_string(width=6):
+    return ''.join(choice(ascii_uppercase + ascii_lowercase + digits) \
+                   for _ in range(width))
+
+
+def get_random_number(width=12):
+    return ''.join(choice(digits) \
+                   for _ in range(width))
+
+
+def get_ext(filename):
+    return os.path.splitext(filename)[-1]
+
+
+def get_filename(filename):
+    return "".join(os.path.splitext(filename)[:-1])
+
+
+def file_type(filename):
+    ctype, encoding = mimetypes.guess_type(filename)
+    if ctype is None or encoding is not None:
+        ctype = 'application/octet-stream'
+    return ctype
+
+
+class SaveFile(object):
+    def __init__(self, dir_path):
+        self.dir_path = dir_path
+        if not os.path.exists(dir_path):
+            os.makedirs(dir_path)
+
+    # Unchanged file extension, and make file prefix unique with sequential
+    # number.
+    def create_fullpath(self, ext=''):
+        while True:
+            filename = get_random_string(32) + ext
+            full_path = os.path.join(self.dir_path, filename)
+            if not os.path.exists(full_path):
+                return full_path
+
+    def save(self, content, ext='', filename=None):
+        if filename:
+            fullpath = os.path.join(self.dir_path, filename)
+        else:
+            fullpath = self.create_fullpath(ext=ext)
+        f = open(fullpath, 'wb')
+        if type(content) == io.BytesIO:
+            f.write(content.getbuffer())
+        else:
+            f.write(content)
+        f.close()
+        return fullpath
+
+
+class InvalidExtension(Exception):
+    def __init__(self, exts):
+        self.error = f"Supported extensions {exts}"
+
+
+from .buttons import *
+from .report import *
 
 

@@ -6,7 +6,7 @@ from pyramid.exceptions import HTTPNotFound, HTTPForbidden
 from deform import widget
 from datatables import ColumnDT, DataTables
 from ..detable import DeTable
-from ..tools_buttons import *
+from ..tools import *
 import logging
 from ..models import DBSession
 
@@ -74,13 +74,14 @@ class BaseViews(object):
         self.server_side = True
         self.list_url = ''
         self.list_route = ''
-        self.action_suffix = ''
+        self.action_suffix = '/grid/act'
         self.html_buttons = ''
         self.scroll_y = False
         self.scroll_x = False
         self.new_buttons = None
         self.list_col_defs = []
         self.bindings = {}
+        self.columns = []
         self.list_report = (btn_csv, btn_pdf)
         self.list_buttons = (btn_add,)
         self.list_upload = (btn_upload,)
@@ -131,7 +132,6 @@ class BaseViews(object):
         scroll_x = kwargs.get("scroll_x", self.scroll_x)
         html_buttons = kwargs.get("html_buttons", self.html_buttons)
         parent = kwargs.get("parent")
-
         kwargs.pop("allow_view", None)
         kwargs.pop("allow_edit", None)
         kwargs.pop("allow_delete", None)
@@ -213,7 +213,7 @@ class BaseViews(object):
 
 
     def view_act(self, **kwargs):
-        url_dict = self.req.matchdict
+        url_dict = self.request.matchdict
         if url_dict['act'] == 'grid':
             return self.get_list(**kwargs)
 
@@ -235,9 +235,7 @@ class BaseViews(object):
         """
         url = []
         select_list = {}
-        list_schema = kwargs.get("list_schema")
-        if not list_schema:
-            list_schema = self.list_schema and self.list_schema or self.form_list
+        list_schema = kwargs.get("list_schema", self.ListSchema)
 
         if not self.columns:
             columns = []
@@ -280,24 +278,21 @@ class BaseViews(object):
             columns = self.columns
 
         query = self.db_session.query().select_from(self.table)
-        list_join = kwargs.get('list_join')
-        if list_join is not None:
-            query = list_join(query, **kwargs)
-        else:
-            query = self.list_join(query, **kwargs)
-        if self.req.user and self.req.user.company_id and hasattr(self.table, "company_id"):
-            query = query.filter(
-                self.table.company_id == self.req.user.company_id)
-        list_filter = kwargs.get('list_filter')
-        if list_filter is not None:
-            query = list_filter(query, **kwargs)
-        else:
-            query = self.list_filter(query, **kwargs)
+        list_join = kwargs.get('list_join', self.list_join)
+        query = list_join(query, **kwargs)
+        # if self.request.user and self.request.user.company_id and hasattr(self.table, "company_id"):
+        #     query = query.filter(
+        #         self.table.company_id == self.request.user.company_id)
+        list_filter = kwargs.get('list_filter', self.list_filter)
+        query = list_filter(query, **kwargs)
+        # if list_filter is not None:
+        # else:
+        #     query = self.list_filter(query, **kwargs)
 
         # log.debug(str(columns))
         # qry = query.add_columns(*[c.sqla_expr for c in columns])
         # log.debug(str(qry))
-        row_table = DataTables(self.req.GET, query, columns)
+        row_table = DataTables(self.request.GET, query, columns)
         result = row_table.output_result()
         data = result and result.get("data") or {}
         for res in data:
@@ -323,13 +318,13 @@ class BaseViews(object):
         return query
 
     def next_act(self, **kwargs):
-        url_dict = self.req.matchdict
+        url_dict = self.request.matchdict
         raise HTTPNotFound
 
     def pdf_response(self, **kwargs):
         from opensipkd.base.tools.report import jasper_export
         filename = jasper_export(self.report_file)
-        return file_response(self.req, filename=filename[0])
+        return file_response(self.request, filename=filename[0])
 
     def csv_response(self, **kwargs):
         query = self.table.query_register()
@@ -341,7 +336,7 @@ class BaseViews(object):
             'header': header,
             'rows': rows,
         }
-        return csv_response(self.req, value, filename)
+        return csv_response(self.request, value, filename)
 
 
     def save(self, values, row=None):
@@ -368,7 +363,7 @@ class BaseViews(object):
                     self.save(appstruct)
                     self.request.session.flash('User added successfully!')
                 except deform.ValidationFailure as e:
-                    return {'form': e.render()}
+                    return {'form': e.render(), "scripts": ""}
 
             return HTTPFound(location=self.request.route_url(self.list_route))
 
