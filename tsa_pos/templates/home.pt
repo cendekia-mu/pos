@@ -1,0 +1,9 @@
+<body>
+  <h1>Home</h1>
+  <div tal:condition="request.user">
+    <span>Welcome, ${request.user.user_name}(${request.user.email}) </span>
+  </div>
+  <div tal:condition="not request.user">
+    <span>Please <a href="${request.route_url('login')}">log in</a></span>
+  </div>
+</body>

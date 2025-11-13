@@ -6,14 +6,17 @@ import decimal
 import csv
 import importlib
 from logging import getLogger
+
+from waitress import serve
 from pyramid.renderers import JSON
 from pyramid.config import Configurator
 from pyramid_beaker import session_factory_from_settings
 from pyramid_mailer import mailer_factory_from_settings
+from pyramid.events import subscriber, BeforeRender
 from sqlalchemy.engine import engine_from_config
 from .tools import *
 from .models import (DBSession, Base, init_model)
-from .security import MySecurityPolicy
+from .security import MySecurityPolicy, get_user
 
 _logging = getLogger(__name__)
 
@@ -44,10 +47,14 @@ def json_rpc():
     return json_r
 
 
+def get_title(request):
+    route_name = request.matched_route.name
+    return titles[route_name]
+
 def set_config(settings={}):
     session_factory = session_factory_from_settings(settings)
     config = Configurator(settings=settings,
-                          root_factory='tsa_pos.models.users.RootFactory',
+                          root_factory='tsa_pos.models.auth.RootFactory',
                           session_factory=session_factory)
     config.set_default_csrf_options(require_csrf=False)
     config.set_security_policy(MySecurityPolicy(settings["session.secret"]))
@@ -56,10 +63,10 @@ def set_config(settings={}):
     # config.add_request_method(get_menus, 'menus', reify=True)
     # # config.add_request_method(get_host, '_host', reify=True)
     # config.add_request_method(get_host, 'home', reify=True)
-    # config.add_request_method(get_title, 'title', reify=True)
+    config.add_request_method(get_title, 'title', reify=True)
     # config.add_request_method(get_company, 'company', reify=True)
 
-    # config.add_request_method(get_user, 'user', reify=True)
+    config.add_request_method(get_user, 'user', reify=True)
     # config.add_request_method(get_departement, 'departement', reify=True)
     # config.add_request_method(get_ibukota, 'ibukota', reify=True)
     # config.add_request_method(get_address, 'address', reify=True)
@@ -102,7 +109,7 @@ def set_config(settings={}):
     #     if not os.path.exists(partner_files):
     #         os.makedirs(partner_files)
 
-    config.add_static_view('static', 'opensipkd.base:static',
+    config.add_static_view('static', 'tsa_pos:static',
                            cache_max_age=3600)
 
     config.add_static_view('deform_static', 'deform:static')
@@ -201,9 +208,14 @@ def _add_route(config, route):
 class AppClass:
     def __init__(self):
         self.base_dir = os.path.dirname(os.path.abspath(__file__))
+        self.menus = []
+        self.temp_files = ""
+        self.captcha_files = ""
+        self.partner_doc = ""
+        self.login_tpl = ""
+        self.allow_register = False
 
-
-    def add_menu(self, config, route_menus, parent=None, paket="opensipkd.base.views"):
+    def add_menu(self, config, route_menus, parent=None, paket="tsa_pos.views"):
         route_names = []
         for route in route_menus:
             # if not int(route.get("status", 0)):
@@ -257,7 +269,7 @@ class AppClass:
             route_names.append(route["kode"])
         return route_names
 
-    def route_from_csv_(self, config, paket="tangsel.base.views", rows=[]):
+    def route_from_csv_(self, config, paket="tsa_pos.views", rows=[]):
         new_routes = []
         for row in rows:
             status = row.get("status", 0) or 0
@@ -275,7 +287,7 @@ class AppClass:
 
         self.add_menu(config, new_routes, None, paket)
       
-    def route_from_csv(self, config, paket=None, filename="routes.csv"):
+    def route_from_csv(self, config, paket="tsa_pos.views", filename="routes.csv"):
         fullpath = os.path.join(self.base_dir, 'scripts', 'data', filename)
         if get_ext(filename) == ".csv":
             with open(fullpath) as f:
@@ -296,7 +308,21 @@ class AppClass:
         static_path = settings.get('static_path', 'tsa_pos:static')
         config.add_static_view(static_url, static_path, cache_max_age=3600)
 
+    def read_config(self, settings):
+        settings = settings or {}
+        self.temp_files = settings.get("temp_files", tempfile.gettempdir())
+        self.login_tpl = settings.get("login_tpl", "")
+        self.captcha_files = settings.get("captcha_files", os.path.join(
+            self.temp_files, "captcha") + os.sep)
+        self.partner_doc = settings.get("partner_doc", os.path.join(
+            self.temp_files, "partner") + os.sep)
+        self.allow_register = settings.get("allow_register", False)
+        
 
+    def get_menus(self):
+        _logging.debug(f"Menus: {self.menus}")
+        return self.menus
+    
 BASE_APP = AppClass()
 
 def main(global_config, **settings):
@@ -320,5 +346,21 @@ def main(global_config, **settings):
     routes_file = settings.get("route_files") or "routes.csv"
     BASE_APP.route_from_csv(config=config, filename=routes_file)
     BASE_APP.static_view(config=config, settings=settings)
+    BASE_APP.read_config(settings=settings)
     config.scan()
     return config.make_wsgi_app()
+
+
+def has_permission_(request, perm_names, context=None):
+    if not perm_names:
+        return True
+    if isinstance(perm_names, str):
+        perm_names = [perm_names]
+    for perm_name in perm_names:
+        if request.has_permission(perm_name, context):
+            return True
+        
+@subscriber(BeforeRender)
+def add_global(event):
+    event['has_permission'] = has_permission_
+    event['get_base_menus'] = BASE_APP.get_menus

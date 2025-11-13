@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en-us" tal:define="
-        home request.home;
+        home request.route_url('home');
         route_name route_name|request.matched_route.name;
         css css|[];
         js js|[];
@@ -10,7 +10,7 @@
 
   <!--<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">-->
 
-  <title>${request.app_name} | ${request.company}</title>
+  <title>TSA POS | CMUF</title>
 
   <meta name="description" content="">
   <meta name="author" content="">
@@ -77,14 +77,14 @@
     <!-- pulled right: nav area -->
     <div class="pull-right">
       <div tal:condition="request.user" class="project-context hidden-xs">
-        <span class="label"><i class="fa fa-sm fa-fw fa-institution"></i> ${request.company}</span>
+        <span class="label"><i class="fa fa-sm fa-fw fa-institution"></i>CMUF</span>
         <span tal:condition="request.user" class="project-selector dropdown-toggle" data-toggle="dropdown">Pilih
           Module <i class="fa fa-angle-down"></i></span>
-        <ul tal:condition="request.user" class="dropdown-menu">
-          <li tal:repeat="menu request.menus">
-            <a href="${menu}">${request.menus[menu]}</a>
+        <!-- <ul talcondition="request.user" class="dropdown-menu">
+          <li talrepeat="menu request.menus">
+            <a href="{menu}">{request.menus[menu]}</a>
           </li>
-        </ul>
+        </ul> -->
       </div>
       <!-- collapse menu button -->
       <div id="hide-menu" class="btn-header pull-right">
@@ -109,20 +109,20 @@
       <ul tal:condition="request.user" class="header-dropdown-list hidden-xs">
         <li>
           <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-lg fa-fw fa-user"></i>
-            <span style="text-transform:capitalize"> ${request.user and request.user.nice_username() or ""}
+            <span style="text-transform:capitalize"> ${request.user and request.user.nice_username or ""}
             </span>
             <i class="fa fa-angle-down"></i> </a>
           <ul class="dropdown-menu pull-right">
-            <li><a style="text-transform:capitalize" href="${request.route_url('base-profile')}">Profile</a>
+            <li><a style="text-transform:capitalize" href="${request.route_url('profile')}">Profile</a>
             </li>
             <li tal:condition="not request.user.external">
-              <a style="text-transform:capitalize" href="${request.route_url('base-password')}">Ubah
+              <a style="text-transform:capitalize" href="${request.route_url('password')}">Ubah
                 password</a>
             </li>
-            <li><a style="text-transform:capitalize" href="${request.route_url('base-logout')}">Logout</a>
+            <li><a style="text-transform:capitalize" href="${request.route_url('logout')}">Logout</a>
             </li>
-            <li tal:condition="request.user.api_key"><a style="text-transform:capitalize"
-                href="${home}/recreate-api-key">API Key</a></li>
+            <!-- <li talcondition="request.user.api_key"><a style="text-transform:capitalize"
+                href="${home}/recreate-api-key">API Key</a></li> -->
             <!-- <li talcondition="'core' in request.modules and change_unit(request)">
                             <a style="text-transform:capitalize" href="${home}/departemen/chg">Ubah
                                 Organisasi</a>
@@ -188,8 +188,8 @@
         <li> <a href="#"><i class="fa fa-lg fa-fw fa-shield"></i>
             <span class="menu-item-parent">Module Lainnya</span></a>
           <ul>
-            <li tal:repeat="menu request.menus">
-              <a href="${menu}">${request.menus[menu]}</a>
+            <li talrepeat="menu request.menus">
+              <a href="{menu}">{request.menus[menu]}</a>
             </li>
           </ul>
         </li>

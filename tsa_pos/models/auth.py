@@ -1,5 +1,6 @@
 from pyramid.security import Allow, Authenticated, ALL_PERMISSIONS
 import sqlalchemy as sa
+from sqlalchemy.orm import relationship
 from ziggurat_foundations.models.user    import UserMixin
 from ziggurat_foundations.models.group  import GroupMixin
 from ziggurat_foundations.models.user_group import UserGroupMixin
@@ -16,11 +17,34 @@ from ziggurat_foundations import ziggurat_model_init
 from .base import DefaultModel
 from .meta import Base
 from .import DBSession
-
-
+from datetime import timezone
+from datetime import datetime
 class User(UserMixin, DefaultModel, Base):
-    pass
+    last_login_date = sa.Column(
+            sa.TIMESTAMP(timezone=True),
+            default=lambda x: datetime.now(timezone.utc),
+            server_default=sa.func.now(),
+        )
+    security_code_date = sa.Column(
+            sa.TIMESTAMP(timezone=True),
+            default=datetime(2000, 1, 1),
+            server_default="2000-01-01 01:01",
+        )
 
+    @classmethod
+    def get_by_identity(cls, identity):
+        return DBSession.query(cls).filter(
+            sa.or_(cls.user_name == identity,
+                   cls.email == identity)).first()
+
+    @property
+    def nice_username(self):
+        if self.user_name and self.user_name.strip():
+            return self.user_name
+        return self.email
+    
+    external = sa.orm.relationship("ExternalIdentity",
+                            backref="user",)
 
 class Group(GroupMixin, DefaultModel, Base):
     pass
