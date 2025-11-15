@@ -19,7 +19,13 @@ from .meta import Base
 from .import DBSession
 from datetime import timezone
 from datetime import datetime
+from sqlalchemy.orm import relationship
+from sqlalchemy import (
+    DateTime,
+    Column
+)
 class User(UserMixin, DefaultModel, Base):
+    updated = Column(DateTime)
     last_login_date = sa.Column(
             sa.TIMESTAMP(timezone=True),
             default=lambda x: datetime.now(timezone.utc),
@@ -45,6 +51,15 @@ class User(UserMixin, DefaultModel, Base):
     
     external = sa.orm.relationship("ExternalIdentity",
                             backref="user",)
+    
+    order = relationship('Order', back_populates='user', passive_deletes=True)
+    order_items = relationship('Order_items', back_populates='order_items', passive_deletes=True)
+    partner = relationship('Partner', back_populates='partner', passive_deletes=True)
+    product = relationship('Product', back_populates='product', passive_deletes=True)
+    provinsi = relationship('Provinsi', back_populates='provinsi', passive_deletes=True)
+    kota = relationship('Kota', back_populates='kota', passive_deletes=True)
+    kecamatan = relationship('kecamatan', back_populates='kecamatan', passive_deletes=True)
+
 
 class Group(GroupMixin, DefaultModel, Base):
     pass
