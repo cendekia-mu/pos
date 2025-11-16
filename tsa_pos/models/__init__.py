@@ -3,4 +3,4 @@ from .base import *
 
 from .auth import *
 from .product import *
-
+from .wilayah import *

@@ -16,6 +16,11 @@ Upgrade DB
  $alembic -c config upgrade head
 ```
 
+Downgrade 
+```
+ $alembic -c config downgrade -1 or serial
+```
+
 InitializeDB 
 ```
 $tsa-pos-db-init config
