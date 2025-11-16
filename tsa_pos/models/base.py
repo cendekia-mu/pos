@@ -1,7 +1,8 @@
 from sqlalchemy.orm import scoped_session, sessionmaker
+from sqlalchemy import ForeignKey
 from zope.sqlalchemy import register
 import ziggurat_foundations.models 
-from sqlalchemy import Column, Integer, func
+from sqlalchemy import Column, Integer, func, SmallInteger, DateTime
 
 session_factory = sessionmaker()
 DBSession = scoped_session(session_factory)
@@ -12,32 +13,25 @@ TABLE_ARGS = dict(extend_existing=True, schema="public")
 
 
 class DefaultModel(object):
-    id = Column(Integer, primary_key=True)
-
     db_session = DBSession
-
-    def __init__(self):
-        super().__init__()
-        self.db_session = DBSession
-
+    id = Column(Integer, primary_key=True)
+ 
     @classmethod
     def save(cls, values, row=None, **kwargs):
         if not row:
             row = cls()
-        row.from_dict(values)
+        for key, value in values.items():
+            if hasattr(row, key):
+                setattr(row, key, value)
         return row
 
     @classmethod
-    def count(cls,  db_session=None):
-        if not db_session:
-            db_session = cls.db_session
-        return db_session.query(func.count('id')).scalar()
+    def count(cls):
+         return cls.db_session.query(func.count(cls.id)).scalar()
 
     @classmethod
-    def query(cls, db_session=None, filters=None):
-        if not db_session:
-            db_session = cls.db_session
-        query = db_session.query(cls)
+    def query(cls, filters=None):
+        query = cls.db_session.query(cls)
         if filters:
             filter_expressions = []
             for d in filters:
@@ -50,22 +44,23 @@ class DefaultModel(object):
         return query
 
     @classmethod
-    def query_from(cls, db_session=None, columns=[], filters=None):
-        if not db_session:
-            db_session = cls.db_session
-        query = db_session.query().select_from(cls)
+    def query_from(cls, columns=[], filters=None):
+        query = cls.db_session.query().select_from(cls)
         for c in columns:
             query = query.add_columns(c)
         return query
 
     @classmethod
-    def query_id(cls, row_id, db_session=None):
-        if not db_session:
-            db_session = cls.db_session
-        return cls.query(db_session).filter_by(id=row_id)
+    def query_id(cls, row_id):
+        return cls.query().filter_by(id=row_id)
 
     @classmethod
-    def delete(cls, row_id, db_session=None):
-        if not db_session:
-            db_session = cls.db_session
-        cls.query_id(row_id, db_session).delete()
+    def delete(cls, row_id):
+        cls.query_id(row_id).delete()
+
+class StandardModel(DefaultModel):
+    status = Column(SmallInteger)
+    create_uid = Column(Integer, ForeignKey('users.id', ondelete='RESTRICT'), nullable=False)
+    update_uid = Column(Integer, ForeignKey('users.id', ondelete='RESTRICT'), nullable=True)
+    created = Column(DateTime, default=func.now())
+    updated = Column(DateTime, default=func.now(), onupdate=func.now())

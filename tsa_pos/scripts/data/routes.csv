@@ -10,3 +10,17 @@ user-add,/user/add,Create User,1,user,Views,view_create,form.pt,,
 user-edit,/user/{id}/edit,Edit User,1,user,Views,view_update,form.pt,,
 user-delete,/user/{id}/delete,Delete User,1,user,Views,view_delete,form.pt,,
 user-view,/user/{id}/view,Read User,1,user,Views,view_read,form.pt,,
+product-category-list,/product/category,Product Category,1,product_category,Views,view_list,list.pt,,1
+product-category-act,/product/category/{act}/act,Product Category Action,1,product_category,Views,view_act,json,,
+product-category-add,/product/category/add,Create Product Category,1,product_category,Views,view_create,form.pt,,
+product-category-edit,/product/category/{id}/edit,Edit Product Category,1,product_category,Views,view_update,form.pt,,
+product-category-delete,/product/category/{id}/delete,Delete Product Category,1,product_category,Views,view_delete,form.pt,,
+product-category-view,/product/category/{id}/view,Read Product Category,1,product_category,Views,view_read,form.pt,,
+product-category-upload,/product/category/upload,Upload Product Category,1,product_category,Views,view_upload,form.pt
+product-list,/product,Product,1,product,Views,view_list,list.pt,,1
+product-act,/product/{act}/act,Product Action,1,product,Views,view_act,json,,
+product-add,/product/add,Create Product,1,product,Views,view_create,form.pt,,
+product-edit,/product/{id}/edit,Edit Product,1,product,Views,view_update,form.pt,,
+product-delete,/product/{id}/delete,Delete Product,1,product,Views,view_delete,form.pt,,
+product-view,/product/{id}/view,Read Product,1,product,Views,view_read,form.pt,,
+product-upload,/product/upload,Upload Product,1,product,Views,view_upload,form.pt

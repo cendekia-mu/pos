@@ -53,23 +53,23 @@ class User(UserMixin, DefaultModel, Base):
     external = sa.orm.relationship("ExternalIdentity",
                             backref="user",)
     
-    order_created = relationship('Order', foreign_keys="[Order.created_uid]", back_populates='user_created')
-    order_updated = relationship('Order', foreign_keys="[Order.updated_uid]", back_populates='user_updated')
+    # order_created = relationship('Order', foreign_keys="[Order.created_uid]", back_populates='user_created')
+    # order_updated = relationship('Order', foreign_keys="[Order.updated_uid]", back_populates='user_updated')
 
-    provinsi_created = relationship('Provinsi', foreign_keys="[Provinsi.created_uid]", back_populates='user_created')
-    provinsi_updated = relationship('Provinsi', foreign_keys="[Provinsi.updated_uid]", back_populates='user_updated')
+    # provinsi_created = relationship('Provinsi', foreign_keys="[Provinsi.created_uid]", back_populates='user_created')
+    # provinsi_updated = relationship('Provinsi', foreign_keys="[Provinsi.updated_uid]", back_populates='user_updated')
 
-    products_created = relationship('Product', foreign_keys="[Product.created_uid]", back_populates='user_created')
-    products_updated = relationship('Product', foreign_keys="[Product.updated_uid]", back_populates='user_updated')
+    # products_created = relationship('Product', foreign_keys="[Product.created_uid]", back_populates='user_created')
+    # products_updated = relationship('Product', foreign_keys="[Product.updated_uid]", back_populates='user_updated')
 
-    kota_created = relationship('Kota', foreign_keys="[Kota.created_uid]", back_populates='user_created')
-    kota_updated = relationship('Kota', foreign_keys="[Kota.updated_uid]", back_populates='user_updated')
+    # kota_created = relationship('Kota', foreign_keys="[Kota.created_uid]", back_populates='user_created')
+    # kota_updated = relationship('Kota', foreign_keys="[Kota.updated_uid]", back_populates='user_updated')
 
-    kecamatan_created = relationship('Kecamatan', foreign_keys="[Kecamatan.created_uid]", back_populates='user_created')
-    kecamatan_updated = relationship('Kecamatan', foreign_keys="[Kecamatan.updated_uid]", back_populates='user_updated')
+    # kecamatan_created = relationship('Kecamatan', foreign_keys="[Kecamatan.created_uid]", back_populates='user_created')
+    # kecamatan_updated = relationship('Kecamatan', foreign_keys="[Kecamatan.updated_uid]", back_populates='user_updated')
 
-    partner_created = relationship('Partner', foreign_keys="[Partner.created_uid]", back_populates='user_created')
-    partner_updated = relationship('Partner', foreign_keys="[Partner.updated_uid]", back_populates='user_updated')
+    # partner_created = relationship('Partner', foreign_keys="[Partner.created_uid]", back_populates='user_created')
+    # partner_updated = relationship('Partner', foreign_keys="[Partner.updated_uid]", back_populates='user_updated')
 
 
 
