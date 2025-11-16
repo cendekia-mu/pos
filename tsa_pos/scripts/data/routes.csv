@@ -1,26 +1,56 @@
-kode,path,nama,status,file_name,class_name,func_name,template,permission,is_menu
-home,/,Home,1,home,Views,beranda,home.pt,,
-login,/login,Login,1,auth,Views,login,form.pt,,
-logout,/logout,Logout,1,auth,Views,logout,form.pt,,
-profile,/profile,Profile,1,profile,Views,,form.pt,,
-password,/password,Ubah Password,1,password,,,form.pt,,
-user-list,/user,User,1,user,Views,view_list,list.pt,,1
-user-act,/user/{act}/act,User Action,1,user,Views,view_act,json,,
-user-add,/user/add,Create User,1,user,Views,view_create,form.pt,,
-user-edit,/user/{id}/edit,Edit User,1,user,Views,view_update,form.pt,,
-user-delete,/user/{id}/delete,Delete User,1,user,Views,view_delete,form.pt,,
-user-view,/user/{id}/view,Read User,1,user,Views,view_read,form.pt,,
-product-category-list,/product/category,Product Category,1,product_category,Views,view_list,list.pt,,1
-product-category-act,/product/category/{act}/act,Product Category Action,1,product_category,Views,view_act,json,,
-product-category-add,/product/category/add,Create Product Category,1,product_category,Views,view_create,form.pt,,
-product-category-edit,/product/category/{id}/edit,Edit Product Category,1,product_category,Views,view_update,form.pt,,
-product-category-delete,/product/category/{id}/delete,Delete Product Category,1,product_category,Views,view_delete,form.pt,,
-product-category-view,/product/category/{id}/view,Read Product Category,1,product_category,Views,view_read,form.pt,,
-product-category-upload,/product/category/upload,Upload Product Category,1,product_category,Views,view_upload,form.pt
-product-list,/product,Product,1,product,Views,view_list,list.pt,,1
-product-act,/product/{act}/act,Product Action,1,product,Views,view_act,json,,
-product-add,/product/add,Create Product,1,product,Views,view_create,form.pt,,
-product-edit,/product/{id}/edit,Edit Product,1,product,Views,view_update,form.pt,,
-product-delete,/product/{id}/delete,Delete Product,1,product,Views,view_delete,form.pt,,
-product-view,/product/{id}/view,Read Product,1,product,Views,view_read,form.pt,,
-product-upload,/product/upload,Upload Product,1,product,Views,view_upload,form.pt
+kode,path,parent,nama,status,file_name,class_name,func_name,template,permission,is_menu
+home,/,,Home,1,home,Views,beranda,home.pt,,
+login,/login,,Login,1,auth,Views,login,form.pt,,
+logout,/logout,,Logout,1,auth,Views,logout,form.pt,,
+profile,/profile,,Profile,1,profile,Views,,form.pt,,
+password,/password,,Ubah Password,1,password,,,form.pt,,
+admin-menu,#,,Adminisrator,1,,,,,,1
+user-list,/user,admin-menu,User,1,user,Views,view_list,list.pt,,1
+user-act,/user/{act}/act,user-list,User Action,1,user,Views,view_act,json,,
+user-add,/user/add,user-list,Create User,1,user,Views,view_create,form.pt,,
+user-edit,/user/{id}/edit,user-list,Edit User,1,user,Views,view_update,form.pt,,
+user-delete,/user/{id}/delete,user-list,Delete User,1,user,Views,view_delete,form.pt,,
+user-view,/user/{id}/view,user-list,Read User,1,user,Views,view_read,form.pt,,
+group-list,/group,admin-menu,Group,1,group,Views,view_list,list.pt,,1
+group-act,/group/{act}/act,group-list,Group Action,1,group,Views,view_act,json,,
+group-add,/group/add,group-list,Create Group,1,group,Views,view_create,form.pt,,
+group-edit,/group/{id}/edit,group-list,Edit Group,1,group,Views,view_update,form.pt,,
+group-delete,/group/{id}/delete,group-list,Delete Group,1,group,Views,view_delete,form.pt,,
+group-view,/group/{id}/view,group-list,Read Group,1,group,Views,view_read,form.pt,,
+group-upload,/group/{id}/upload,group-list,Upload Group,1,group,Views,view_upload,form.pt,,
+master-menu,#,,Master,1,,,,,,1
+product-category-list,/product/category,master-menu,Product Category,1,product_category,Views,view_list,list.pt,,1
+product-category-act,/product/category/{act}/act,product-category-list,Product Category Action,1,product_category,Views,view_act,json,,
+product-category-add,/product/category/add,product-category-list,Create Product Category,1,product_category,Views,view_create,form.pt,,
+product-category-edit,/product/category/{id}/edit,product-category-list,Edit Product Category,1,product_category,Views,view_update,form.pt,,
+product-category-delete,/product/category/{id}/delete,product-category-list,Delete Product Category,1,product_category,Views,view_delete,form.pt,,
+product-category-view,/product/category/{id}/view,product-category-list,Read Product Category,1,product_category,Views,view_read,form.pt,,
+product-category-upload,/product/category/upload,product-category-list,Upload Product Category,1,product_category,Views,view_upload,form.pt
+product-list,/product,master-menu,Product,1,product,Views,view_list,list.pt,,1
+product-act,/product/{act}/act,product-list,Product Action,1,product,Views,view_act,json,,
+product-add,/product/add,product-list,Create Product,1,product,Views,view_create,form.pt,,
+product-edit,/product/{id}/edit,product-list,Edit Product,1,product,Views,view_update,form.pt,,
+product-delete,/product/{id}/delete,product-list,Delete Product,1,product,Views,view_delete,form.pt,,
+product-view,/product/{id}/view,product-list,Read Product,1,product,Views,view_read,form.pt,,
+product-upload,/product/upload,product-list,Upload Product,1,product,Views,view_upload,form.pt
+provinsi-list,/provinsi,master-menu,Provinsi,1,provinsi,Views,view_list,list.pt,,1
+provinsi-act,/provinsi/{act}/act,provinsi-list,Provinsi Action,1,provinsi,Views,view_act,json,,
+provinsi-add,/provinsi/add,provinsi-list,Create Provinsi,1,provinsi,Views,view_create,form.pt,,
+provinsi-edit,/provinsi/{id}/edit,provinsi-list,Edit Provinsi,1,provinsi,Views,view_update,form.pt,,
+provinsi-delete,/provinsi/{id}/delete,provinsi-list,Delete Provinsi,1,provinsi,Views,view_delete,form.pt,,
+provinsi-view,/provinsi/{id}/view,provinsi-list,Read Provinsi,1,provinsi,Views,view_read,form.pt,,
+kota-upload,/kota/{id}/upload,kota-list,Upload Kota,1,kota,Views,view_upload,form.pt,,
+kota-list,/kota,master-menu,Kota,1,kota,Views,view_list,list.pt,,1
+kota-act,/kota/{act}/act,kota-list,Kota Action,1,kota,Views,view_act,json,,
+kota-add,/kota/add,kota-list,Create Kota,1,kota,Views,view_create,form.pt,,
+kota-edit,/kota/{id}/edit,kota-list,Edit Kota,1,kota,Views,view_update,form.pt,,
+kota-delete,/kota/{id}/delete,kota-list,Delete Kota,1,kota,Views,view_delete,form.pt,,
+kota-view,/kota/{id}/view,kota-list,Read Kota,1,kota,Views,view_read,form.pt,,
+kota-upload,/kota/{id}/upload,kota-list,Upload Kota,1,kota,Views,view_upload,form.pt,,
+kecamatan-list,/kecamatan,master-menu,Kecamatan,1,kecamatan,Views,view_list,list.pt,,1
+kecamatan-act,/kecamatan/{act}/act,kecamatan-list,Kecamatan Action,1,kecamatan,Views,view_act,json,,
+kecamatan-add,/kecamatan/add,kecamatan-list,Create Kecamatan,1,kecamatan,Views,view_create,form.pt,,
+kecamatan-edit,/kecamatan/{id}/edit,kecamatan-list,Edit Kecamatan,1,kecamatan,Views,view_update,form.pt,,
+kecamatan-delete,/kecamatan/{id}/delete,kecamatan-list,Delete Kecamatan,1,kecamatan,Views,view_delete,form.pt,,
+kecamatan-view,/kecamatan/{id}/view,kecamatan-list,Read Kecamatan,1,kecamatan,Views,view_read,form.pt,,
+kecamatan-upload,/kecamatan/{id}/upload,kecamatan-list,Upload Kecamatan,1,kecamatan,Views,view_upload,form.pt,,

@@ -1,10 +1,5 @@
-import email
-from wsgiref.validate import validator
 from deform import widget
-from marshmallow import missing
 import colander
-import deform
-import re
 from ..models import ProductCategory
 from . import BaseViews
 from ..i18n import _
@@ -20,7 +15,7 @@ class ListSchema(colander.Schema):
 
 class CreateSchema(colander.Schema):
     # Define your schema fields here
-    name = colander.SchemaNode(colander.String()
+    name = colander.SchemaNode(colander.String(),
                                validator=colander.Length(min=3, max=50))
 
 class UpdateSchema(CreateSchema):
@@ -45,7 +40,7 @@ class Views(BaseViews):
             'Kesalahan pada pengisian data.'
         )
         id_ = self.request.matchdict.get('id', 0)
-        
+
         # Validate unique name
         name = value.get('name')
         row = self.table.query().filter(self.table.name == name).first()

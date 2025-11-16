@@ -9,6 +9,7 @@ from ..detable import DeTable
 from ..tools import *
 import logging
 from ..models import DBSession
+import datetime
 
 _logging = logging.getLogger(__name__)
 
@@ -340,8 +341,20 @@ class BaseViews(object):
 
 
     def save(self, values, row=None):
+        now = datetime.datetime.now()
         if not row:
             row = self.table()
+            if hasattr(row, 'create_uid'):
+                row.create_uid = self.request.user.id
+            if hasattr(row, 'status'):
+                row.status = 1  # Default to active status
+            if hasattr(row, 'created'):
+                row.created = now
+        else:
+            if hasattr(row, 'update_uid'):
+                row.update_uid = self.request.user.id
+            if hasattr(row, 'updated'):
+                row.updated = now
 
         for key, val in values.items():
             if hasattr(row, key):
