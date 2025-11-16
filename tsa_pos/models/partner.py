@@ -33,9 +33,10 @@ class Partner(Base):
     kota_id = Column(ForeignKey('kota.id', ondelete='CASCADE'), nullable=False)
     kecamatan_id = Column(ForeignKey('kecamatan.id', ondelete='CASCADE'), nullable=False)
 
-    user = relationship('User', back_populates='partner', passive_deletes=True)
+    user_created = relationship('User', foreign_keys=[created_uid], back_populates='partner_created', passive_deletes=True)
+    user_updated = relationship('User', foreign_keys=[updated_uid], back_populates='partner_updated', passive_deletes=True)
     provinsi = relationship('Provinsi', back_populates='partner', passive_deletes=True)
     kota = relationship('Kota', back_populates='partner', passive_deletes=True)
     kecamatan = relationship('Kecamatan', back_populates='partner', passive_deletes=True)
-    order = relationship('Order', back_populates='order', passive_deletes=True)
+    order = relationship('Order', back_populates='partner', passive_deletes=True)
 

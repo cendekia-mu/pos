@@ -1,8 +1,8 @@
-"""Init
+"""Update Models
 
-Revision ID: 5a9fc4a19044
+Revision ID: 7968ae6fa1dd
 Revises: 
-Create Date: 2025-11-12 13:55:14.250102
+Create Date: 2025-11-16 10:38:18.654039
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '5a9fc4a19044'
+revision: str = '7968ae6fa1dd'
 down_revision: Union[str, Sequence[str], None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -32,15 +32,16 @@ def upgrade() -> None:
     mysql_engine='InnoDB'
     )
     op.create_table('users',
+    sa.Column('updated', sa.DateTime(), nullable=True),
+    sa.Column('last_login_date', sa.TIMESTAMP(timezone=True), server_default=sa.text('now()'), nullable=True),
+    sa.Column('security_code_date', sa.TIMESTAMP(timezone=True), server_default='2000-01-01 01:01', nullable=True),
     sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
     sa.Column('user_name', sa.Unicode(length=128), nullable=True),
     sa.Column('user_password', sa.Unicode(length=256), nullable=True),
     sa.Column('email', sa.Unicode(length=100), nullable=False),
     sa.Column('status', sa.SmallInteger(), nullable=False),
     sa.Column('security_code', sa.Unicode(length=256), nullable=True),
-    sa.Column('last_login_date', sa.TIMESTAMP(), server_default=sa.text('now()'), nullable=True),
     sa.Column('registered_date', sa.TIMESTAMP(), server_default=sa.text('now()'), nullable=True),
-    sa.Column('security_code_date', sa.TIMESTAMP(), server_default='2000-01-01 01:01', nullable=True),
     sa.PrimaryKeyConstraint('id', name=op.f('pk_users')),
     sa.UniqueConstraint('email', name=op.f('uq_users_email')),
     sa.UniqueConstraint('user_name', name=op.f('uq_users_user_name')),
@@ -109,7 +110,7 @@ def upgrade() -> None:
     sa.Column('perm_name', sa.Unicode(length=50), nullable=False),
     sa.ForeignKeyConstraint(['group_id'], ['groups.id'], name=op.f('fk_groups_resources_permissions_group_id_groups'), onupdate='CASCADE', ondelete='CASCADE'),
     sa.ForeignKeyConstraint(['resource_id'], ['resources.resource_id'], name=op.f('fk_groups_resources_permissions_resource_id_resources'), onupdate='CASCADE', ondelete='CASCADE'),
-    sa.PrimaryKeyConstraint('group_id', 'resource_id', 'perm_name', name='pk_groups_resources_permissions '),
+    sa.PrimaryKeyConstraint('group_id', 'resource_id', 'perm_name', name='pk_users_resources_permissions'),
     mysql_charset='utf8',
     mysql_engine='InnoDB'
     )
