@@ -27,7 +27,7 @@ class Provinsi(StandardModel,Base):
     # kota = relationship('Kota', back_populates='provinsi', passive_deletes=True)
     # partner = relationship('Partner', back_populates='provinsi', passive_deletes=True)
 
-class Kota(Base):
+class Kota(StandardModel,Base):
     __tablename__ = 'kota'
     # id = Column(Integer, primary_key=True)
     name = Column(String(128))
@@ -47,7 +47,7 @@ class Kota(Base):
     # partner = relationship('Partner', back_populates='kota', passive_deletes=True)
 
     
-class Kecamatan(Base):
+class Kecamatan(StandardModel,Base):
     __tablename__ = 'kecamatan'
     # id = Column(Integer, primary_key=True)
     name = Column(String(128))
