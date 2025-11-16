@@ -54,3 +54,17 @@ kecamatan-edit,/kecamatan/{id}/edit,kecamatan-list,Edit Kecamatan,1,kecamatan,Vi
 kecamatan-delete,/kecamatan/{id}/delete,kecamatan-list,Delete Kecamatan,1,kecamatan,Views,view_delete,form.pt,,
 kecamatan-view,/kecamatan/{id}/view,kecamatan-list,Read Kecamatan,1,kecamatan,Views,view_read,form.pt,,
 kecamatan-upload,/kecamatan/{id}/upload,kecamatan-list,Upload Kecamatan,1,kecamatan,Views,view_upload,form.pt,,
+partner-list,/partner,master-menu,Partner,1,partner,Views,view_list,list.pt,,1
+partner-act,/partner/{act}/act,partner-list,Partner Action,1,partner,Views,view_act,json,,
+partner-add,/partner/add,partner-list,Create Partner,1,partner,Views,view_create,form.pt,,
+partner-edit,/partner/{id}/edit,partner-list,Edit Partner,1,partner,Views,view_update,form.pt,,
+partner-delete,/partner/{id}/delete,partner-list,Delete Partner,1,partner,Views,view_delete,form.pt,,
+partner-view,/partner/{id}/view,partner-list,Read Partner,1,partner,Views,view_read,form.pt,,
+partner-upload,/partner/{id}/upload,partner-list,Upload Partner,1,partner,Views,view_upload,form.pt,,
+invoice-list,/invoice,master-menu,invoice,1,invoice,Views,view_list,list.pt,,1
+invoice-act,/invoice/{act}/act,invoice-list,invoice Action,1,invoice,Views,view_act,json,,
+invoice-add,/invoice/add,invoice-list,Create invoice,1,invoice,Views,view_create,form.pt,,
+invoice-edit,/invoice/{id}/edit,invoice-list,Edit invoice,1,invoice,Views,view_update,form.pt,,
+invoice-delete,/invoice/{id}/delete,invoice-list,Delete invoice,1,invoice,Views,view_delete,form.pt,,
+invoice-view,/invoice/{id}/view,invoice-list,Read invoice,1,invoice,Views,view_read,form.pt,,
+invoice-upload,/invoice/{id}/upload,invoice-list,Upload invoice,1,invoice,Views,view_upload,form.pt,,

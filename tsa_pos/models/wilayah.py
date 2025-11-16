@@ -6,12 +6,12 @@ from sqlalchemy import (
 )
 
 from . import StandardModel
+from sqlalchemy.orm import relationship
 from .meta import Base
 
 
 class Provinsi(StandardModel, Base):
     __tablename__ = 'provinsi'
-    id = Column(Integer, primary_key=True)
     name = Column(String(128))
     # status = Column(SmallInteger)
     # created = Column(DateTime)
@@ -23,7 +23,7 @@ class Provinsi(StandardModel, Base):
     # user_created = relationship('User', foreign_keys=["created_uid"], back_populates='provinsi_created', passive_deletes=True)
     # user_updated = relationship('User', foreign_keys=["updated_uid"], back_populates='provinsi_updated', passive_deletes=True)
     # kota = relationship('Kota', back_populates='provinsi', passive_deletes=True)
-    # partner = relationship('Partner', back_populates='provinsi', passive_deletes=True)
+    partner = relationship('Partner', back_populates='provinsi', passive_deletes=True)
 
 
 class Kota(StandardModel, Base):
@@ -44,7 +44,7 @@ class Kota(StandardModel, Base):
 
     # provinsi = relationship('Provinsi', back_populates='kota', passive_deletes=True)
     # kecamatan = relationship('Kecamatan', back_populates='kota', passive_deletes=True)
-    # partner = relationship('Partner', back_populates='kota', passive_deletes=True)
+    partner = relationship('Partner', back_populates='kota', passive_deletes=True)
 
 
 class Kecamatan(StandardModel, Base):
@@ -62,4 +62,4 @@ class Kecamatan(StandardModel, Base):
     # user_created = relationship('User', foreign_keys=[created_uid], back_populates='kecamatan_created', passive_deletes=True)
     # user_updated = relationship('User', foreign_keys=[updated_uid], back_populates='kecamatan_updated', passive_deletes=True)
     # kota = relationship('Kota', back_populates='kecamatan', passive_deletes=True)
-    # partner = relationship('Partner', back_populates='kecamatan', passive_deletes=True)
+    partner = relationship('Partner', back_populates='kecamatan', passive_deletes=True)

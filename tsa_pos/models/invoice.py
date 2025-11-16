@@ -9,10 +9,11 @@
 # )
 
 # from sqlalchemy.orm import relationship
+# from .base import StandardModel
 
 # from .meta import Base
-# from .base import DefaultModel
-# class Invoices(DefaultModel, Base):
+
+# class Invoices(StandardModel, Base):
 #     __tablename__ = 'invoices'
 #     name = Column(String(128))
 #     code = Column(String(128))
@@ -25,10 +26,10 @@
 #     partner_id = Column(ForeignKey(
 #         'partner.id', ondelete='RESTRICT'), nullable=False)
 
-#     user_created = relationship('User', foreign_keys=['created_uid'], back_populates='invoice_created', passive_deletes=True)
-#     user_updated = relationship('User', foreign_keys=['updated_uid'], back_populates='invoice_updated', passive_deletes=True)
+#     # user_created = relationship('User', foreign_keys=['created_uid'], back_populates='invoice_created', passive_deletes=True)
+#     # user_updated = relationship('User', foreign_keys=['updated_uid'], back_populates='invoice_updated', passive_deletes=True)
 
-#     partner = relationship('Partner', back_populates='invoice', passive_deletes=False)
+#     # partner = relationship('Partner', back_populates='invoice', passive_deletes=False)
 #     invoice_items = relationship('InvoiceItems', back_populates='invoice')
 
 # class InvoiceItems(Base):
@@ -43,8 +44,8 @@
 #     product_id = Column(ForeignKey('product.id', ondelete='CASCADE'), nullable=False)
 #     invoice_det_id = Column(ForeignKey('invoices.id', ondelete='CASCADE'), nullable=False)
 
-#     invoice_created = relationship('Order',back_populates='invoice_created', foreign_keys=[invoice_id])
-#     invoice_det_created = relationship('Order',back_populates='invoice_det_created', foreign_keys=[invoice_det_id])
+#     # invoice_created = relationship('Order',back_populates='invoice_created', foreign_keys=[invoice_id])
+#     # invoice_det_created = relationship('Order',back_populates='invoice_det_created', foreign_keys=[invoice_det_id])
 #     product = relationship('Product', back_populates='invoice_items', passive_deletes=True)
 
 
