@@ -37,6 +37,7 @@ class Product(StandardModel, Base):
         'product_category.id', ondelete='CASCADE'), nullable=False)
     product_category = relationship(
         'ProductCategory', back_populates='product', passive_deletes=True)
+    invoice_items = relationship('InvoiceItems', back_populates='product', passive_deletes=True)
 
     # user_created = relationship('User', foreign_keys=[created_uid], back_populates='products_created', passive_deletes=True)
     # user_updated = relationship('User', foreign_keys=[updated_uid], back_populates='products_updated', passive_deletes=True)
