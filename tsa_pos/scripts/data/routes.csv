@@ -11,6 +11,12 @@ user-add,/user/add,user-list,Create User,1,user,Views,view_create,form.pt,,
 user-edit,/user/{id}/edit,user-list,Edit User,1,user,Views,view_update,form.pt,,
 user-delete,/user/{id}/delete,user-list,Delete User,1,user,Views,view_delete,form.pt,,
 user-view,/user/{id}/view,user-list,Read User,1,user,Views,view_read,form.pt,,
+user-permission-list,/user-permission,admin-menu,User-permission,1,user-permission,Views,view_list,list.pt,,1
+user-permission-act,/user-permission/{act}/act,user-permission-list,user-permission Action,1,user-permission,Views,view_act,json,,
+user-permission-add,/user-permission/add,user-permission-list,Create user-permission,1,user-permission,Views,view_create,form.pt,,
+user-permission-edit,/user-permission/{id}/edit,user-permission-list,Edit user-permission,1,user-permission,Views,view_update,form.pt,,
+user-permission-delete,/user-permission/{id}/delete,user-permission-list,Delete user-permission,1,user-permission,Views,view_delete,form.pt,,
+user-permission-view,/user-permission/{id}/view,user-permission-list,Read user-permission,1,user-permission,Views,view_read,form.pt,,
 group-list,/group,admin-menu,Group,1,group,Views,view_list,list.pt,,1
 group-act,/group/{act}/act,group-list,Group Action,1,group,Views,view_act,json,,
 group-add,/group/add,group-list,Create Group,1,group,Views,view_create,form.pt,,
@@ -18,6 +24,20 @@ group-edit,/group/{id}/edit,group-list,Edit Group,1,group,Views,view_update,form
 group-delete,/group/{id}/delete,group-list,Delete Group,1,group,Views,view_delete,form.pt,,
 group-view,/group/{id}/view,group-list,Read Group,1,group,Views,view_read,form.pt,,
 group-upload,/group/{id}/upload,group-list,Upload Group,1,group,Views,view_upload,form.pt,,
+group-permission-list,/group-permission,admin-menu,Group-permission,1,group-permission,Views,view_list,list.pt,,1
+group-permission-act,/group-permission/{act}/act,group-permission-list,group-permission Action,1,group-permission,Views,view_act,json,,
+group-permission-add,/group-permission/add,group-permission-list,Create group-permission,1,group-permission,Views,view_create,form.pt,,
+group-permission-edit,/group-permission/{id}/edit,group-permission-list,Edit group-permission,1,group-permission,Views,view_update,form.pt,,
+group-permission-delete,/group-permission/{id}/delete,group-permission-list,Delete group-permission,1,group-permission,Views,view_delete,form.pt,,
+group-permission-view,/group-permission/{id}/view,group-permission-list,Read group-permission,1,group-permission,Views,view_read,form.pt,,
+group-permission-upload,/group-permission/{id}/upload,group-permission-list,Upload group-permission,1,group-permission,Views,view_upload,form.pt,,
+usergroup-list,/usergroup,admin-menu,Usergroup,1,usergroup,Views,view_list,list.pt,,1
+usergroup-act,/usergroup/{act}/act,usergroup-list,usergroup Action,1,usergroup,Views,view_act,json,,
+usergroup-add,/usergroup/add,usergroup-list,Create usergroup,1,usergroup,Views,view_create,form.pt,,
+usergroup-edit,/usergroup/{id}/edit,usergroup-list,Edit usergroup,1,usergroup,Views,view_update,form.pt,,
+usergroup-delete,/usergroup/{id}/delete,usergroup-list,Delete usergroup,1,usergroup,Views,view_delete,form.pt,,
+usergroup-view,/usergroup/{id}/view,usergroup-list,Read usergroup,1,usergroup,Views,view_read,form.pt,,
+usergroup-upload,/usergroup/{id}/upload,usergroup-list,Upload usergroup,1,usergroup,Views,view_upload,form.pt,,
 master-menu,#,,Master,1,,,,,,1
 product-category-list,/product/category,master-menu,Product Category,1,product_category,Views,view_list,list.pt,,1
 product-category-act,/product/category/{act}/act,product-category-list,Product Category Action,1,product_category,Views,view_act,json,,

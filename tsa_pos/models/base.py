@@ -3,6 +3,7 @@ from sqlalchemy import ForeignKey
 from zope.sqlalchemy import register
 import ziggurat_foundations.models 
 from sqlalchemy import Column, Integer, func, SmallInteger, DateTime
+from sqlalchemy.ext.declarative import declared_attr
 
 session_factory = sessionmaker()
 DBSession = scoped_session(session_factory)
@@ -60,7 +61,22 @@ class DefaultModel(object):
 
 class StandardModel(DefaultModel):
     status = Column(SmallInteger)
-    create_uid = Column(Integer, ForeignKey('users.id', ondelete='RESTRICT'), nullable=False)
-    update_uid = Column(Integer, ForeignKey('users.id', ondelete='RESTRICT'), nullable=True)
+    
+    @declared_attr
+    def create_uid(self):
+        return Column(
+            Integer,
+            ForeignKey("users.id", onupdate="CASCADE", ondelete="CASCADE"),
+            primary_key=True,
+        )
+    
+    @declared_attr
+    def update_uid(self):
+        return Column(
+            Integer,
+            ForeignKey("users.id", onupdate="CASCADE", ondelete="CASCADE"),
+            primary_key=True,
+        )
+
     created = Column(DateTime, default=func.now())
     updated = Column(DateTime, default=func.now(), onupdate=func.now())
