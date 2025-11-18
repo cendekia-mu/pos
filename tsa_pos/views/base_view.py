@@ -374,7 +374,7 @@ class BaseViews(object):
                     appstruct = form.validate(controls)
                     # Logic to add user to the database goes here
                     self.save(appstruct)
-                    self.request.session.flash('User added successfully!')
+                    self.request.session.flash('Data added successfully!')
                 except deform.ValidationFailure as e:
                     return {'form': e.render(), "scripts": ""}
 
