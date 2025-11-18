@@ -1,4 +1,4 @@
-kode,path,parent,nama,status,file_name,class_name,func_name,template,permission,is_menu
+kode,path,parent_id,nama,status,file_name,class_name,func_name,template,permission,is_menu
 home,/,,Home,1,home,Views,beranda,home.pt,,
 login,/login,,Login,1,auth,Views,login,form.pt,,
 logout,/logout,,Logout,1,auth,Views,logout,form.pt,,

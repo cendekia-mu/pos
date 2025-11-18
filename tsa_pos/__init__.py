@@ -274,6 +274,16 @@ class AppClass:
                 )
             route_names.append(route["kode"])
         return route_names
+        
+    def route_children(self, parent, row):
+        for p in parent:
+            parent_id = row.get("parent_id") or row.get(
+                "parent_id/routes.kode")
+            if p["kode"] == parent_id:
+                p["children"].append(row)
+            else:
+                if p["children"]:
+                    self.route_children(p["children"], row)
 
     def route_from_csv_(self, config, paket="tsa_pos.views", rows=[]):
         new_routes = []
