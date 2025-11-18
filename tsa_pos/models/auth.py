@@ -116,7 +116,23 @@ class RootFactory:
             acl_name = 'group:{}'.format(gp.group_id)
             self.__acl__.append((Allow, acl_name, gp.perm_name))
 
+class Permissions(DefaultModel, Base):
+    __tablename__ = 'permissions'
+    id = Column(Integer, primary_key=True)
+    name = Column(sa.String(128), unique=True, nullable=False)
+    description = Column(sa.String(256), nullable=False) 
 
+    def save(self, values, row=None, **kwargs):
+        if not row:
+            row = Permissions()
+        for key, value in values.items():
+            if key=='name':
+                value = value.lower()
+                
+            if hasattr(row, key):
+                setattr(row, key, value)
+        return row
+    
 def init_model():
     ziggurat_model_init(User, Group, UserGroup, GroupPermission, UserPermission,
                         UserResourcePermission, GroupResourcePermission,
