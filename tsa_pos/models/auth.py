@@ -1,3 +1,4 @@
+import colander
 from pyramid.security import Allow, Authenticated, ALL_PERMISSIONS
 import sqlalchemy as sa
 from sqlalchemy.orm import relationship
@@ -132,6 +133,21 @@ class Permissions(DefaultModel, Base):
             if hasattr(row, key):
                 setattr(row, key, value)
         return row
+    
+    def validator(self, id_, value, form):
+        name = value.get('name')
+        exc = colander.Invalid(
+            form,
+            'Kesalahan pada pengisian data.'
+        )
+        row = self.table.query().filter(
+            self.table.name == name
+        ).first()
+        if row and (not id_ or row.id != int(id_)):
+            exc["name"] = _(
+                'Name {} already exists.'.format(name))
+            raise exc
+
     
 def init_model():
     ziggurat_model_init(User, Group, UserGroup, GroupPermission, UserPermission,

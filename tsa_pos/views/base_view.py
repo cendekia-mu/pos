@@ -58,12 +58,12 @@ class ReadSchema(UpdateSchema):
 class BaseViews(object):
     def __init__(self, request):
         self.request = request
-        self.table = None  # Default table, can be overridden
-        self.CreateSchema = CreateSchema  # Default schema, can be overridden
-        self.UpdateSchema = UpdateSchema  # Default schema, can be overridden
-        self.ReadSchema = ReadSchema  # Default read schema, can be overridden
-        self.ListSchema = UpdateSchema  # Default list schema, can be overridden
-        self.list_route_name = ''  # Default list route name, can be overridden
+        self.table = None  # Default table, must be overridden
+        self.CreateSchema = CreateSchema  # Default schema, must be overridden
+        self.UpdateSchema = UpdateSchema  # Default schema, must be overridden
+        self.ReadSchema = ReadSchema  # Default read schema, must be overridden
+        self.ListSchema = UpdateSchema  # Default list schema, must be overridden
+        self.list_route_name = ''  # Default list route name, must be overridden
         self.allow_view=True
         self.allow_edit=True
         self.allow_delete=True

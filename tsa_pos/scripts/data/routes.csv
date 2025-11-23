@@ -25,11 +25,11 @@ group-upload,/group/{id}/upload,group-list,Upload Group,1,group,Views,view_uploa
 group-permission-list,/group-permission,admin-menu,Group-permission,1,group-permission,Views,view_list,list.pt,,1
 group-permission-act,/group-permission/{act}/act,group-permission-list,group-permission Action,1,group-permission,Views,view_act,json,,
 
-usergroup-list,/user/group,admin-menu,Usergroup,1,usergroup,Views,view_list,list.pt,,1
-usergroup-act,/user/group/{act}/act,usergroup-list,usergroup Action,1,usergroup,Views,view_act,json,,
+user-group-list,/user/group,admin-menu,Usergroup,1,usergroup,Views,view_list,list.pt,,1
+user-group-act,/user/group/{act}/act,usergroup-list,usergroup Action,1,usergroup,Views,view_act,json,,
 
-permissions-list,/permissions,admin-menu,permissions,1,permissions,Views,view_list,list.pt,,1
-permissions-act,/permissions/{act}/act,permissions-list,permissions Action,1,permissions,Views,view_act,json,,
+permissions-list,/permissions,admin-menu,Permissions,1,permissions,Views,view_list,list.pt,,1
+permissions-act,/permissions/{act}/act,permissions-list,Permissions Action,1,permissions,Views,view_act,json,,
 permissions-add,/permissions/add,permissions-list,Create permissions,1,permissions,Views,view_create,form.pt,,
 permissions-edit,/permissions/{id}/edit,permissions-list,Edit permissions,1,permissions,Views,view_update,form.pt,,
 permissions-delete,/permissions/{id}/delete,permissions-list,Delete permissions,1,permissions,Views,view_delete,form.pt,,
