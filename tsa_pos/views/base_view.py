@@ -10,6 +10,7 @@ from ..tools import *
 import logging
 from ..models import DBSession
 import datetime
+from ..models import User,UserGroup,UserPermission
 
 _logging = logging.getLogger(__name__)
 
@@ -44,6 +45,11 @@ class CSRFSchema(colander.Schema):
 class CreateSchema(colander.MappingSchema):
     pass
 
+class UserCreateSchema(colander.MappingSchema):
+    pass
+
+class UserUpdateSchema(UserCreateSchema):
+    pass
 
 class UpdateSchema(CreateSchema):
     pass
@@ -63,6 +69,8 @@ class BaseViews(object):
         self.UpdateSchema = UpdateSchema  # Default schema, must be overridden
         self.ReadSchema = ReadSchema  # Default read schema, must be overridden
         self.ListSchema = UpdateSchema  # Default list schema, must be overridden
+        self.UserCreateSchema = UserCreateSchema
+        self.UserUpdateSchema = UserUpdateSchema
         self.list_route_name = ''  # Default list route name, must be overridden
         self.allow_view=True
         self.allow_edit=True
@@ -362,6 +370,10 @@ class BaseViews(object):
 
         self.db_session.add(row)
         self.db_session.flush()
+        row = self.after_save(row, values)
+        return row
+    
+    def after_save(self, row, values):
         return row
 
     def view_create(self):
@@ -382,9 +394,19 @@ class BaseViews(object):
 
         rendered_form = form.render()
         return {'form': rendered_form, "scripts": ""}
+    
 
     def form_validator(self, form, value):
-        pass
+        id_ = self.request.matchdict.get('id', 0)
+        excs = self.table.validator(id_, value, form)
+        if excs:
+            exc = colander.Invalid(
+                form,
+                'Kesalahan pada pengisian data.'
+            )
+            for k, v in excs.items():
+                exc[k] = v
+            raise exc
 
     def query_id(self):
         id_ = self.request.matchdict.get('id')

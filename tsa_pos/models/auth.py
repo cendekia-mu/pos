@@ -17,9 +17,11 @@ from ziggurat_foundations.models.services.user import UserService
 from ziggurat_foundations import ziggurat_model_init
 from .base import DefaultModel
 from .meta import Base
+from sqlalchemy import ForeignKey
 from .import DBSession
 from datetime import timezone
 from datetime import datetime
+import bcrypt
 from sqlalchemy.orm import relationship
 from sqlalchemy import (
     DateTime,
@@ -53,6 +55,33 @@ class User(UserMixin, DefaultModel, Base):
     
     external = sa.orm.relationship("ExternalIdentity",
                             backref="user",)
+    
+    def set_password(self, password):
+        if not isinstance(password, str):
+            raise TypeError(f"Password harus string, bukan {type(password)}")
+
+        password = password.strip()
+
+        # hash langsung pakai bcrypt
+        hashed = bcrypt.hashpw(password.encode('utf8'), bcrypt.gensalt())
+        self.user_password = hashed.decode('utf8')
+        
+    def validator(self, id_, value, form):
+        user_name = value.get('username')
+        email = value.get('email')
+        excs = {}
+        row = User.query().filter(
+            (User.user_name == user_name)
+        ).first()
+        if row and (not id_ or row.id != int(id_)):
+            excs["username"] = _('User Name {} already exists.'.format(user_name))
+        
+        row = User.query().filter(User.email == email).first()
+        if row and (not id_ or row.id != int(id_)):
+            excs["email"] = _('Email {} already exists.'.format(email))
+
+        return excs
+
     
     # order_created = relationship('Order', foreign_keys="[Order.created_uid]", back_populates='user_created')
     # order_updated = relationship('Order', foreign_keys="[Order.updated_uid]", back_populates='user_updated')
@@ -122,6 +151,7 @@ class Permissions(DefaultModel, Base):
     id = Column(Integer, primary_key=True)
     name = Column(sa.String(128), unique=True, nullable=False)
     description = Column(sa.String(256), nullable=False) 
+   
 
     def save(self, values, row=None, **kwargs):
         if not row:
@@ -147,6 +177,8 @@ class Permissions(DefaultModel, Base):
             exc["name"] = _(
                 'Name {} already exists.'.format(name))
             raise exc
+        
+   
 
     
 def init_model():

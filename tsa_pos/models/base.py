@@ -12,11 +12,13 @@ ziggurat_foundations.models.DBSession = DBSession
 TABLE_ARGS = dict(extend_existing=True, schema="public")
 
 
-
-class DefaultModel(object):
+class CommonModel(object):
     db_session = DBSession
-    id = Column(Integer, primary_key=True)
- 
+
+    @classmethod
+    def validator(cls, id_, values, form):
+        return {}
+
     @classmethod
     def save(cls, values, row=None, **kwargs):
         if not row:
@@ -25,10 +27,6 @@ class DefaultModel(object):
             if hasattr(row, key):
                 setattr(row, key, value)
         return row
-
-    @classmethod
-    def count(cls):
-         return cls.db_session.query(func.count(cls.id)).scalar()
 
     @classmethod
     def query(cls, filters=None):
@@ -51,6 +49,14 @@ class DefaultModel(object):
             query = query.add_columns(c)
         return query
 
+class DefaultModel(CommonModel):
+    id = Column(Integer, primary_key=True)
+
+    @classmethod
+    def count(cls):
+         return cls.db_session.query(func.count(cls.id)).scalar()
+
+
     @classmethod
     def query_id(cls, row_id):
         return cls.query().filter_by(id=row_id)
@@ -59,6 +65,7 @@ class DefaultModel(object):
     def delete(cls, row_id):
         cls.query_id(row_id).delete()
 
+    
 class StandardModel(DefaultModel):
     status = Column(SmallInteger)
     

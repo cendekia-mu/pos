@@ -49,6 +49,7 @@
   <!--?    <link href="${home}/static/css/select2.min.css" rel="stylesheet" type="text/css">-->
   <metal:css define-slot="css_files"></metal:css>
 
+
 </head>
 
 <body class="fixed-header">
@@ -139,7 +140,7 @@
 
   <!-- Left panel : Navigation area -->
   <!-- Note: This width of the aside area can be adjusted through LESS variables -->
-  <aside id="left-panel" style="padding-bottom:67px">
+  <aside id="left-panel" tal:condition="request.user" style="padding-bottom:67px">
     Menu
     <!-- NAVIGATION : This navigation is also responsive-->
     <nav class="smart-menu" id="menu">
@@ -305,11 +306,14 @@
 
     </div>
     <!-- END MAIN CONTENT -->
+
   </div>
   <!-- END MAIN PANEL -->
+
 
   <!-- Define Script-->
   <script metal:define-slot="scripts"></script>
 </body>
+
 
 </html>
