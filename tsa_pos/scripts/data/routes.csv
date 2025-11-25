@@ -7,7 +7,7 @@ password,/password,,Ubah Password,1,password,,,form.pt,,
 admin-menu,#,,Adminisrator,1,,,,,,1
 user-list,/user,admin-menu,User,1,user,Views,view_list,list.pt,,1
 user-act,/user/{act}/act,user-list,User Action,1,user,Views,view_act,json,,
-user-add,/user/add,user-list,Create User,1,user,Views,user_view_create,form.pt,,
+user-add,/user/add,user-list,Create User,1,user,Views,view_create,form.pt,,
 user-edit,/user/{id}/edit,user-list,Edit User,1,user,Views,view_update,form.pt,,
 user-delete,/user/{id}/delete,user-list,Delete User,1,user,Views,view_delete,form.pt,,
 user-view,/user/{id}/view,user-list,Read User,1,user,Views,view_read,form.pt,,
