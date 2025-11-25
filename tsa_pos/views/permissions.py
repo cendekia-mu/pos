@@ -1,7 +1,5 @@
 from deform import widget
 import colander
-import deform
-import re
 from ..models import Permissions
 from . import BaseViews
 from ..i18n import _
