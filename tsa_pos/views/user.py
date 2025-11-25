@@ -31,7 +31,7 @@ class CreateSchema(colander.Schema):
         ),
     )
 
-    def after_bind(self, schema, appstruct):
+    def after_bind(self, schema, kw):
         # Populate group_id choices
         groups = Group.query().all()
         schema['group_ids'].widget.values = [
