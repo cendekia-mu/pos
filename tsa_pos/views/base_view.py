@@ -10,6 +10,7 @@ from ..tools import *
 import logging
 from ..models import DBSession
 import datetime
+from ..models import User,UserGroup,UserPermission
 
 _logging = logging.getLogger(__name__)
 
@@ -44,6 +45,11 @@ class CSRFSchema(colander.Schema):
 class CreateSchema(colander.MappingSchema):
     pass
 
+class UserCreateSchema(colander.MappingSchema):
+    pass
+
+class UserUpdateSchema(UserCreateSchema):
+    pass
 
 class UpdateSchema(CreateSchema):
     pass
@@ -63,6 +69,8 @@ class BaseViews(object):
         self.UpdateSchema = UpdateSchema  # Default schema, must be overridden
         self.ReadSchema = ReadSchema  # Default read schema, must be overridden
         self.ListSchema = UpdateSchema  # Default list schema, must be overridden
+        self.UserCreateSchema = UserCreateSchema
+        self.UserUpdateSchema = UserUpdateSchema
         self.list_route_name = ''  # Default list route name, must be overridden
         self.allow_view=True
         self.allow_edit=True
@@ -378,6 +386,49 @@ class BaseViews(object):
                 except deform.ValidationFailure as e:
                     return {'form': e.render(), "scripts": ""}
 
+            return HTTPFound(location=self.request.route_url(self.list_route))
+
+        rendered_form = form.render()
+        return {'form': rendered_form, "scripts": ""}
+    
+    def user_view_create(self):
+        form = self.get_form(self.UserCreateSchema, buttons=('save', 'cancel'))
+
+        if self.request.POST:
+            if 'save' in self.request.POST:
+                controls = self.request.POST.items()
+                try:
+                    appstruct = form.validate(controls)
+                    # Logic to add user to the database goes here
+
+                except deform.ValidationFailure as e:
+                    return {'form': e.render(), "scripts": ""}
+                
+                new_user = User(
+                    user_name = appstruct['user_name'],
+                    email = appstruct['email'],
+                )
+
+                new_user.set_password(appstruct['user_password'])
+                self.db_session.add(new_user)
+                self.db_session.flush()
+                
+                for group_id in appstruct['group_id']:
+                    new_usergroup = UserGroup(
+                        user_id=new_user.id,
+                        group_id=int(group_id)
+                    )
+                    self.db_session.add(new_usergroup)
+                    self.db_session.flush()
+
+                for perm in appstruct["perm_names"]:
+                    new_perm = UserPermission(
+                        user_id=new_user.id,
+                        perm_name=perm["perm_name"]
+                    )
+                    self.db_session.add(new_perm)
+                    self.db_session.flush()
+                
             return HTTPFound(location=self.request.route_url(self.list_route))
 
         rendered_form = form.render()
