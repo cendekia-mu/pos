@@ -1,13 +1,12 @@
 <!DOCTYPE html>
 <html lang="en-us" tal:define="
         home request.route_url('home');
-        route_name route_name|request.matched_route.name;
+        route_name route_name|request.matched_route and request.matched_route.name;
         css css|[];
         js js|[];
         ">
 
 <head>
-
   <!--<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">-->
 
   <title>TSA POS | CMUF</title>
@@ -53,6 +52,7 @@
 </head>
 
 <body class="fixed-header">
+
   <!-- <link rel="stylesheet" type="text/css" media="screen" href="${home}/static/css/osipkd.css"> -->
   <div id="loading" style="display:none;">
     <img id="loading-image" src="${home}/static/img/ajax-loader.gif" alt="Loading..." />

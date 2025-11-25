@@ -13,10 +13,13 @@ from pyramid.config import Configurator
 from pyramid_beaker import session_factory_from_settings
 from pyramid_mailer import mailer_factory_from_settings
 from pyramid.events import subscriber, BeforeRender
+from pyramid.view import notfound_view_config, forbidden_view_config
+
 from sqlalchemy.engine import engine_from_config
 from .tools import format_datetime, dmy, dmyhms, get_ext
 from .models import (DBSession, Base, init_model)
 from .security import MySecurityPolicy, get_user
+from .i18n import _
 
 _logging = getLogger(__name__)
 
@@ -48,8 +51,10 @@ def json_rpc():
 
 
 def get_title(request):
-    route_name = request.matched_route.name
-    return titles[route_name]
+    route_name = request.matched_route and request.matched_route.name or ''
+    if route_name not in titles:
+        return _('Not Found')
+    return _(titles[route_name])
 
 def set_config(settings={}):
     session_factory = session_factory_from_settings(settings)
@@ -363,7 +368,7 @@ def main(global_config, **settings):
     BASE_APP.route_from_csv(config=config, filename=routes_file)
     BASE_APP.static_view(config=config, settings=settings)
     BASE_APP.read_config(settings=settings)
-    config.scan()
+    config.scan(".")
     return config.make_wsgi_app()
 
 
@@ -380,3 +385,14 @@ def has_permission_(request, perm_names, context=None):
 def add_global(event):
     event['has_permission'] = has_permission_
     event['get_base_menus'] = BASE_APP.get_menus
+
+
+@notfound_view_config(renderer='tsa_pos:templates/404.pt')
+def notfound_view(request):
+    request.response.status = 404
+    return {"message": _("The page you are looking for does not exist.")}
+
+@forbidden_view_config(renderer='tsa_pos:templates/403.pt')
+def forbidden_view(request):
+    request.response.status = 403
+    return {"message": _("Forbidden")}
