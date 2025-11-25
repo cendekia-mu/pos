@@ -65,6 +65,23 @@ class User(UserMixin, DefaultModel, Base):
         # hash langsung pakai bcrypt
         hashed = bcrypt.hashpw(password.encode('utf8'), bcrypt.gensalt())
         self.user_password = hashed.decode('utf8')
+        
+    def validator(self, id_, value, form):
+        user_name = value.get('username')
+        email = value.get('email')
+        excs = {}
+        row = User.query().filter(
+            (User.user_name == user_name)
+        ).first()
+        if row and (not id_ or row.id != int(id_)):
+            excs["username"] = _('User Name {} already exists.'.format(user_name))
+        
+        row = User.query().filter(User.email == email).first()
+        if row and (not id_ or row.id != int(id_)):
+            excs["email"] = _('Email {} already exists.'.format(email))
+
+        return excs
+
     
     # order_created = relationship('Order', foreign_keys="[Order.created_uid]", back_populates='user_created')
     # order_updated = relationship('Order', foreign_keys="[Order.updated_uid]", back_populates='user_updated')

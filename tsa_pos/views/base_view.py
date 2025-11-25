@@ -370,6 +370,10 @@ class BaseViews(object):
 
         self.db_session.add(row)
         self.db_session.flush()
+        row = self.after_save(row, values)
+        return row
+    
+    def after_save(self, row, values):
         return row
 
     def view_create(self):
@@ -391,51 +395,18 @@ class BaseViews(object):
         rendered_form = form.render()
         return {'form': rendered_form, "scripts": ""}
     
-    def user_view_create(self):
-        form = self.get_form(self.UserCreateSchema, buttons=('save', 'cancel'))
-
-        if self.request.POST:
-            if 'save' in self.request.POST:
-                controls = self.request.POST.items()
-                try:
-                    appstruct = form.validate(controls)
-                    # Logic to add user to the database goes here
-
-                except deform.ValidationFailure as e:
-                    return {'form': e.render(), "scripts": ""}
-                
-                new_user = User(
-                    user_name = appstruct['user_name'],
-                    email = appstruct['email'],
-                )
-
-                new_user.set_password(appstruct['user_password'])
-                self.db_session.add(new_user)
-                self.db_session.flush()
-                
-                for group_id in appstruct['group_id']:
-                    new_usergroup = UserGroup(
-                        user_id=new_user.id,
-                        group_id=int(group_id)
-                    )
-                    self.db_session.add(new_usergroup)
-                    self.db_session.flush()
-
-                for perm in appstruct["perm_names"]:
-                    new_perm = UserPermission(
-                        user_id=new_user.id,
-                        perm_name=perm["perm_name"]
-                    )
-                    self.db_session.add(new_perm)
-                    self.db_session.flush()
-                
-            return HTTPFound(location=self.request.route_url(self.list_route))
-
-        rendered_form = form.render()
-        return {'form': rendered_form, "scripts": ""}
 
     def form_validator(self, form, value):
-        pass
+        id_ = self.request.matchdict.get('id', 0)
+        excs = self.table.validator(id_, value, form)
+        if excs:
+            exc = colander.Invalid(
+                form,
+                'Kesalahan pada pengisian data.'
+            )
+            for k, v in excs.items():
+                exc[k] = v
+            raise exc
 
     def query_id(self):
         id_ = self.request.matchdict.get('id')

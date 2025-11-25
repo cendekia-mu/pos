@@ -18,17 +18,17 @@ class CreateSchema(colander.Schema):
     # Define your schema fields here
     group_name = colander.SchemaNode(colander.String())
     description = colander.SchemaNode(colander.String())
-    permission_id = colander.SchemaNode(
+    perm_names = colander.SchemaNode(
         colander.Set(),
-        title ="Permission",
+        title =_("Permissions"),
         widget = widget.CheckboxChoiceWidget(values=[]), 
     )
 
     def after_bind_perm(self, schema_class):
     #     # Populate perm_names choices
         permissions = Permissions.query().all()
-        schema_class['permission_id'].widget.values = [
-            (str(p.id), p.name) for p in permissions
+        schema_class['perm_names'].widget.values = [
+            (str(p.name), p.description) for p in permissions
         ]
    
 
