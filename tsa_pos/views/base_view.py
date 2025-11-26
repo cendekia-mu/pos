@@ -45,11 +45,6 @@ class CSRFSchema(colander.Schema):
 class CreateSchema(colander.MappingSchema):
     pass
 
-class UserCreateSchema(colander.MappingSchema):
-    pass
-
-class UserUpdateSchema(UserCreateSchema):
-    pass
 
 class UpdateSchema(CreateSchema):
     pass
@@ -69,8 +64,6 @@ class BaseViews(object):
         self.UpdateSchema = UpdateSchema  # Default schema, must be overridden
         self.ReadSchema = ReadSchema  # Default read schema, must be overridden
         self.ListSchema = UpdateSchema  # Default list schema, must be overridden
-        self.UserCreateSchema = UserCreateSchema
-        self.UserUpdateSchema = UserUpdateSchema
         self.list_route_name = ''  # Default list route name, must be overridden
         self.allow_view=True
         self.allow_edit=True

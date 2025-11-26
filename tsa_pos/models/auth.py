@@ -107,7 +107,7 @@ class User(UserMixin, DefaultModel, Base):
 class Group(GroupMixin, DefaultModel, Base):
     pass
 
-class GroupPermission(GroupPermissionMixin, DefaultModel, Base):
+class GroupPermission(GroupPermissionMixin, Base):
     pass
 
 class UserGroup(UserGroupMixin, Base, CommonModel):

@@ -2,9 +2,10 @@ from deform import widget
 import colander
 import deform
 
-from ..models import User, UserGroup, Group
+from ..models import User, UserGroup, Group, Permissions,UserPermission
 from . import BaseViews
 from ..i18n import _
+from sqlalchemy.orm import Session
 
 
 class ListSchema(colander.Schema):
@@ -31,13 +32,37 @@ class CreateSchema(colander.Schema):
         ),
     )
 
-    def after_bind(self, schema, kw):
+    perm_names = colander.SchemaNode(
+        colander.Set(), 
+        title=_("Permissions"),
+        widget=widget.CheckboxChoiceWidget(values=[]),
+    )
+
+    def after_bind(self,  node, kw):
         # Populate group_id choices
         groups = Group.query().all()
-        schema['group_ids'].widget.values = [
+        node['group_ids'].widget.values = [
             (str(group.id), group.description) for group in groups
         ]
 
+        permission = Permissions.query().all()
+        node['perm_names'].widget.values = [
+            (p.name, p.description) for p in permission
+        ]
+    
+def save_user_permissions(user, perm_names, dbsession: Session):
+    user.user_permissions.clear()
+
+        # Tambahkan permission baru
+    for perm in perm_names:
+        up = UserPermission(
+            user_id=user.id,
+            perm_name=perm.lower()   # penting: lowercase
+        )
+        user.user_permissions.append(up)
+
+        dbsession.flush()
+        
 
 class UpdateSchema(CreateSchema):
     id = colander.SchemaNode(colander.Integer(),
@@ -56,6 +81,7 @@ class Views(BaseViews):
         self.list_route = 'user-list'
 
     def after_save(self, row, values):
+    # BAGIAN GROUP (sudah benar)
         group_ids = set(values.get('group_ids', []))
         existing = set()
         q = UserGroup.query().filter(UserGroup.user_id == row.id)
@@ -82,11 +108,19 @@ class Views(BaseViews):
             self.db_session.add(new_ug)
             self.db_session.flush()
 
+        # BAGIAN PERMISSIONS (tambahkan ini!!)
+        perm_names = values.get("perm_names", [])
+        save_user_permissions(row, perm_names, self.db_session)
+
         return row
+
 
     def get_values(self, row):
         values = super().get_values(row)
         q = UserGroup.query().filter(UserGroup.user_id == row.id)
         group_ids = [str(ug.group_id) for ug in q]
         values['group_ids'] = set(group_ids)
+        values['perm_names'] = {up.perm_name for up in row.user_permissions}
         return values
+    
+   
