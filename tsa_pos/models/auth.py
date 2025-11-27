@@ -22,6 +22,7 @@ from .import DBSession
 from datetime import timezone
 from datetime import datetime
 import bcrypt
+from ..i18n import _
 from sqlalchemy.orm import relationship
 from sqlalchemy import (
     DateTime,

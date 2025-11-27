@@ -39,18 +39,18 @@ class UpdateSchema(CreateSchema):
                              widget = widget.HiddenWidget())
    
 
-def save_group_permissions(group, perm_names, dbsession: Session):
-    group.group_permissions.clear()
+# def save_group_permissions(group, perm_names, dbsession: Session):
+#     group.group_permissions.clear()
 
-        # Tambahkan permission baru
-    for perm in perm_names:
-        gp = GroupPermission(
-            group_id=group.id,
-            perm_name=perm.lower()   # penting: lowercase
-        )
-        group.group_permissions.append(gp)
+#         # Tambahkan permission baru
+#     for perm in perm_names:
+#         gp = GroupPermission(
+#             group_id=group.id,
+#             perm_name=perm.lower()   # penting: lowercase
+#         )
+#         group.group_permissions.append(gp)
 
-        dbsession.flush()
+#         dbsession.flush()
 class Views(BaseViews):
     def __init__(self, request):
         super().__init__(request)
@@ -75,22 +75,27 @@ class Views(BaseViews):
             exc["group_name"] = _('Group Name {} already exists.'.format(group_name))
             raise exc
         
+    def get_values(self, row):
+        values = super().get_values(row)
+        q = GroupPermission.query().filter(GroupPermission.group_id == row.id)
+        permissions = [str(perm.perm_name) for perm in q]
+        values['perm_names'] = set(permissions)
+        return values
     
+    # def save(self, values, row=None):
+    #     row = super().save(values, row)
+
+    #     perm_names = values.get("perm_names", [])
+    #     save_group_permissions(row, perm_names, self.db_session)
+
+    #     return row
     
-    def save(self, values, row=None):
-        row = super().save(values, row)
+    # def before_update(self, form, row):
+    # # Ambil perm lama
+    #     selected = {gp.perm_name for gp in row.group_permissions}
 
-        perm_names = values.get("perm_names", [])
-        save_group_permissions(row, perm_names, self.db_session)
-
-        return row
-    
-    def before_update(self, form, row):
-    # Ambil perm lama
-        selected = {gp.perm_name for gp in row.group_permissions}
-
-        # Set default value ke form
-        form.appstruct['perm_names'] = selected
+    #     # Set default value ke form
+    #     form.appstruct['perm_names'] = selected
 
 
 
