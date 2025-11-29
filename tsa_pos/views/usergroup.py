@@ -1,17 +1,34 @@
 from deform import widget
 import colander
-from ..models import GroupPermission, UserGroup
+from ..models import  UserGroup,User,Group
 from . import BaseViews
 from ..i18n import _
 
 
+
 class ListSchema(colander.Schema):
-    user_id = colander.SchemaNode(colander.String(),
-                                  title=_("User"))
-    group_id = colander.SchemaNode(colander.String(),
-                                   title=_("Group"))
+    user_id = colander.SchemaNode(colander.Int(),
+                                  title="User ID",
+                                  field=UserGroup.user_id)
+
+    group_id = colander.SchemaNode(colander.Int(),
+                                   title="Group ID",
+                                   field=UserGroup.group_id)
+
+    user_name = colander.SchemaNode(colander.String(),
+                                    title="Username",
+                                    field=User.user_name)
+
+    group_name = colander.SchemaNode(colander.String(),
+                                     title="Group Name",
+                                     field=Group.group_name)
 
 
+
+class CreateSchema(ListSchema):
+    pass
+class UpdateSchema(ListSchema):
+    pass    
   
 
 
@@ -19,7 +36,14 @@ class Views(BaseViews):
     def __init__(self, request):
         super().__init__(request)
         self.table = UserGroup
+        self.CreateSchema = CreateSchema
+        self.UpdateSchema = UpdateSchema  
+        self.ReadSchema = UpdateSchema
         self.ListSchema = ListSchema
         self.list_route = 'user-group-list'
+
+    def list_join(self, query):
+        return query.join(User, User.id == UserGroup.user_id)\
+                .join(Group, Group.id == UserGroup.group_id)
 
     

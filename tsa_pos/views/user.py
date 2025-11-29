@@ -50,18 +50,7 @@ class CreateSchema(colander.Schema):
             (p.name, p.description) for p in permission
         ]
     
-def save_user_permissions(user, perm_names, dbsession: Session):
-    user.user_permissions.clear()
 
-        # Tambahkan permission baru
-    for perm in perm_names:
-        up = UserPermission(
-            user_id=user.id,
-            perm_name=perm.lower()   # penting: lowercase
-        )
-        user.user_permissions.append(up)
-
-        dbsession.flush()
         
 
 class UpdateSchema(CreateSchema):
@@ -83,36 +72,90 @@ class Views(BaseViews):
     def after_save(self, row, values):
     # BAGIAN GROUP (sudah benar)
         group_ids = set(values.get('group_ids', []))
+        permissions = set(values.get('perm_names', []))
         existing = set()
+
         q = UserGroup.query().filter(UserGroup.user_id == row.id)
+        y = UserPermission.query().filter(UserPermission.user_id == row.id)
+
+        for up in y:
+            existing.add(str(up.perm_name))
+
         for ug in q:
             existing.add(str(ug.group_id))
 
+        # -------------------------
+        # DELETE GROUP
+        # -------------------------
         delete_ids = existing - group_ids
         for gid in delete_ids:
+
+            # Aman konversi integer
+            gid_str = str(gid).strip()
+            try:
+                gid_int = int(gid_str)
+            except ValueError:
+                # Jika bukan angka, skip saja
+                continue
+
             q = UserGroup.query().filter(
                 UserGroup.user_id == row.id,
-                UserGroup.group_id == int(gid)
+                UserGroup.group_id == gid_int
             )
             ug = q.first()
+
             if ug:
                 self.db_session.delete(ug)
                 self.db_session.flush()
 
+        # -------------------------
+        # NEW GROUP
+        # -------------------------
         new_ids = group_ids - existing
         for gid in new_ids:
+
+            gid_str = str(gid).strip()
+            try:
+                gid_int = int(gid_str)
+            except ValueError:
+                # Jika input group_ids berisi teks tidak valid → skip
+                continue
+
             new_ug = UserGroup(
                 user_id=row.id,
-                group_id=int(gid)
+                group_id=gid_int
             )
             self.db_session.add(new_ug)
             self.db_session.flush()
 
-        # BAGIAN PERMISSIONS (tambahkan ini!!)
-        perm_names = values.get("perm_names", [])
-        save_user_permissions(row, perm_names, self.db_session)
+        # -------------------------
+        # DELETE PERMISSIONS
+        # -------------------------
+        delete_ids = existing - permissions
+        for perm_name in delete_ids:
+            q = UserPermission.query().filter(
+                UserPermission.user_id == row.id,
+                UserPermission.perm_name == str(perm_name)
+            )
+            up = q.first()
+            if up:
+                self.db_session.delete(up)
+                self.db_session.flush()
+
+        # -------------------------
+        # NEW PERMISSIONS
+        # -------------------------
+        new_ids = permissions - existing
+        for perm_name in new_ids:
+            new_up = UserPermission(
+                user_id=row.id,
+                perm_name=str(perm_name)
+            )
+            self.db_session.add(new_up)
+            self.db_session.flush()
 
         return row
+
 
 
     def get_values(self, row):

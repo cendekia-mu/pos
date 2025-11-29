@@ -39,18 +39,7 @@ class UpdateSchema(CreateSchema):
                              widget = widget.HiddenWidget())
    
 
-# def save_group_permissions(group, perm_names, dbsession: Session):
-#     group.group_permissions.clear()
 
-#         # Tambahkan permission baru
-#     for perm in perm_names:
-#         gp = GroupPermission(
-#             group_id=group.id,
-#             perm_name=perm.lower()   # penting: lowercase
-#         )
-#         group.group_permissions.append(gp)
-
-#         dbsession.flush()
 class Views(BaseViews):
     def __init__(self, request):
         super().__init__(request)
@@ -82,20 +71,39 @@ class Views(BaseViews):
         values['perm_names'] = set(permissions)
         return values
     
-    # def save(self, values, row=None):
-    #     row = super().save(values, row)
 
-    #     perm_names = values.get("perm_names", [])
-    #     save_group_permissions(row, perm_names, self.db_session)
+    def after_save(self, row, values):
+    # BAGIAN GROUP (sudah benar)
+        permissions = set(values.get('perm_names', []))
+        existing = set()
+        q = GroupPermission.query().filter(GroupPermission.group_id == row.id)
+        for gp in q:
+            existing.add(str(gp.perm_name))
 
-    #     return row
-    
-    # def before_update(self, form, row):
-    # # Ambil perm lama
-    #     selected = {gp.perm_name for gp in row.group_permissions}
+        delete_ids = existing - permissions
+        for perm_name in delete_ids:
+            q = GroupPermission.query().filter(
+                GroupPermission.group_id == row.id,
+                GroupPermission.perm_name == str(perm_name)
+            )
+            gp = q.first()
+            if gp:
+                self.db_session.delete(gp)
+                self.db_session.flush()
+        
+        new_ids = permissions - existing
+        for perm_name in new_ids:
+            new_gp = GroupPermission(
+                group_id=row.id,
+                perm_name=str(perm_name)
+            )
+            self.db_session.add(new_gp)
+            self.db_session.flush()
 
-    #     # Set default value ke form
-    #     form.appstruct['perm_names'] = selected
+        # BAGIAN PERMISSIONS (tambahkan ini!!)
+
+        return row
+
 
 
 

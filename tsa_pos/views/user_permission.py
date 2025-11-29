@@ -4,19 +4,19 @@ from ..models import UserPermission
 from . import BaseViews
 from ..i18n import _
 from ..models import User
+from pyramid.httpexceptions import HTTPFound
 class ListSchema(colander.Schema):
-    user_id = colander.SchemaNode(colander.Set(),
+    id = colander.SchemaNode(colander.Set(),
                                    title=_("User"),
-                                   widget=widget.CheckboxChoiceWidget(values=[]),)
+                                   field=User.id)
+    user_name = colander.SchemaNode(colander.String(),
+                                    title=_("Username"),
+                                    field=User.user_name)
     perm_name = colander.SchemaNode(colander.String(),
                                     title=_("Permission"))
+    
 
-    def after_bind(self, schema, appstruct):
 
-        users = User.query().all()
-        schema['user_id'].widget.values = [
-            (str(g.id), g.user_name) for g in users
-        ]
 class CreateSchema(ListSchema):
     pass
 class UpdateSchema(ListSchema):
@@ -33,7 +33,15 @@ class Views(BaseViews):
         self.ReadSchema = UpdateSchema
         self.ListSchema = ListSchema
         self.list_route = 'user-permission-list'
+        self.allow_add = False
+        self.allow_view = False
+        self.allow_delete = False
 
+    def list_join(self, query):
+        return query.join(User, User.id == UserPermission.user_id)
+    
+    def view_edit(self):
+        return HTTPFound(location=self.request.route_url('user-edit', id=self.request.matchdict['id']))
  
         
 
