@@ -1,0 +1,177 @@
+<html metal:use-macro="load: ./layout.pt">
+
+<div metal:fill-slot="content">
+
+  <style>
+    /* 1. Background Animasi Bergerak */
+    .login-wrapper {
+      min-height: 100vh;
+      width: 100%;
+      background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+      background-size: 400% 400%;
+      animation: gradientBG 15s ease infinite;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* 2. Dekorasi Gelembung di Belakang Kaca */
+    .shape {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(50px);
+      z-index: 1;
+      animation: floatShape 6s infinite alternate;
+    }
+    .shape-1 {
+      height: 200px; width: 200px;
+      background: #ff6b6b;
+      top: 10%; left: 20%;
+    }
+    .shape-2 {
+      height: 300px; width: 300px;
+      background: #4ecdc4;
+      bottom: 10%; right: 20%;
+      animation-delay: -2s;
+    }
+
+    @keyframes floatShape {
+      from { transform: translate(0, 0); }
+      to { transform: translate(20px, -40px); }
+    }
+
+    /* 3. Kartu Kaca (Glassmorphism) */
+    .glass-card {
+      position: relative;
+      z-index: 10;
+      background: rgba(255, 255, 255, 0.15); /* Transparan */
+      backdrop-filter: blur(20px);            /* Efek Buram */
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      padding: 50px 40px;
+      border-radius: 20px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2);
+      text-align: center;
+      color: white;
+    }
+
+    .glass-title {
+      font-weight: 700;
+      font-size: 2rem;
+      margin-bottom: 5px;
+      letter-spacing: 1px;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .glass-subtitle {
+      font-size: 0.9rem;
+      color: rgba(255, 255, 255, 0.8);
+      margin-bottom: 30px;
+    }
+
+    /* Input Fields Transparan */
+    .glass-input-group {
+      margin-bottom: 20px;
+      position: relative;
+    }
+    
+    .glass-input {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.2);
+      border: none;
+      padding: 15px 20px;
+      border-radius: 50px;
+      color: white;
+      font-size: 1rem;
+      outline: none;
+      transition: 0.3s;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .glass-input::placeholder {
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    .glass-input:focus {
+      background: rgba(255, 255, 255, 0.3);
+      box-shadow: 0 0 10px rgba(255,255,255,0.2);
+    }
+
+    /* Tombol Putih Kontras */
+    .btn-glass {
+      width: 100%;
+      padding: 15px;
+      border-radius: 50px;
+      border: none;
+      background: white;
+      color: #e73c7e; /* Warna teks senada background */
+      font-weight: bold;
+      font-size: 1.1rem;
+      cursor: pointer;
+      margin-top: 10px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      transition: transform 0.2s;
+    }
+    
+    .btn-glass:hover {
+      transform: scale(1.05);
+    }
+
+    .alert-glass {
+      background: rgba(255, 0, 0, 0.3);
+      border: 1px solid rgba(255, 0, 0, 0.2);
+      padding: 10px;
+      border-radius: 10px;
+      margin-bottom: 15px;
+      font-size: 0.9rem;
+    }
+  </style>
+
+  <div class="login-wrapper">
+    <div class="shape shape-1"></div>
+    <div class="shape shape-2"></div>
+
+    <div class="glass-card">
+      <div style="font-size: 3rem; margin-bottom: 10px;">
+        <i class="fas fa-rocket"></i>
+      </div>
+      
+      <h2 class="glass-title">TSA KASIR</h2>
+      <p class="glass-subtitle">Enter your credentials to access</p>
+
+      <div tal:repeat="message request.session.pop_flash()" class="alert-glass">
+         <span tal:content="message"></span>
+      </div>
+
+      <form action="${request.route_url('login')}" method="post">
+        <input type="hidden" name="csrf_token" value="${request.session.get_csrf_token()}" />
+
+        <div class="glass-input-group">
+          <input type="text" name="login" class="glass-input" placeholder="Username" required autocomplete="off"/>
+        </div>
+
+        <div class="glass-input-group">
+          <input type="password" name="password" class="glass-input" placeholder="Password" required/>
+        </div>
+
+        <button type="submit" class="btn-glass">Sign In</button>
+      </form>
+      
+      <div style="margin-top: 20px;">
+        <a href="#" style="color: rgba(255,255,255,0.7); text-decoration: none; font-size: 0.85rem;">Forgot Password?</a>
+      </div>
+    </div>
+  </div>
+
+</div>
+</html>
