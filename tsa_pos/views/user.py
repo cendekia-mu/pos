@@ -71,23 +71,23 @@ class Views(BaseViews):
 
     def after_save(self, row, values):
     # BAGIAN GROUP (sudah benar)
-        group_ids = set(values.get('group_ids', []))
-        permissions = set(values.get('perm_names', []))
-        existing = set()
+        group_ids = set(values.get('group_ids', [])) #mengambil data group_id yang ada di form
+        permissions = set(values.get('perm_names', [])) #mengambil data perm_name yang ada di form
+        existing = set() #variabel yang berfungsi untuk menyiimpan data semnatara
 
-        q = UserGroup.query().filter(UserGroup.user_id == row.id)
-        y = UserPermission.query().filter(UserPermission.user_id == row.id)
+        q = UserGroup.query().filter(UserGroup.user_id == row.id) #mengambil semua data yang dimiliki user di table usergroup
+        y = UserPermission.query().filter(UserPermission.user_id == row.id) #mengambil semua data yang dimiliki dari user di table userpermission
 
-        for up in y:
-            existing.add(str(up.perm_name))
+        for up in y: #perulangan dulu karena akan dimasukan ke dalam variabel yang berupa array array 
+            existing.add(str(up.perm_name)) #spesifik yang dimasukan itu hanya data perm_name saja
 
-        for ug in q:
-            existing.add(str(ug.group_id))
+        for ug in q: #perulangan dulu karena akan dimasukan kedalam variabel yang berupa array
+            existing.add(str(ug.group_id)) #spesifik yang dimasuukann itu hanya group_id saja
 
         # -------------------------
-        # DELETE GROUP
+        # hapus GROUP
         # -------------------------
-        delete_ids = existing - group_ids
+        delete_ids = existing - group_ids #data di variabel akan dikurangi oleh data yang sudah tidak ada di form
         for gid in delete_ids:
 
             # Aman konversi integer
