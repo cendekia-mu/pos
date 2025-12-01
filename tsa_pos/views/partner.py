@@ -1,8 +1,9 @@
 from deform import widget
 import colander
-from ..models import Partner
+from ..models import Partner, Provinsi, Kecamatan, Kota
 from . import BaseViews
 from ..i18n import _
+from ..widgets import tsa_widget
 
 
 class ListSchema(colander.Schema):
@@ -45,14 +46,24 @@ class CreateSchema(colander.Schema):
     kelurahan = colander.SchemaNode(colander.String(),
                                      validator=colander.Length(min=1, max=50),
                                      title="Kelurahan")
-    # kota = colander.SchemaNode(colander.String(),
-    #                            title="Kota")  # Diubah menjadi String untuk input huruf
-    # provinsi = colander.SchemaNode(colander.String(),
-    #                                title="Provinsi")  # Diubah menjadi String untuk input huruf
-    # balance = colander.SchemaNode(colander.Decimal(),
-    #                               default=0.0,
-    #                               title="Balance (Rupiah)")  # Ditambahkan "(Rupiah)" untuk menunjukkan ini untuk pembayaran dalam rupiah
-
+    provinsi_id = colander.SchemaNode(colander.Integer(),
+                                title="Provinsi",
+                                oid="provinsi_id",
+                                widget=tsa_widget.Select2Widget(values=[], slave="kota_id", url=""))
+    kota_id = colander.SchemaNode(colander.Integer(),
+                                    title="Kota",
+                                    oid="kota_id",
+                                    widget=tsa_widget.Select2Widget(values=[], slave="kecamatan_id", url="" ))  
+    kecamatan_id = colander.SchemaNode(colander.Integer(),
+                                    title="Kecamatan",
+                                    widget=widget.SelectWidget(values=[]))
+    def after_bind(self, schema, appstruct):
+        # Populate category_id choices
+        provinsi = Provinsi.query().all()
+        schema['provinsi_id'].widget.values = [
+            (str(prov.id), prov.name) for prov in provinsi
+        ]
+    
 class UpdateSchema(CreateSchema):
     id = colander.SchemaNode(colander.Integer(),
                              missing=colander.drop,
