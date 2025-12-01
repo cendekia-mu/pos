@@ -23,15 +23,15 @@ class Select2Widget(widget.Select2Widget):
 
     Same as :func:`~deform.widget.Select2Widget`, with some extra options
     listed here.
-    url: url for slave select
-    slave: id of slave  select
-    widget = widget_os.Select2MsWidget(url="https://slave_item_url?item_key=selected_value,
-                                        slave="slave_id")
+    slave_url: url for slave select
+    slave_id: id of slave  select
+    widget = tsa_widget.Select2Widget(slave_url="https://slave_item_url?item_key=selected_value,
+                                      slave_id="slave_id")
     """
 
-    url = ""
-    slave = ""
-    template = "tsa_pos.widgets:select2_ms.pt"
+    slave_id = ""
+    slave_url = ""
+    template = "tsa_pos.widgets:templates/select2_ms.pt"
 
 
 class AutocompleteInputWidget(widget.AutocompleteInputWidget):
