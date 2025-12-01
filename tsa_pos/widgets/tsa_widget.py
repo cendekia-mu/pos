@@ -31,7 +31,7 @@ class Select2Widget(widget.Select2Widget):
 
     url = ""
     slave = ""
-    template = "./templates/select2_ms.pt"
+    template = "tsa_pos.widgets:select2_ms.pt"
 
 
 class AutocompleteInputWidget(widget.AutocompleteInputWidget):
@@ -54,8 +54,8 @@ class AutocompleteInputWidget(widget.AutocompleteInputWidget):
 
     url = ""
     slave = ""
-    template = "./templates/autocomplete_input_ms.pt"
-    readonly_template = "./templates/readonly/autocomplete_input_ms.pt"
+    template = "tsa_pos.widgets:autocomplete_input_ms.pt"
+    readonly_template = "tsa_pos.widgets:readonly/autocomplete_input_ms.pt"
     parent_oid = ""
 
 
@@ -216,8 +216,8 @@ class AutocompleteInputWidget(widget.AutocompleteInputWidget):
 #             return result
 
 class QtyWidget(widget.Widget):
-    template = "./templates/qty.pt"
-    readonly_template = "./templates/readonly/qty.pt"
+    template = "tsa_pos.widgets:qty.pt"
+    readonly_template = "tsa_pos.widgets:readonly/qty.pt"
 
     _pstruct_schema = SchemaNode(
         Mapping(),
@@ -334,8 +334,8 @@ class ImageWidget(widget.Widget):
 
     """
 
-    template = "./templates/image.pt"
-    readonly_template = "./templates/readonly/image.pt"
+    template = "tsa_pos.widgets:image.pt"
+    readonly_template = "tsa_pos.widgets:readonly/image.pt"
     strip = True
     requirements = ()
     height = "30px"
@@ -385,7 +385,7 @@ class BootStrapDateInputWidget(widget.Widget):
         The template name used to render the widget in read-only mode.
         Default: ``readonly/textinput``.
     """
-    template = "./templates/bootstrapdateinput"
+    template = "tsa_pos.widgets:bootstrapdateinput"
     readonly_template = "textinput"
     type_name = "text"
     req_path = "tsa_pos:static/js/plugin"
@@ -471,8 +471,8 @@ class BootStrapDateTimeInputWidget(widget.Widget):
         Default: ``readonly/textinput``.
     """
 
-    template = "./templates/datetimeinput"
-    readonly_template = "./templates/readonly/datetimeinput"
+    template = "tsa_pos.widgets:datetimeinput"
+    readonly_template = "tsa_pos.widgets:readonly/datetimeinput"
     type_name = "datetime"
     requirements = (("modernizr", None), ("pickadate", None))
     default_date_options = (
@@ -561,7 +561,7 @@ class BootStrapDateTimeInputWidget(widget.Widget):
 
 
 class TextInputBtnWidget(widget.TextInputWidget):
-    template = "./templates/textinput_btn"
+    template = "tsa_pos.widgets:textinput_btn"
     button = None
     js = None
 
@@ -656,8 +656,8 @@ class MoneyInputWidget(widget.MoneyInputWidget):
 
 
 class FilterWidget(widget.Widget):
-    template = "./templates/filters.pt"
-    readonly_template = "./templates/readonly/filters.pt"
+    template = "tsa_pos.widgets:filters.pt"
+    readonly_template = "tsa_pos.widgets:readonly/filters.pt"
     null_value = ""
     values = ()
     size = None
