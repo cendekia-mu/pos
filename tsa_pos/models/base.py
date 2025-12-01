@@ -54,8 +54,7 @@ class DefaultModel(CommonModel):
 
     @classmethod
     def count(cls):
-         return cls.db_session.query(func.count(cls.id)).scalar()
-
+        return cls.db_session.query(func.count(cls.id)).scalar()
 
     @classmethod
     def query_id(cls, row_id):
