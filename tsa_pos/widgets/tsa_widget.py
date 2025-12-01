@@ -31,7 +31,7 @@ class Select2Widget(widget.Select2Widget):
 
     url = ""
     slave = ""
-    template = "select2_ms.pt"
+    template = "./templates/select2_ms.pt"
 
 
 class AutocompleteInputWidget(widget.AutocompleteInputWidget):
@@ -54,8 +54,8 @@ class AutocompleteInputWidget(widget.AutocompleteInputWidget):
 
     url = ""
     slave = ""
-    template = "autocomplete_input_ms.pt"
-    readonly_template = "readonly/autocomplete_input_ms.pt"
+    template = "./templates/autocomplete_input_ms.pt"
+    readonly_template = "./templates/readonly/autocomplete_input_ms.pt"
     parent_oid = ""
 
 
@@ -216,8 +216,8 @@ class AutocompleteInputWidget(widget.AutocompleteInputWidget):
 #             return result
 
 class QtyWidget(widget.Widget):
-    template = "tangsel.base:/widgets/templates/qty.pt"
-    readonly_template = "tangsel.base:/viewswidgets/templates/readonly/qty.pt"
+    template = "./templates/qty.pt"
+    readonly_template = "./templates/readonly/qty.pt"
 
     _pstruct_schema = SchemaNode(
         Mapping(),
@@ -334,8 +334,8 @@ class ImageWidget(widget.Widget):
 
     """
 
-    template = "tangsel.base:views/widgets/image.pt"
-    readonly_template = "image"
+    template = "./templates/image.pt"
+    readonly_template = "./templates/readonly/image.pt"
     strip = True
     requirements = ()
     height = "30px"
@@ -385,10 +385,10 @@ class BootStrapDateInputWidget(widget.Widget):
         The template name used to render the widget in read-only mode.
         Default: ``readonly/textinput``.
     """
-    template = "bootstrapdateinput"
-    readonly_template = "readonly/textinput"
+    template = "./templates/bootstrapdateinput"
+    readonly_template = "textinput"
     type_name = "text"
-    req_path = "tangsel.base:static/js/plugin"
+    req_path = "tsa_pos:static/js/plugin"
     requirements = (
         ('deform', None),
         {
@@ -471,8 +471,8 @@ class BootStrapDateTimeInputWidget(widget.Widget):
         Default: ``readonly/textinput``.
     """
 
-    template = "datetimeinput"
-    readonly_template = "readonly/datetimeinput"
+    template = "./templates/datetimeinput"
+    readonly_template = "./templates/readonly/datetimeinput"
     type_name = "datetime"
     requirements = (("modernizr", None), ("pickadate", None))
     default_date_options = (
@@ -560,13 +560,13 @@ class BootStrapDateTimeInputWidget(widget.Widget):
             return result
 
 
-class TextInputWidget(widget.TextInputWidget):
-    template = "textinput_btn"
+class TextInputBtnWidget(widget.TextInputWidget):
+    template = "./templates/textinput_btn"
     button = None
     js = None
 
     def __init__(self, **kw):
-        super(TextInputWidget, self).__init__(**kw)
+        super().__init__(**kw)
 
         # if isinstance(self.button, compat.string_types):
         if self.button:
@@ -656,8 +656,8 @@ class MoneyInputWidget(widget.MoneyInputWidget):
 
 
 class FilterWidget(widget.Widget):
-    template = "tangsel.base:/views/widgets/filters.pt"
-    readonly_template = "tangsel.base:/views/widgets/readonly/filters.pt"
+    template = "./templates/filters.pt"
+    readonly_template = "./templates/readonly/filters.pt"
     null_value = ""
     values = ()
     size = None
