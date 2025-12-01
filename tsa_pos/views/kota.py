@@ -37,11 +37,11 @@ class UpdateSchema(CreateSchema):
 
     def after_bind(self, schema, appstruct):
         # Populate category_id choices
-        categories = Provinsi.query().all()
+        provinsi = Provinsi.query().all()
         schema['provinsi_id'].widget.values = [
-            (str(cat.id), cat.name) for cat in categories
+            (str(prov.id), prov.name) for prov in provinsi
         ]
-
+    
 
 class Views(BaseViews):
     def __init__(self, request):

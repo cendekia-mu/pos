@@ -45,11 +45,6 @@ class CSRFSchema(colander.Schema):
 class CreateSchema(colander.MappingSchema):
     pass
 
-class UserCreateSchema(colander.MappingSchema):
-    pass
-
-class UserUpdateSchema(UserCreateSchema):
-    pass
 
 class UpdateSchema(CreateSchema):
     pass
@@ -69,10 +64,9 @@ class BaseViews(object):
         self.UpdateSchema = UpdateSchema  # Default schema, must be overridden
         self.ReadSchema = ReadSchema  # Default read schema, must be overridden
         self.ListSchema = UpdateSchema  # Default list schema, must be overridden
-        self.UserCreateSchema = UserCreateSchema
-        self.UserUpdateSchema = UserUpdateSchema
         self.list_route_name = ''  # Default list route name, must be overridden
         self.allow_view=True
+        self.allow_add=True
         self.allow_edit=True
         self.allow_delete=True
         self.allow_post=False
@@ -118,7 +112,9 @@ class BaseViews(object):
             action_suffix
             html_buttons
         """
+
         allow_view = kwargs.get("allow_view", self.allow_view)
+        allow_add = kwargs.get("allow_add", self.allow_add)
         allow_edit = kwargs.get("allow_edit", self.allow_edit)
         allow_delete = kwargs.get("allow_delete", self.allow_delete)
         allow_post = kwargs.get("allow_post", self.allow_post)
