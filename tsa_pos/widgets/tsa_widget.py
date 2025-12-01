@@ -9,7 +9,7 @@ from deform import widget
 from deform.compat import sequence_types, text_type, text_
 from deform.form import Button
 from deform.i18n import _
-from tangsel.tools.captcha import img_captcha
+# from tangsel.tools.captcha import img_captcha
 from datetime import date, datetime
 _logging = logging.getLogger(__name__)
 
@@ -261,57 +261,57 @@ class QtyWidget(widget.Widget):
             return result
 
 
-class CaptchaWidget(widget.Widget):
-    """
-    Renders an ``<input type="text"/>`` widget.
+# class CaptchaWidget(widget.Widget):
+#     """
+#     Renders an ``<input type="text"/>`` widget.
 
-    **Attributes/Arguments**
+#     **Attributes/Arguments**
 
-    template
-       The template name used to render the widget.  Default:
-        ``textinput``.
+#     template
+#        The template name used to render the widget.  Default:
+#         ``textinput``.
 
-    readonly_template
-        The template name used to render the widget in read-only mode.
-        Default: ``readonly/textinput``.
+#     readonly_template
+#         The template name used to render the widget in read-only mode.
+#         Default: ``readonly/textinput``.
 
-    strip
-        If true, during deserialization, strip the value of leading
-        and trailing whitespace (default ``True``).
+#     strip
+#         If true, during deserialization, strip the value of leading
+#         and trailing whitespace (default ``True``).
 
-    """
+#     """
 
-    template = "tangsel.base:widgets/templates/captcha.pt"
-    readonly_template = "textinput"
-    strip = True
-    requirements = ()
-    request = None
-    url = ""
+#     template = "tangsel.base:widgets/templates/captcha.pt"
+#     readonly_template = "textinput"
+#     strip = True
+#     requirements = ()
+#     request = None
+#     url = ""
     
-    def __init__(self, **kw):
-        super(CaptchaWidget, self).__init__(**kw)
+#     def __init__(self, **kw):
+#         super(CaptchaWidget, self).__init__(**kw)
 
-    def serialize(self, field, cstruct, **kw):
-        kode_captcha, file_name = img_captcha(self.request)
-        self.request.session["captcha"] = kode_captcha
-        cstruct = self.url+file_name
-        readonly = kw.get("readonly", self.readonly)
-        template = readonly and self.readonly_template or self.template
-        values = self.get_template_values(field, cstruct, kw)
-        return field.renderer(template, **values)
+#     def serialize(self, field, cstruct, **kw):
+#         kode_captcha, file_name = img_captcha(self.request)
+#         self.request.session["captcha"] = kode_captcha
+#         cstruct = self.url+file_name
+#         readonly = kw.get("readonly", self.readonly)
+#         template = readonly and self.readonly_template or self.template
+#         values = self.get_template_values(field, cstruct, kw)
+#         return field.renderer(template, **values)
 
-    def deserialize(self, field, pstruct):
-        if pstruct is null:
-            return null
-        elif not isinstance(pstruct, string_types):
-            raise Invalid(field.schema, "Pstruct is not a string")
-        if self.strip:
-            pstruct = pstruct.strip()
-        if not pstruct:
-            return null
-        if pstruct != self.request.session.get("captcha"):
-            raise Invalid(field.schema, "Captcha tidak sesuai")
-        return pstruct
+#     def deserialize(self, field, pstruct):
+#         if pstruct is null:
+#             return null
+#         elif not isinstance(pstruct, string_types):
+#             raise Invalid(field.schema, "Pstruct is not a string")
+#         if self.strip:
+#             pstruct = pstruct.strip()
+#         if not pstruct:
+#             return null
+#         if pstruct != self.request.session.get("captcha"):
+#             raise Invalid(field.schema, "Captcha tidak sesuai")
+#         return pstruct
 
 
 class ImageWidget(widget.Widget):
