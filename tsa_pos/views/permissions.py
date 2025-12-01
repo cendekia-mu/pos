@@ -1,7 +1,5 @@
 from deform import widget
 import colander
-import deform
-import re
 from ..models import Permissions
 from . import BaseViews
 from ..i18n import _
@@ -20,7 +18,7 @@ class CreateSchema(colander.Schema):
     # Define your schema fields here
     name = colander.SchemaNode(colander.String())
     description = colander.SchemaNode(
-        colander.String(), validator=colander.Email())
+        colander.String())
 
 
 
@@ -41,6 +39,16 @@ class Views(BaseViews):
         self.ListSchema = ListSchema
         self.list_route = 'permissions-list'
 
-    def form_validator(self, form, value):
-        id_ = self.request.matchdict.get('id', 0)
-        self.table.validator(id_, value, form)
+    def validator(self, id_, value, form):
+        name = value.get('name')
+        exc = colander.Invalid(
+            form,
+            'Kesalahan pada pengisian data.'
+        )
+        row = self.table.query().filter(
+            self.table.name == name
+        ).first()
+        if row and (not id_ or row.id != int(id_)):
+            exc["name"] = _(
+                'Name {} already exists.'.format(name))
+            raise exc

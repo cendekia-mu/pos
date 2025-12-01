@@ -1,0 +1,10 @@
+<html metal:use-macro="load: ./layout.pt">
+<div metal:fill-slot="content">
+  <div class="panel panel-default">
+    <div class="panel-body">
+      <h1>403 - Forbidden</h1>
+      <p>You do not have permission to access this page.</p>
+    </div>
+  </div>
+</div>
+</html>
