@@ -1,16 +1,14 @@
-from calendar import c
-from datetime import datetime, timedelta
+from datetime import timedelta
 import os
-from urllib import request
 
-from deform import form, widget
+from deform import widget
 from ..tools import get_settings, sending_mail, two_minutes
 import colander
 import logging
 import deform
 from pyramid.httpexceptions import HTTPFound
 from .base_view import BaseViews, CSRFSchema
-from tsa_pos import BASE_APP, scripts
+from tsa_pos import BASE_APP
 from ziggurat_foundations.models.services.user import UserService
 from pyramid.security import remember, forget
 from pyramid.response import Response
@@ -19,7 +17,7 @@ from pyramid.renderers import render_to_response
 from ..models import DBSession, User
 from ..tools import create_now, set_user_log, get_settings
 from ..i18n import _
-from deform import Form, Button
+from deform import Button
 
 _logging = logging.getLogger(__name__)
 

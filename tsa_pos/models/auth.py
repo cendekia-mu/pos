@@ -22,6 +22,7 @@ from .import DBSession
 from datetime import timezone
 from datetime import datetime
 import bcrypt
+from ..i18n import _
 from sqlalchemy.orm import relationship
 from sqlalchemy import (
     DateTime,
@@ -107,7 +108,7 @@ class User(UserMixin, DefaultModel, Base):
 class Group(GroupMixin, DefaultModel, Base):
     pass
 
-class GroupPermission(GroupPermissionMixin, DefaultModel, Base):
+class GroupPermission(GroupPermissionMixin, Base,CommonModel):
     pass
 
 class UserGroup(UserGroupMixin, Base, CommonModel):
