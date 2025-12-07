@@ -1,6 +1,11 @@
+from dataclasses import field, fields
+from math import atan
 from deform import widget
 import colander
+from sqlalchemy import values
+from tsa_pos.alembic.versions import bd39e1834c1b_tambah_models_invoice
 from tsa_pos.models.wilayah import Provinsi, Kota, Kecamatan
+from tsa_pos.views import kecamatan, provinsi
 from tsa_pos.widgets import tsa_widget
 from ..models import Partner
 from . import BaseViews
@@ -8,7 +13,7 @@ from ..i18n import _
 
 
 class ListSchema(colander.Schema):
-    action = colander.SchemaNode(colander.String(),
+    id = colander.SchemaNode(colander.String(),
                                  missing=colander.drop,
                                  title="Action",
                                  # Untuk tombol/link aksi
@@ -17,14 +22,25 @@ class ListSchema(colander.Schema):
                                title="Kode")
     name = colander.SchemaNode(colander.String(),
                                title="Nama")
-    type = colander.SchemaNode(colander.String(),
-                               title="Tipe") 
-     # Gabungan dari is_vendor dan is_customer, e.g., "Vendor", "Customer", atau "Vendor & Customer"
-    location = colander.SchemaNode(colander.String(),
-                                   title="Lokasi")  # Gabungan alamat lengkap
+    is_vendor = colander.SchemaNode(colander.Boolean(),
+                                widget=widget.CheckboxWidget(),
+                                title="Is Vendor")
+    is_customer = colander.SchemaNode(colander.Boolean(),
+                                widget=widget.CheckboxWidget(),
+                                title="Is Customer")
+    provinsi_id = colander.SchemaNode(colander.String(),
+                                title="Provinsi",
+                                field=Provinsi.name)
+    kota_id = colander.SchemaNode(colander.String(),
+                                title="Kota",
+                                field=Kota.name)
+    kecamatan_id = colander.SchemaNode(colander.String(),
+                                title="Kecamatan",
+                                field=Kecamatan.name)
+    kelurahan = colander.SchemaNode(colander.String(),
+                                title="Kelurahan")
     balance = colander.SchemaNode(colander.Decimal(),
                                   title="Balance")
-
 
 class CreateSchema(colander.Schema):
     kode = colander.SchemaNode(
@@ -74,8 +90,13 @@ class CreateSchema(colander.Schema):
         colander.Integer(),
         oid="kecamatan_id",
         widget=widget.Select2Widget(
-            values=[],
-            title="Kecamatan"))
+            values=[]),
+            title="Kecamatan")
+    
+    balance = colander.SchemaNode(
+        colander.Decimal(),
+        oid="balance")
+        
 
     def after_bind(self, schema, kw):
         # Populate provinsi_id choices
@@ -90,6 +111,8 @@ class CreateSchema(colander.Schema):
         kecamatan_url = request.route_url(
             'partner-act', act="kecamatan")+"?kota_id="
         schema['kota_id'].widget.slave_url = kecamatan_url
+
+    
 
     # balance = colander.SchemaNode(colander.Decimal(),
     #                               default=0.0,
@@ -164,3 +187,10 @@ class Views(BaseViews):
             return results
 
         return super().next_act(**kwargs)
+    
+    def list_join(self, query):
+        return query.\
+            outerjoin(Provinsi, Provinsi.id == Partner.provinsi_id).\
+            outerjoin(Kota, Kota.id == Partner.kota_id).\
+            outerjoin(Kecamatan, Kecamatan.id == Partner.kecamatan_id)
+    
