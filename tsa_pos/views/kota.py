@@ -1,4 +1,4 @@
-from deform import widget
+from deform import field, widget
 import colander
 from ..models import Kota,Provinsi
 from . import BaseViews
@@ -11,6 +11,9 @@ class ListSchema(colander.Schema):
                              title="Action",
                              widget=widget.HiddenWidget())
     name = colander.SchemaNode(colander.String())
+    provinsi = colander.SchemaNode(colander.String(),
+                                    title="Provinsi",
+                                    field=Provinsi.name)
 
 
 class CreateSchema(colander.Schema):
@@ -67,3 +70,6 @@ class Views(BaseViews):
             exc["name"] = _(
                 'Name {} already exists.'.format(name))
             raise exc
+        
+    def list_join(self, query, **kwargs):
+        return query.join(Provinsi, Provinsi.id == Kota.provinsi_id)
