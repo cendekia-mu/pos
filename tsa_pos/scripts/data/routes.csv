@@ -1,7 +1,8 @@
 kode,path,parent_id,nama,status,file_name,class_name,func_name,template,permission,is_menu
 home,/,,Home,1,home,Views,beranda,home.pt,,
-login,/login,,Login,1,auth,Views,login,form.pt,,
-logout,/logout,,Logout,1,auth,Views,logout,form.pt,,
+login,/login,,Login,1,auth,Views,login,login.pt,,
+loginwe,/loginw,,loginw,1,home,Views,loginwe,login.pt,,
+logout,/logout,,Logout,1,auth,Views,logout,logout.pt,,
 profile,/profile,,Profile,1,profile,Views,,form.pt,,
 password,/password,,Ubah Password,1,password,,,form.pt,,
 admin-menu,#,,Adminisrator,1,,,,,,1
