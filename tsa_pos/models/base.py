@@ -41,6 +41,20 @@ class CommonModel(object):
             query = query.filter(
                 *[e for i, e in enumerate(filter_expressions) if e is not None])
         return query
+    
+    @classmethod
+    def query_register(cls, filters=None):
+        query = cls.db_session.query(cls.id)
+        if filters:
+            filter_expressions = []
+            for d in filters:
+                field = getattr(cls, d[0])
+                operator = d[1]
+                value = d[2]
+                filter_expressions.append(field.op(operator)(value))
+            query = query.filter(
+                *[e for i, e in enumerate(filter_expressions) if e is not None])
+        return query
 
     @classmethod
     def query_from(cls, columns=[], filters=None):

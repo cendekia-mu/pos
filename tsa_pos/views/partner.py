@@ -18,7 +18,8 @@ class ListSchema(colander.Schema):
     name = colander.SchemaNode(colander.String(),
                                title="Nama")
     type = colander.SchemaNode(colander.String(),
-                               title="Tipe")  # Gabungan dari is_vendor dan is_customer, e.g., "Vendor", "Customer", atau "Vendor & Customer"
+                               title="Tipe") 
+     # Gabungan dari is_vendor dan is_customer, e.g., "Vendor", "Customer", atau "Vendor & Customer"
     location = colander.SchemaNode(colander.String(),
                                    title="Lokasi")  # Gabungan alamat lengkap
     balance = colander.SchemaNode(colander.Decimal(),
@@ -26,8 +27,9 @@ class ListSchema(colander.Schema):
 
 
 class CreateSchema(colander.Schema):
-    kode = colander.SchemaNode(colander.String(),
-                               validator=colander.Length(min=1, max=20))
+    kode = colander.SchemaNode(
+        colander.String(),
+        validator=colander.Length(min=1, max=20))
     name = colander.SchemaNode(colander.String(),
                                validator=colander.Length(min=3, max=50))
     is_vendor = colander.SchemaNode(colander.Integer(),
@@ -59,7 +61,7 @@ class CreateSchema(colander.Schema):
             values=[],
             slave_id='kota_id',
             slave_url='',),
-        title="Provinsi")  
+        title="Provinsi")
     kota_id = colander.SchemaNode(
         colander.Integer(),
         oid="kota_id",
@@ -67,8 +69,7 @@ class CreateSchema(colander.Schema):
             values=[],
             slave_id='kecamatan_id',
             slave_url='',),
-        title="Kota")  
-    
+        title="Kota")
     kecamatan_id = colander.SchemaNode(
         colander.Integer(),
         oid="kecamatan_id",
@@ -162,5 +163,4 @@ class Views(BaseViews):
 
             return results
 
-        
         return super().next_act(**kwargs)

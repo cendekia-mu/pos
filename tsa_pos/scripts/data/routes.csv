@@ -1,5 +1,5 @@
 kode,path,parent_id,nama,status,file_name,class_name,func_name,template,permission,is_menu
-home,/,,Home,1,home,Views,beranda,home.pt,,
+home,/,,Home,1,home,Views,beranda,home_2.pt,,
 login,/login,,Login,1,auth,Views,login,form.pt,,
 logout,/logout,,Logout,1,auth,Views,logout,form.pt,,
 profile,/profile,,Profile,1,profile,Views,,form.pt,,
