@@ -1,5 +1,5 @@
-from deform import field, widget
 import colander
+from deform import widget
 from ..models import Kota,Provinsi
 from . import BaseViews
 from ..i18n import _

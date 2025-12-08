@@ -64,7 +64,9 @@ class CommonModel(object):
         return query
 
 class DefaultModel(CommonModel):
-    id = Column(Integer, primary_key=True)
+    @declared_attr
+    def id(self):
+        return Column(Integer, primary_key=True)
 
     @classmethod
     def count(cls):
@@ -87,7 +89,6 @@ class StandardModel(DefaultModel):
         return Column(
             Integer,
             ForeignKey("users.id", onupdate="CASCADE", ondelete="CASCADE"),
-            primary_key=True,
         )
     
     @declared_attr
@@ -95,7 +96,6 @@ class StandardModel(DefaultModel):
         return Column(
             Integer,
             ForeignKey("users.id", onupdate="CASCADE", ondelete="CASCADE"),
-            primary_key=True,
         )
 
     created = Column(DateTime, default=func.now())
