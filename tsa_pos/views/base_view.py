@@ -10,6 +10,7 @@ from ..tools import *
 import logging
 from ..models import DBSession
 import datetime
+from ..models import User,UserGroup,UserPermission
 
 _logging = logging.getLogger(__name__)
 
@@ -65,6 +66,7 @@ class BaseViews(object):
         self.ListSchema = UpdateSchema  # Default list schema, must be overridden
         self.list_route_name = ''  # Default list route name, must be overridden
         self.allow_view=True
+        self.allow_add=True
         self.allow_edit=True
         self.allow_delete=True
         self.allow_post=False
@@ -110,7 +112,9 @@ class BaseViews(object):
             action_suffix
             html_buttons
         """
+
         allow_view = kwargs.get("allow_view", self.allow_view)
+        allow_add = kwargs.get("allow_add", self.allow_add)
         allow_edit = kwargs.get("allow_edit", self.allow_edit)
         allow_delete = kwargs.get("allow_delete", self.allow_delete)
         allow_post = kwargs.get("allow_post", self.allow_post)
@@ -362,6 +366,10 @@ class BaseViews(object):
 
         self.db_session.add(row)
         self.db_session.flush()
+        row = self.after_save(row, values)
+        return row
+    
+    def after_save(self, row, values):
         return row
 
     def view_create(self):
@@ -382,9 +390,19 @@ class BaseViews(object):
 
         rendered_form = form.render()
         return {'form': rendered_form, "scripts": ""}
+    
 
     def form_validator(self, form, value):
-        pass
+        id_ = self.request.matchdict.get('id', 0)
+        excs = self.table.validator(id_, value, form)
+        if excs:
+            exc = colander.Invalid(
+                form,
+                'Kesalahan pada pengisian data.'
+            )
+            for k, v in excs.items():
+                exc[k] = v
+            raise exc
 
     def query_id(self):
         id_ = self.request.matchdict.get('id')

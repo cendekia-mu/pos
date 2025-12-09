@@ -162,7 +162,7 @@ class Views(BaseViews):
                 try:
                     c = form.validate(controls)
                 except deform.ValidationFailure as e:
-                    if self.req.is_xhr:
+                    if self.request.is_xhr:
                         d = {"error": e.error.asdict()}
                         return Response(json=d)
                     return HTTPFound(location=request.route_url('login'))
