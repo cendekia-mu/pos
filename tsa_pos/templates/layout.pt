@@ -141,11 +141,9 @@
 
   <!-- Left panel : Navigation area -->
   <!-- Note: This width of the aside area can be adjusted through LESS variables -->
-<<<<<<< HEAD
   <aside class='sidebar9' id="left-panel" tal:condition="request.user" style="padding-bottom:67px">
-=======
-  <aside id="left-panel" tal:condition="request.user" style="padding-bottom:67px">
->>>>>>> origin/main
+  <!--<aside id="left-panel" tal:condition="request.user" style="padding-bottom:67px">-->
+
     Menu
     <!-- NAVIGATION : This navigation is also responsive-->
     <nav class="smart-menu" id="menu">
@@ -315,12 +313,8 @@
   </div>
   <!-- END MAIN PANEL -->
 
-<<<<<<< HEAD
-  <!-- Define Script-->i
-=======
 
   <!-- Define Script-->
->>>>>>> origin/main
   <script metal:define-slot="scripts"></script>
 </body>
 
