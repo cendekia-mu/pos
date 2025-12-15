@@ -14,15 +14,21 @@ class ListSchema(colander.Schema):
     name = colander.SchemaNode(colander.String())
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 3be0a97 (Perubahan)
     created = colander.SchemaNode(
         colander.Date(),
         width="150px")
     created = colander.SchemaNode(colander.String())
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> ee0465c (Perubahan)
 =======
 >>>>>>> d670049 (WIP: Perubahan lokal sebelum pull dari main)
+=======
+>>>>>>> 3be0a97 (Perubahan)
 =======
 >>>>>>> ee0465c (Perubahan)
 
@@ -62,6 +68,7 @@ class Views(BaseViews):
             exc["name"] = _(
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
                 _('Name {} already exists.'.format(name)))
 <<<<<<< HEAD
 =======
@@ -69,6 +76,9 @@ class Views(BaseViews):
 >>>>>>> ee0465c (Perubahan)
 =======
 >>>>>>> d670049 (WIP: Perubahan lokal sebelum pull dari main)
+=======
+                _('Name {} already exists.'.format(name)))
+>>>>>>> 3be0a97 (Perubahan)
 =======
                 'Name {} already exists.'.format(name))
 >>>>>>> ee0465c (Perubahan)

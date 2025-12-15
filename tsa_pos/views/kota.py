@@ -1,6 +1,7 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 import colander
 <<<<<<< HEAD
@@ -12,6 +13,8 @@ import colander
 >>>>>>> ee0465c (Perubahan)
 =======
 =======
+>>>>>>> 3be0a97 (Perubahan)
+=======
 import colander
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -21,7 +24,12 @@ import colander
 =======
 =======
 >>>>>>> 77de8fe (invoice dan form login)
+<<<<<<< HEAD
 >>>>>>> a044256 (invoice dan form login)
+=======
+=======
+>>>>>>> 96545a2 (Perubahan)
+>>>>>>> 3be0a97 (Perubahan)
 from deform import widget
 import colander
 from ..models import Kota,Provinsi
@@ -128,8 +136,11 @@ class Views(BaseViews):
         if row and (not id_ or row.id != int(id_)):
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> 2814337 (update kota)
+=======
+>>>>>>> 3be0a97 (Perubahan)
             exc["name"] = _("Name {} already exists.".format(name))
             raise exc
 
@@ -152,6 +163,7 @@ class Views(BaseViews):
         return query.join(Provinsi, Provinsi.id == Kota.provinsi_id)
 
 >>>>>>> 2814337 (update kota)
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
             exc["name"] = _(
@@ -176,3 +188,10 @@ class Views(BaseViews):
 >>>>>>> ee0465c (Perubahan)
 =======
 >>>>>>> 90e1579 (update kota)
+=======
+=======
+            exc["name"] = _(
+                'Name {} already exists.'.format(name))
+            raise exc
+>>>>>>> ee0465c (Perubahan)
+>>>>>>> 3be0a97 (Perubahan)
