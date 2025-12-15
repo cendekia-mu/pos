@@ -77,5 +77,9 @@ class Views(BaseViews):
 
         return query.join(Provinsi, Provinsi.id == Kota.provinsi_id )
         return query.join(Provinsi, Provinsi.id == Kota.provinsi_id )
+<<<<<<< HEAD
         return query.join(Provinsi, Provinsi.id == Kota.provinsi_id)
 
+=======
+        
+>>>>>>> d670049 (WIP: Perubahan lokal sebelum pull dari main)
