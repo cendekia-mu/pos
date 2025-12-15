@@ -71,4 +71,7 @@ class Views(BaseViews):
                 'Name {} already exists.'.format(name))
             raise exc
     def list_join(self, query, **kwargs):
+
         return query.join(Provinsi, Provinsi.id == Kota.provinsi_id )
+        return query.join(Provinsi, Provinsi.id == Kota.provinsi_id )
+        
