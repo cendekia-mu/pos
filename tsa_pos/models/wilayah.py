@@ -1,12 +1,8 @@
 from sqlalchemy import (
-    Column,
-    String,
-    ForeignKey,
-    Integer,
-)
+    Column, String, ForeignKey,)
+from sqlalchemy.orm import relationship
 
 from . import StandardModel
-from sqlalchemy.orm import relationship
 from .meta import Base
 
 

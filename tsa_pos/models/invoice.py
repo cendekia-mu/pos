@@ -12,8 +12,16 @@ from .base import StandardModel, DefaultModel
 
 from .meta import Base
 
+class InvoiceCategory(StandardModel, Base):
+    __tablename__ = 'invoice_category'
+    name = Column(String(128), unique=True)
+
 class Invoices(StandardModel, Base):
     __tablename__ = 'invoices'
+    category_id = Column(ForeignKey(
+        'invoice_category.id', ondelete='RESTRICT'), nullable=False)
+    category = relationship(
+        'InvoiceCategory', backref=backref('invoices'))     
     name = Column(String(128))
     code = Column(String(128))
     amount = Column(Float)
