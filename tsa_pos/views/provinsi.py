@@ -13,6 +13,7 @@ class ListSchema(colander.Schema):
                              widget=widget.HiddenWidget())
     name = colander.SchemaNode(colander.String())
 <<<<<<< HEAD
+<<<<<<< HEAD
     created = colander.SchemaNode(
         colander.Date(),
         width="150px")
@@ -22,6 +23,8 @@ class ListSchema(colander.Schema):
 >>>>>>> ee0465c (Perubahan)
 =======
 >>>>>>> d670049 (WIP: Perubahan lokal sebelum pull dari main)
+=======
+>>>>>>> ee0465c (Perubahan)
 
 
 class CreateSchema(colander.Schema):
@@ -58,6 +61,7 @@ class Views(BaseViews):
         if row and (not id_ or row.id != int(id_)):
             exc["name"] = _(
 <<<<<<< HEAD
+<<<<<<< HEAD
                 _('Name {} already exists.'.format(name)))
 <<<<<<< HEAD
 =======
@@ -65,4 +69,7 @@ class Views(BaseViews):
 >>>>>>> ee0465c (Perubahan)
 =======
 >>>>>>> d670049 (WIP: Perubahan lokal sebelum pull dari main)
+=======
+                'Name {} already exists.'.format(name))
+>>>>>>> ee0465c (Perubahan)
             raise exc

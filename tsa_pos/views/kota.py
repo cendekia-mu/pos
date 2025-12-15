@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 import colander
 <<<<<<< HEAD
@@ -6,6 +7,8 @@ import colander
 >>>>>>> 2814337 (update kota)
 =======
 >>>>>>> ed1299d (invoice dan form login)
+=======
+>>>>>>> ee0465c (Perubahan)
 from deform import widget
 import colander
 from ..models import Kota,Provinsi
@@ -121,6 +124,7 @@ class Views(BaseViews):
 =======
             exc["name"] = _(
                 'Name {} already exists.'.format(name))
+<<<<<<< HEAD
             raise exc
 <<<<<<< HEAD
 >>>>>>> ee0465c (Perubahan)
@@ -135,3 +139,6 @@ class Views(BaseViews):
         return query.join(Provinsi, Provinsi.id == Kota.provinsi_id)
 
 >>>>>>> 2814337 (update kota)
+=======
+            raise exc
+>>>>>>> ee0465c (Perubahan)
