@@ -574,10 +574,6 @@ class TextInputWidget(widget.TextInputWidget):
                 self.button = Button(self.button, type="button")
 
 
-class DateInputWidget(widget.DateInputWidget):
-    type_name = "text"
-
-
 class MoneyInputWidget(widget.MoneyInputWidget):
     """
     Renders an ``<input type="text"/>`` widget with Javascript which enforces
