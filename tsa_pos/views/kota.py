@@ -1,5 +1,5 @@
-from deform import widget
 import colander
+from deform import widget
 from ..models import Kota,Provinsi
 from . import BaseViews
 from ..i18n import _
@@ -11,6 +11,9 @@ class ListSchema(colander.Schema):
                              title="Action",
                              widget=widget.HiddenWidget())
     name = colander.SchemaNode(colander.String())
+    provinsi = colander.SchemaNode(colander.String(),
+                                    title="Provinsi",
+                                    field=Provinsi.name)
 
 
 class CreateSchema(colander.Schema):

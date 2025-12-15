@@ -1,4 +1,3 @@
-from turtle import width
 from deform import widget
 import colander
 from ..models import Provinsi
@@ -12,13 +11,16 @@ class ListSchema(colander.Schema):
                              title="Action",
                              widget=widget.HiddenWidget())
     name = colander.SchemaNode(colander.String())
-    created = colander.SchemaNode(colander.String())
+    created = colander.SchemaNode(
+        colander.Date(),
+        width="150px")
 
 
 class CreateSchema(colander.Schema):
     # Define your schema fields here
-    name = colander.SchemaNode(colander.String(),
-                               validator=colander.Length(min=3, max=50))
+    name = colander.SchemaNode(
+        colander.String(),
+        validator=colander.Length(min=3, max=50))
 
 class UpdateSchema(CreateSchema):
     id = colander.SchemaNode(colander.Integer(),
@@ -35,6 +37,7 @@ class Views(BaseViews):
         self.ReadSchema = UpdateSchema
         self.ListSchema = ListSchema
         self.list_route = 'provinsi-list'
+        self.list_buttons = self.list_buttons + self.list_report
 
     def form_validator(self, form, value):
         exc = colander.Invalid(
@@ -45,8 +48,8 @@ class Views(BaseViews):
 
         # Validate unique name
         name = value.get('name')
-        row = self.table.query().filter(self.table.name == name).first()
+        row = self.table.query().filter(self.table.name.ilike(name)).first()
         if row and (not id_ or row.id != int(id_)):
             exc["name"] = _(
-                'Name {} already exists.'.format(name))
+                _('Name {} already exists.'.format(name)))
             raise exc
