@@ -22,11 +22,10 @@ class CreateSchema(colander.Schema):
 
     def after_bind(self, schema, appstruct):
         # Populate category_id choices
-        categories = Kota.query().all()
+        kota = Kota.query().all()
         schema['kota_id'].widget.values = [
-            (str(cat.id), cat.name) for cat in categories
+            (str(kota.id), kota.name) for kota in kota
         ]
-    
 
 class UpdateSchema(CreateSchema):
     id = colander.SchemaNode(colander.Integer(),
@@ -37,9 +36,9 @@ class UpdateSchema(CreateSchema):
 
     def after_bind(self, schema, appstruct):
         # Populate category_id choices
-        categories = Kota.query().all()
+        kota = Kota.query().all()
         schema['kota_id'].widget.values = [
-            (str(cat.id), cat.name) for cat in categories
+            (str(kota.id), kota.name) for kota in kota
         ]
 
 
