@@ -1,3 +1,4 @@
+from turtle import width
 from deform import widget
 import colander
 from ..models import Provinsi
@@ -11,6 +12,7 @@ class ListSchema(colander.Schema):
                              title="Action",
                              widget=widget.HiddenWidget())
     name = colander.SchemaNode(colander.String())
+    created = colander.SchemaNode(colander.String())
 
 
 class CreateSchema(colander.Schema):

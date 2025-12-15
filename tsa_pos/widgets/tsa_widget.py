@@ -9,7 +9,7 @@ from deform import widget
 from deform.compat import sequence_types, text_type, text_
 from deform.form import Button
 from deform.i18n import _
-from tangsel.tools.captcha import img_captcha
+# from tangsel.tools.captcha import img_captcha
 from datetime import date, datetime
 _logging = logging.getLogger(__name__)
 
@@ -574,8 +574,8 @@ class TextInputWidget(widget.TextInputWidget):
                 self.button = Button(self.button, type="button")
 
 
-class DateInputWidget(widget.WidgetDateInputWidget):
-    type_name = "text"
+# class DateInputWidget(widget.WidgetDateInputWidget):
+#     type_name = "text"
 
 
 class MoneyInputWidget(widget.MoneyInputWidget):
