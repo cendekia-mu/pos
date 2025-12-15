@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 from deform import widget, Form
 import colander
 from deform.widget import SequenceWidget
@@ -128,3 +129,5 @@ class Views(BaseViews):
         self.save_items(invoice, form_data.get('invoice_items', []))
         self.save_items(invoice, form_data.get('invoice_items', []))
 >>>>>>> ed1299d (invoice dan form login)
+=======
+>>>>>>> d670049 (WIP: Perubahan lokal sebelum pull dari main)

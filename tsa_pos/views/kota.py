@@ -100,4 +100,12 @@ class Views(BaseViews):
             exc["name"] = _(
                 'Name {} already exists.'.format(name))
             raise exc
+<<<<<<< HEAD
 >>>>>>> ee0465c (Perubahan)
+=======
+    def list_join(self, query, **kwargs):
+
+        return query.join(Provinsi, Provinsi.id == Kota.provinsi_id )
+        return query.join(Provinsi, Provinsi.id == Kota.provinsi_id )
+        
+>>>>>>> d670049 (WIP: Perubahan lokal sebelum pull dari main)
