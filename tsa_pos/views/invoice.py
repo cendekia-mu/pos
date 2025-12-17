@@ -1,14 +1,21 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 from deform import widget, Form
 import colander
 from deform.widget import SequenceWidget
 from ..models import Partner, Product, Invoices, InvoiceItems
+=======
+>>>>>>> 3d177a6 (invoice dan form login)
 from deform import widget
 import colander
 from ..models import Invoices, InvoiceItems, Partner, Product
 from . import BaseViews
 from ..i18n import _
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 3d177a6 (invoice dan form login)
 class InvoiceItemSchema(colander.Schema):
     product_id = colander.SchemaNode(
         colander.Integer(),
@@ -39,6 +46,7 @@ class CreateSchema(colander.Schema):
     amount = colander.SchemaNode(colander.Float())
     est_delivery = colander.SchemaNode(colander.DateTime())
     invoice_date = colander.SchemaNode(colander.DateTime())
+<<<<<<< HEAD
     partner_id = colander.SchemaNode(
         colander.Integer(),
         widget=widget.SelectWidget(values=[]),
@@ -60,6 +68,8 @@ class ListSchema (colander.Schema):
         widget=widget.SelectWidget(values=[]),
         title='Partner'
     )
+=======
+>>>>>>> 3d177a6 (invoice dan form login)
     partner_id = colander.SchemaNode(colander.Integer(), widget=widget.SelectWidget(values=[]))
     invoice_items = InvoiceItemsSequence()
 
@@ -70,6 +80,10 @@ class ListSchema (colander.Schema):
 class UpdateSchema(CreateSchema):
     id = colander.SchemaNode(colander.Integer(), missing=colander.drop, widget=widget.HiddenWidget())
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 3d177a6 (invoice dan form login)
 class Views(BaseViews):
     def __init__(self, request):
         super().__init__(request)
@@ -113,6 +127,7 @@ class Views(BaseViews):
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         self.save_items(invoice, form_data.get('invoice_items', []))
 =======
         self.save_items(invoice, form_data.get('invoice_items', []))
@@ -131,3 +146,6 @@ class Views(BaseViews):
 >>>>>>> ed1299d (invoice dan form login)
 =======
 >>>>>>> d670049 (WIP: Perubahan lokal sebelum pull dari main)
+=======
+        self.save_items(invoice, form_data.get('invoice_items', []))
+>>>>>>> 3d177a6 (invoice dan form login)
