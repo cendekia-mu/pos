@@ -85,4 +85,8 @@ class Views(BaseViews):
         self.save_items(invoice, form_data.get('invoice_items', []))
 
     def after_update(self, invoice, form_data):
+<<<<<<< HEAD
         self.save_items(invoice, form_data.get('invoice_items', []))
+=======
+        self.save_items(invoice, form_data.get('invoice_items', []))
+>>>>>>> 3d177a6 (invoice dan form login)
