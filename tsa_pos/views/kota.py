@@ -1,7 +1,14 @@
 import colander
+<<<<<<< HEAD
 from deform import widget
 from ..models import Kota,Provinsi
+<<<<<<< HEAD
 from ..models import Kota, Provinsi
+=======
+=======
+from ..models import Kota, Provinsi
+>>>>>>> fb37090 (update kota)
+>>>>>>> 2814337 (update kota)
 from . import BaseViews
 from ..i18n import _
 
@@ -78,8 +85,13 @@ class Views(BaseViews):
         return query.join(Provinsi, Provinsi.id == Kota.provinsi_id )
         return query.join(Provinsi, Provinsi.id == Kota.provinsi_id )
 <<<<<<< HEAD
+<<<<<<< HEAD
         return query.join(Provinsi, Provinsi.id == Kota.provinsi_id)
 
 =======
         
 >>>>>>> d670049 (WIP: Perubahan lokal sebelum pull dari main)
+=======
+        return query.join(Provinsi, Provinsi.id == Kota.provinsi_id)
+
+>>>>>>> 2814337 (update kota)
