@@ -1,3 +1,4 @@
+from turtle import width
 from deform import widget
 import colander
 from ..models import Provinsi
@@ -14,6 +15,7 @@ class ListSchema(colander.Schema):
     created = colander.SchemaNode(
         colander.Date(),
         width="150px")
+    created = colander.SchemaNode(colander.String())
 
 
 class CreateSchema(colander.Schema):
