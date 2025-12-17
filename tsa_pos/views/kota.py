@@ -1,6 +1,12 @@
+<<<<<<< HEAD
+=======
+import colander
+<<<<<<< HEAD
+>>>>>>> 2814337 (update kota)
 from deform import widget
 import colander
 from ..models import Kota,Provinsi
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 from ..models import Kota, Provinsi
@@ -12,6 +18,11 @@ from ..models import Kota, Provinsi
 =======
 from ..models import Kota, Provinsi
 >>>>>>> ed1299d (invoice dan form login)
+=======
+=======
+from ..models import Kota, Provinsi
+>>>>>>> fb37090 (update kota)
+>>>>>>> 2814337 (update kota)
 from . import BaseViews
 from ..i18n import _
 
@@ -78,6 +89,9 @@ class Views(BaseViews):
         row = self.table.query().filter(self.table.name == name).first()
         if row and (not id_ or row.id != int(id_)):
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 2814337 (update kota)
             exc["name"] = _("Name {} already exists.".format(name))
             raise exc
 
@@ -85,6 +99,7 @@ class Views(BaseViews):
 
         return query.join(Provinsi, Provinsi.id == Kota.provinsi_id )
         return query.join(Provinsi, Provinsi.id == Kota.provinsi_id )
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
         return query.join(Provinsi, Provinsi.id == Kota.provinsi_id)
@@ -109,3 +124,7 @@ class Views(BaseViews):
         return query.join(Provinsi, Provinsi.id == Kota.provinsi_id )
         
 >>>>>>> d670049 (WIP: Perubahan lokal sebelum pull dari main)
+=======
+        return query.join(Provinsi, Provinsi.id == Kota.provinsi_id)
+
+>>>>>>> 2814337 (update kota)
