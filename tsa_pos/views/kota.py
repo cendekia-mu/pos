@@ -2,10 +2,14 @@
 =======
 import colander
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> 2814337 (update kota)
+=======
+>>>>>>> ed1299d (invoice dan form login)
 from deform import widget
 import colander
 from ..models import Kota,Provinsi
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -23,6 +27,9 @@ from ..models import Kota, Provinsi
 from ..models import Kota, Provinsi
 >>>>>>> fb37090 (update kota)
 >>>>>>> 2814337 (update kota)
+=======
+from ..models import Kota, Provinsi
+>>>>>>> ed1299d (invoice dan form login)
 from . import BaseViews
 from ..i18n import _
 
