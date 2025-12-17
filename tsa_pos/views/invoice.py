@@ -1,5 +1,6 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 from deform import widget, Form
 import colander
 from deform.widget import SequenceWidget
@@ -7,14 +8,19 @@ from ..models import Partner, Product, Invoices, InvoiceItems
 =======
 >>>>>>> 3d177a6 (invoice dan form login)
 from deform import widget
+=======
+from deform import widget, Form
+>>>>>>> 0010e7b (update invoice)
 import colander
-from ..models import Invoices, InvoiceItems, Partner, Product
+from deform.widget import SequenceWidget
+from ..models import Partner, Product, Invoices, InvoiceItems
 from . import BaseViews
 from ..i18n import _
 
 <<<<<<< HEAD
 =======
 
+<<<<<<< HEAD
 >>>>>>> 3d177a6 (invoice dan form login)
 class InvoiceItemSchema(colander.Schema):
     product_id = colander.SchemaNode(
@@ -39,7 +45,12 @@ class ListSchema(colander.Schema):
     code = colander.SchemaNode(colander.String())
     amount = colander.SchemaNode(colander.Float())
     partner_id = colander.SchemaNode(colander.Integer(), title='Partner')
+=======
+>>>>>>> 0010e7b (update invoice)
 
+# --------------------------
+# Create / Update Schema
+# --------------------------
 class CreateSchema(colander.Schema):
     name = colander.SchemaNode(colander.String(), validator=colander.Length(min=1, max=128))
     code = colander.SchemaNode(colander.String(), validator=colander.Length(min=1, max=128))
@@ -47,12 +58,16 @@ class CreateSchema(colander.Schema):
     est_delivery = colander.SchemaNode(colander.DateTime())
     invoice_date = colander.SchemaNode(colander.DateTime())
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 0010e7b (update invoice)
     partner_id = colander.SchemaNode(
         colander.Integer(),
         widget=widget.SelectWidget(values=[]),
         title='Partner'
     )
    
+<<<<<<< HEAD
     def after_bind(self, schema, appstruct):
         partners = Partner.query().all()
         schema['partner_id'].widget.values = [(str(p.id), p.name) for p in partners]
@@ -73,17 +88,35 @@ class ListSchema (colander.Schema):
     partner_id = colander.SchemaNode(colander.Integer(), widget=widget.SelectWidget(values=[]))
     invoice_items = InvoiceItemsSequence()
 
+=======
+>>>>>>> 0010e7b (update invoice)
     def after_bind(self, schema, appstruct):
         partners = Partner.query().all()
         schema['partner_id'].widget.values = [(str(p.id), p.name) for p in partners]
+class ListSchema (colander.Schema):
+    id = colander.SchemaNode(colander.Integer())
+    name = colander.SchemaNode(colander.String(), validator=colander.Length(min=1, max=128))
+    code = colander.SchemaNode(colander.String(), validator=colander.Length(min=1, max=128))
+    amount = colander.SchemaNode(colander.Float())
+    est_delivery = colander.SchemaNode(colander.DateTime())
+    invoice_date = colander.SchemaNode(colander.DateTime())
+    partner_id = colander.SchemaNode(
+        colander.Integer(),
+        widget=widget.SelectWidget(values=[]),
+        title='Partner'
+    )
 
 class UpdateSchema(CreateSchema):
     id = colander.SchemaNode(colander.Integer(), missing=colander.drop, widget=widget.HiddenWidget())
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 =======
 
 >>>>>>> 3d177a6 (invoice dan form login)
+=======
+    
+>>>>>>> 0010e7b (update invoice)
 class Views(BaseViews):
     def __init__(self, request):
         super().__init__(request)
@@ -94,6 +127,7 @@ class Views(BaseViews):
         self.ListSchema = ListSchema
         self.list_route = 'invoice-list'
 
+<<<<<<< HEAD
     def form_validator(self, form, value):
         exc = colander.Invalid(form, 'Kesalahan pada pengisian data.')
         id_ = self.request.matchdict.get('id', 0)
@@ -128,6 +162,7 @@ class Views(BaseViews):
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         self.save_items(invoice, form_data.get('invoice_items', []))
 =======
         self.save_items(invoice, form_data.get('invoice_items', []))
@@ -149,3 +184,8 @@ class Views(BaseViews):
 =======
         self.save_items(invoice, form_data.get('invoice_items', []))
 >>>>>>> 3d177a6 (invoice dan form login)
+=======
+        self.save_items(invoice, form_data.get('invoice_items', []))
+=======
+>>>>>>> 84c5a9a (update invoice)
+>>>>>>> 0010e7b (update invoice)
