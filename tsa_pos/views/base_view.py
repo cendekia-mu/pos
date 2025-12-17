@@ -2,6 +2,7 @@ import datetime
 import logging
 import colander
 import deform
+
 from deform import widget
 from pyramid.httpexceptions import HTTPFound
 from pyramid.csrf import new_csrf_token, get_csrf_token
@@ -11,6 +12,7 @@ from datatables import ColumnDT, DataTables
 from ..detable import DeTable
 from ..tools import *
 from ..models import DBSession
+from ..widgets import tsa_widget
 from ..i18n import _
 _logging = logging.getLogger(__name__) # error, warning, info, debug
 
@@ -370,9 +372,9 @@ class BaseViews(object):
     
     def get_form(self, schema_class, buttons=("cancel", )):
         schema = schema_class(
-            validator=self.form_validator, request=self.request)
+            validator=self.form_validator, request=self.request, widget=tsa_widget.FormWidget())
         schema = schema.bind(request=self.request)
-        form = deform.Form(schema, buttons=buttons)
+        form = deform.Form(schema, buttons=buttons, )
         return form
     
     def form_validator(self, form, value):
