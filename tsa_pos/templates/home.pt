@@ -1,12 +1,208 @@
 <html metal:use-macro="load: ./layout.pt">
-<div metal:fill-slot="content">
-  <h1>Home</h1>
-  <div tal:condition="request.user">
-    <span>Welcome, ${request.user.user_name}(${request.user.email}) </span>
-  </div>
-  <div tal:condition="not request.user">
-    <span>Please <a href="${request.route_url('login')}">log in</a></span>
-  </div>
+<div  metal:fill-slot="content">
+  <link rel="stylesheet" type="text/css" href="static/css/custom.min.css">
+  <!-- <link rel="stylesheet" type="text/css" href="${home}/static/css/custom.min.css"> -->
+ <div tal:condition="request.user" class="dashboard-wrapper">
+ 
+ <!-- <div class="sidebar">
+ <div class="sidebar-icon edit-btn"><i class="fas fa-pencil-alt"></i></div>
+ <div class="sidebar-icon active"><i class="fas fa-home"></i></div>
+ <div class="sidebar-icon"><i class="fas fa-chart-line"></i></div>
+ <div class="sidebar-icon"><i class="fas fa-envelope"></i></div>
+ <div style="margin-top: auto; margin-bottom: 30px;"> -->
+ <!-- <div class="header-icons">
+     <a href="${request.route_url('logout')}" 
+       title="Logout" 
+       style="color: white; text-decoration: none;">
+        <i class="fas fa-sign-out-alt fa-lg"></i>
+    </a>
+</div> -->
+
+ <!-- </div> -->
+ <!-- </div> -->
+
+ <div class="main-content">
+ 
+ <div class="header-section">
+ <div>
+ <div style="font-size: 1rem; opacity: 0.9;">Welcome back,</div>
+ <h1 class="app-title">TSA Kasir</h1>
+ <span class="user-info">
+ ${request.user.user_name} (${request.user.email})
+ </span>
+ </div>
+ <!-- <div class="header-icons">
+ <i class="fas fa-bell fa-lg"></i>
+ <i class="fas fa-cog fa-lg"></i>
+ <div class="profile-avatar">
+ <img src="https://ui-avatars.com/api/?name=${request.user.user_name}&background=8e44ad&color=fff" width="100%" height="100%" alt="User Avatar" style="object-fit: cover;"/>
+ </div>
+ </div> -->
+ </div>
+
+ <div class="section-title">
+<i class="fas fa-th-large" style="color: #0d0b0f;"> Select Module</i>
+ </div>
+
+ <div class="modules-grid">
+ <a href="#" class="module-item">
+ <div class="icon-circle"><i class="fas fa-shopping-cart"></i></div>
+ <span class="module-label">Order</span>
+ </a>
+ 
+ <a href="#" class="module-item">
+ <div class="icon-circle"><i class="fas fa-box-open"></i></div>
+ <span class="module-label">Product</span>
+ </a>
+
+ <a href="#" class="module-item">
+ <div class="icon-circle"><i class="fas fa-users"></i></div>
+ <span class="module-label">Customer</span>
+ </a>
+
+ <a href="#" class="module-item">
+ <div class="icon-circle"><i class="fas fa-file-invoice-dollar"></i></div>
+ <span class="module-label">Invoice</span>
+ </a>
+
+ <a href="#" class="module-item">
+ <div class="icon-circle"><i class="fas fa-wallet"></i></div>
+ <span class="module-label">Payment</span>
+ </a>
+
+ <a href="${request.route_url('manage_user') if 'manage_user' in request.matchdict else '#'}" class="module-item">
+ <div class="icon-circle"><i class="fas fa-user-cog"></i></div>
+ <span class="module-label">Manage User</span>
+ </a>
+ </div>
+ </div>
+ </div>
+
+<div class="wrapper" tal:condition = "not request.user">
+    <div style="justify-content:space-between; display:flex;" class="icon-box">
+       
+        <div style="position:absolute;margin-bottom:230px;margin-left:70px;"><a href="${home}/"><img src="${home}/static/img/logo1.png" alt="LOGO" class="logo-kiri-atas"></a>
+</div>
+        
+
+
+    <div class="title">Selamat Datang di CMU Kasir</div>
+    </div>
+    <div class="login-desc">Silahkan login untuk mengakses dashboard Anda.</div>
+
+    <a href="/login" class="login-btn">
+        Log In Now <span>→</span>
+    </a>
+    <style>
+/* ===== RESET ===== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Inter", "Segoe UI", sans-serif;
+}
+
+/* ===== BODY – CENTER WRAPPER ===== */
+body {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: var(--soft-purple-bg);
+    padding: 20px;
+    color: #141414ff;
+}
+
+/* ===== CONTAINER ===== */
+.wrapper {
+    max-width: 400px;
+    width: 550px;
+    padding:40px 30px 50px;
+    margin-top:100px;
+    margin-right:300px;
+    background: #fff;
+    border-radius: 20px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+}
+
+/* ===== HEADER ===== */
+.title {
+    font-size: 32px;
+    font-weight: 600;
+    color: #444;
+    margin-bottom: 10px;
+    text-align:center;
+    margin-top:40px;
+
+}
+
+.subtitle {
+    font-size: 18px;
+    color: #666;
+    margin-bottom: 30px;
+}
+
+/* ===== ICON KASIR ===== */
+.icon-box {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.icon-box svg {
+    width: 90px;
+    height: 90px;
+}
+
+/* ===== LOGIN AREA ===== */
+.login-title {
+    font-size: 24px;
+    font-weight: 600;
+    color: #333;
+    margin-top: 25px;
+}
+
+.login-desc {
+    font-size: 16px;
+    color: #666;
+    margin: 10px 0 25px;
+    text-align:center;
+    margin-top:10px;
+}
+
+.login-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: blue;
+    color: white;
+    padding: 12px 22px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: 0.25s;
+    
+}
+
+.login-btn:hover {
+    background: #003bff;
+    transform: translateX(4px);
+    
+}
+
+.login-btn span {
+    font-size: 20px;
+}
+.logo-kiri-atas {
+    top: 40px;     
+    center: 20px;    
+    width: 200px;
+    height: auto;
+    z-index: 9999; 
+}
+
+</style>
 </div>
 
+</div>
 </html>

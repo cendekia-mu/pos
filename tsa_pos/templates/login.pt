@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:Arial, sans-serif;
+}
+
+body{
+    min-height:100vh;
+    background:#fff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+}
+
+/* ===== WRAPPER LAYOUT ===== */
+.login-wrapper {
+    width: 950px;
+    height: 520px;
+    background:#e9edc9;
+    display:flex;
+    border-radius:20px;
+    overflow:hidden;
+    box-shadow:0 0 40px rgba(0,0,0,0.6);
+}
+
+/* ===== LEFT IMAGE PANEL ===== */
+.left-panel {
+    width:55%;
+    background-image:url('https://plus.unsplash.com/premium_vector-1682305862724-0fe3428b9f11?q=80&w=709&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+    background-size:contain;
+    background-position:center;
+    background-color:#ccd5ae;
+    background-repeat:no-repeat;
+}
+
+/* ===== RIGHT FORM PANEL ===== */
+.right-panel {
+    width:45%;
+    padding:50px 60px;
+    background:#e9edc9;
+    color:black;
+    margin-top:50px;
+}
+
+.right-panel h2 {
+    font-size:28px;
+    font-weight:700;
+    margin-bottom:10px;
+}
+
+.right-panel p {
+    opacity:.7;
+    margin-bottom:30px;
+}
+
+/* FLASH MESSAGE */
+.flash-box {
+    background:rgba(255,0,0,0.25);
+    border:1px solid rgba(255,0,0,0.5);
+    padding:10px;
+    border-radius:8px;
+    margin-bottom:20px;
+}
+
+/* INPUT LABEL */
+form label {
+    display:block;
+    margin:6px 0 5px;
+    font-size:14px;
+}
+
+
+
+
+form input[type="text"]::placeholder,
+form input[type="password"]::placeholder{
+    color:#888;
+}
+
+/* CHECKBOX AREA */
+.checkbox-area {
+    display:flex;
+    align-items:center;
+    gap:6px;
+    margin-bottom:25px;
+}
+
+.checkbox-area label {
+    margin:0;
+    font-size:13px;
+}
+
+
+/* Input */
+form input[type="text"],
+form input[type="password"] {
+    width: 100%;
+    padding: 10px 12px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    border: 1px solid rgba(0, 0, 0, 0.4);
+    color: white;
+    font-size: 15px;
+   
+    outline: none;
+}
+
+form input::placeholder {
+    color: #eee;
+}
+
+/* Tombol */
+form input[type="submit"],
+form input[type="reset"],
+form input[type="button"],
+form button {
+    padding: 10px;
+    border-radius: 8px;
+    border: none;
+    background: rgba(0, 0, 0, 1);
+    color: white;
+    cursor: pointer;
+    transition: .3s;
+    width:90px;
+    margin-left:7px;
+}
+
+form input[type="submit"]:hover,
+form input[type="reset"]:hover,
+form input[type="button"]:hover,
+form button:hover {
+    background: rgba(255,255,255,0.8);
+    color: black;
+}
+
+
+button:hover,
+form input[type="submit"]:hover {
+    background:#1a7bff;
+}
+
+/* REMOVE DEFORM FIELDSET BORDER */
+form fieldset {
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+form legend {
+    display: none !important;
+}
+.wel{
+    text-align:center;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="login-wrapper">
+
+    <!-- LEFT PANEL -->
+    <div class="left-panel"></div>
+
+    <!-- RIGHT PANEL -->
+    <div class="right-panel">
+
+        <h2 class="wel">Sign up</h2>
+        <p class="wel" >Welcome to the Smart Site System. Register to experience the system.</p>
+
+        <!-- FLASH MESSAGE -->
+        <div tal:repeat="message request.session.pop_flash()" class="flash-box">
+            <span tal:content="message"></span>
+        </div>
+
+        <!-- FORM DEFORM -->
+        <div class="form" tal:content="structure form"></div>
+
+    </div>
+
+</div>
+
+</body>
+</html>
