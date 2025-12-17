@@ -76,3 +76,4 @@ class Views(BaseViews):
 
     def list_join(self, query, **kwargs):
         return query.join(Provinsi, Provinsi.id == Kota.provinsi_id)
+        
