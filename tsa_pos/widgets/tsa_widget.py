@@ -9,11 +9,9 @@ from deform import widget
 from deform.compat import sequence_types, text_type, text_
 from deform.form import Button
 from deform.i18n import _
-<<<<<<< HEAD
+
 # from tangsel.tools.captcha import img_captcha
-=======
 # from opensipkd.tools.captcha import img_captcha
->>>>>>> c719e890c31d54d81f357b15d4552590c4eb4a69
 from datetime import date, datetime
 _logging = logging.getLogger(__name__)
 
@@ -578,13 +576,12 @@ class TextInputWidget(widget.TextInputWidget):
                 self.button = Button(self.button, type="button")
 
 
-<<<<<<< HEAD
+
 # class DateInputWidget(widget.WidgetDateInputWidget):
 #     type_name = "text"
-=======
+
 class DateInputWidget(widget.DateInputWidget):
     type_name = "text"
->>>>>>> c719e890c31d54d81f357b15d4552590c4eb4a69
 
 
 class MoneyInputWidget(widget.MoneyInputWidget):
