@@ -101,6 +101,7 @@ invoice-view,/invoice/{id}/view,invoice-list,Read Invoice,1,invoice,Views,view_r
 
 # --- ORDER / KASIR ---
 order-list,/order,master-menu,Order (Kasir),1,orders,Views,view_list,list.pt,,1
+<<<<<<< HEAD
 order-add,/order/add,order-list,Buat Order Baru,1,orders,Views,view_add,form.pt,,
 order-view,/order/{id}/view,order-list,Detail Order,1,orders,Views,view_read,form.pt,,
 order-checkout,/order/{id}/checkout,order-list,Proses Checkout,1,orders,Views,view_checkout,form.pt,,
@@ -110,10 +111,27 @@ order-edit,/order/{id}/edit,order-list,Edit Order,1,orders,Views,view_update,for
 
 # --- PAYMENT (KONSOLIDASI DI BAWAH SATU MENU) ---
 payment-list,/payment,master-menu, payment,1,payment,Views,view_list,list.pt,,1
+=======
+order-create,/order/create,order-list,Buat Order Baru,1,orders,Views,view_create,form.pt,,
+order-detail,/order/{id}/detail,order-list,Detail Order,1,orders,Views,view_read,form.pt,,
+order-checkout,/order/{id}/checkout,order-list,Proses Checkout,1,orders,Views,view_checkout,form.pt,,
+
+# --- PAYMENT (KONSOLIDASI DI BAWAH SATU MENU) ---
+payment-menu,#,master-menu,Payment,1,,,,,,1
+payment-list,/payment,payment-menu,Transaksi Payment,1,payment,Views,view_list,list.pt,,1
+>>>>>>> 79b6070 (menambahkan routes untuk menu)
 payment-act,/payment/{act}/act,payment-list,Payment Action,1,payment,Views,view_act,json,,
 payment-add,/payment/add,payment-list,Create Payment,1,payment,Views,view_create,form.pt,,
 payment-edit,/payment/{id}/edit,payment-list,Edit Payment,1,payment,Views,view_update,form.pt,,
 payment-delete,/payment/{id}/delete,payment-list,Delete Payment,1,payment,Views,view_delete,form.pt,,
+<<<<<<< HEAD
+=======
+payment-view,/payment/{id}/view,payment-list,Read Payment,1,payment,Views,view_read,form.pt,,
+payment-method-list,/payment/method,payment-menu,Metode Pembayaran,1,payment_method,Views,view_list,list.pt,,1
+payment-method-act,/payment/method/{act}/act,payment-method-list,Payment Method Action,1,payment_method,Views,view_act,json,,
+payment-method-add,/payment/method/add,payment-method-list,Create Payment Method,1,payment_method,Views,view_create,form.pt,,
+payment-method-edit,/payment/method/{id}/edit,payment-method-list,Edit Payment Method,1,payment_method,Views,view_update,form.pt,,
+>>>>>>> 79b6070 (menambahkan routes untuk menu)
 
 # --- MODUL DEPARTEMEN ---
 departmen-list,/department,master-menu,Departemen,1,department,Views,view_list,list.pt,,1
@@ -128,7 +146,10 @@ retur-act,/return/{act}/act,return-list,Return Action,1,returns,Views,view_act,j
 retur-add,/return/add,return-list,Create Return,1,returns,Views,view_create,form.pt,,
 retur-edit,/return/{id}/edit,return-list,Edit Return,1,returns,Views,view_update,form.pt,,
 retur-view,/return/{id}/view,return-list,Read Return,1,returns,Views,view_read,form.pt,,
+<<<<<<< HEAD
 
+=======
+>>>>>>> 79b6070 (menambahkan routes untuk menu)
 # --- MODUL CHART OF ACCOUNT (CoA) ---
 coa-list,/coa,master-menu,Chart of Account,1,coa,Views,view_list,list.pt,,1
 coa-act,/coa/{act}/act,coa-list,CoA Action,1,coa,Views,view_act,json,,
@@ -141,6 +162,7 @@ invoice-category-list,/invoice/category,master-menu,invoice Category,1,invoice_c
 invoice-category-act,/invoice/category/{act}/act,invoice-category-list,Inv Category Action,1,invoice_category,Views,view_act,json,,
 invoice-category-add,/invoice/category/add,invoice-category-list,Create Inv Category,1,invoice_category,Views,view_create,form.pt,,
 invoice-category-edit,/invoice/category/{id}/edit,invoice-category-list,Edit Inv Category,1,invoice_category,Views,view_update,form.pt,,
+<<<<<<< HEAD
 invoice-category-delete,/invoice/category/{id}/delete,invoice-category-list,Delete Inv Category,1,invoice_category,Views,view_delete,form.pt,,
 
 # --- MODUL INVOICE ITEMS ---
@@ -149,3 +171,6 @@ invoice-item-act,/invoice/item/{act}/act,invoice-item-list,Invoice Item Action,1
 invoice-item-add,/invoice/item/add,invoice-item-list,Create Invoice Item,1,invoice_item,Views,view_create,form.pt,,
 invoice-item-edit,/invoice/item/{id}/edit,invoice-item-list,Edit Invoice Item,1,invoice_item,Views,view_update,form.pt,,
 invoice-item-delete,/invoice/item/{id}/delete,invoice-item-list,Delete Invoice Item,1,invoice_item,Views,view_delete,form.pt,,
+=======
+invoice-category-delete,/invoice/category/{id}/delete,invoice-category-list,Delete Inv Category,1,invoice_category,Views,view_delete,form.pt,,
+>>>>>>> 79b6070 (menambahkan routes untuk menu)
