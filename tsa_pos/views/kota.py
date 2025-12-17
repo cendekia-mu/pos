@@ -1,26 +1,31 @@
-from deform import widget
 import colander
+from deform import widget
 from ..models import Kota, Provinsi
 from . import BaseViews
 from ..i18n import _
 
 
 class ListSchema(colander.Schema):
-    id = colander.SchemaNode(colander.Integer(),
-                                missing=colander.drop,
-                                title="Action",
-                                widget=widget.HiddenWidget(),
+    id = colander.SchemaNode(
+        colander.Integer(),
+        missing=colander.drop,
+        title="Action",
+        widget=widget.HiddenWidget(),
     )
     name = colander.SchemaNode(colander.String())
+    provinsi = colander.SchemaNode(
+        colander.String(), title="Provinsi", field=Provinsi.name
+    )
 
 
 class CreateSchema(colander.Schema):
     # Define your schema fields here
-    name = colander.SchemaNode(colander.String(),
-                                validator=colander.Length(min=3, max=50)
+    name = colander.SchemaNode(
+        colander.String(), validator=colander.Length(min=3, max=50)
     )
-    provinsi_id = colander.SchemaNode(colander.Integer(),
-                                widget=widget.SelectWidget(values=[]),
+    provinsi_id = colander.SchemaNode(
+        colander.Integer(),
+        widget=widget.SelectWidget(values=[]),
     )
 
     def after_bind(self, schema, appstruct):
@@ -32,12 +37,12 @@ class CreateSchema(colander.Schema):
 
 
 class UpdateSchema(CreateSchema):
-    id = colander.SchemaNode(colander.Integer(),
-                                missing=colander.drop,
-                                widget=widget.HiddenWidget()
+    id = colander.SchemaNode(
+        colander.Integer(), missing=colander.drop, widget=widget.HiddenWidget()
     )
-    provinsi_id = colander.SchemaNode(colander.Integer(),
-                                widget=widget.SelectWidget(values=[]),
+    provinsi_id = colander.SchemaNode(
+        colander.Integer(),
+        widget=widget.SelectWidget(values=[]),
     )
 
     def after_bind(self, schema, appstruct):
