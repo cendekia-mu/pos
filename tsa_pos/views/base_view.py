@@ -96,6 +96,7 @@ class BaseViews(object):
         self.list_buttons = (btn_add,)
         self.list_upload = (btn_upload,)
         self.column_filter = False
+        
         # end of datatable settings
         self.bindings = {}
         
@@ -198,7 +199,8 @@ class BaseViews(object):
 
         arg = kwargs and kwargs or {}
         arg.update(url=self.list_url, col_defs=self.list_col_defs,
-                   cols=self.list_cols, buttons=self.list_buttons)
+                #    cols=self.list_cols, 
+                   buttons=self.list_buttons)
         return arg
 
 
