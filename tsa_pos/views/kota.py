@@ -1,5 +1,6 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 import colander
 <<<<<<< HEAD
@@ -9,6 +10,12 @@ import colander
 >>>>>>> ed1299d (invoice dan form login)
 =======
 >>>>>>> ee0465c (Perubahan)
+=======
+=======
+import colander
+<<<<<<< HEAD
+>>>>>>> ba4e848 (update kota)
+>>>>>>> 90e1579 (update kota)
 from deform import widget
 import colander
 from ..models import Kota,Provinsi
@@ -16,12 +23,16 @@ from ..models import Kota,Provinsi
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 90e1579 (update kota)
 from ..models import Kota, Provinsi
 =======
 =======
 from ..models import Kota, Provinsi
 >>>>>>> fb37090 (update kota)
 >>>>>>> 2814337 (update kota)
+<<<<<<< HEAD
 =======
 from ..models import Kota, Provinsi
 >>>>>>> ed1299d (invoice dan form login)
@@ -33,6 +44,8 @@ from ..models import Kota, Provinsi
 =======
 from ..models import Kota, Provinsi
 >>>>>>> ed1299d (invoice dan form login)
+=======
+>>>>>>> 90e1579 (update kota)
 from . import BaseViews
 from ..i18n import _
 
@@ -112,6 +125,9 @@ class Views(BaseViews):
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 90e1579 (update kota)
         return query.join(Provinsi, Provinsi.id == Kota.provinsi_id)
 
 =======
@@ -121,6 +137,7 @@ class Views(BaseViews):
         return query.join(Provinsi, Provinsi.id == Kota.provinsi_id)
 
 >>>>>>> 2814337 (update kota)
+<<<<<<< HEAD
 =======
             exc["name"] = _(
                 'Name {} already exists.'.format(name))
@@ -142,3 +159,5 @@ class Views(BaseViews):
 =======
             raise exc
 >>>>>>> ee0465c (Perubahan)
+=======
+>>>>>>> 90e1579 (update kota)
