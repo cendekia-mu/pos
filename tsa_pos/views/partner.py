@@ -3,10 +3,7 @@ from math import atan
 from deform import widget
 import colander
 from sqlalchemy import values
-<<<<<<< HEAD
-# from tsa_pos.alembic.versions import bd39e1834c1b_tambah_models_invoice
-=======
->>>>>>> 3d44297 (update invoice)
+# from tsa_pos.alembic.versions import bd39e1834c1b_tambah_models_invoiced44297 (update invoice)
 from tsa_pos.models.wilayah import Provinsi, Kota, Kecamatan
 from tsa_pos.views import kecamatan, provinsi
 from tsa_pos.widgets import tsa_widget
