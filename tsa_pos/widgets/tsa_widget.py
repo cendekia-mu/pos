@@ -13,6 +13,9 @@ from deform.i18n import _
 from datetime import date, datetime
 _logging = logging.getLogger(__name__)
 
+class FormWidget(widget.FormWidget):
+    readonly_template = "tsa_pos:templates/readonly/form.pt"
+
 
 class Select2Widget(widget.Select2Widget):
     """
