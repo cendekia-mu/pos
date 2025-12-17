@@ -2,12 +2,36 @@ from deform import widget, Form
 import colander
 from deform.widget import SequenceWidget
 from ..models import Partner, Product, Invoices, InvoiceItems
+from deform import widget
+import colander
+from ..models import Invoices, InvoiceItems, Partner, Product
 from . import BaseViews
 from ..i18n import _
 
+class InvoiceItemSchema(colander.Schema):
+    product_id = colander.SchemaNode(
+        colander.Integer(),
+        widget=widget.SelectWidget(values=[])
+    )
+    qty = colander.SchemaNode(colander.Integer())
+    price = colander.SchemaNode(colander.Float())
+    amount = colander.SchemaNode(colander.Float())
+
+    def after_bind(self, schema, appstruct):
+        products = Product.query().all()
+        schema['product_id'].widget.values = [(str(p.id), p.name) for p in products]
+
+class InvoiceItemsSequence(colander.SequenceSchema):
+    invoice_item = InvoiceItemSchema()
 
 
-# Create / Update Schema
+class ListSchema(colander.Schema):
+    id = colander.SchemaNode(colander.Integer(), missing=colander.drop, widget=widget.HiddenWidget())
+    name = colander.SchemaNode(colander.String())
+    code = colander.SchemaNode(colander.String())
+    amount = colander.SchemaNode(colander.Float())
+    partner_id = colander.SchemaNode(colander.Integer(), title='Partner')
+
 class CreateSchema(colander.Schema):
     name = colander.SchemaNode(colander.String(), validator=colander.Length(min=1, max=128))
     code = colander.SchemaNode(colander.String(), validator=colander.Length(min=1, max=128))
@@ -35,6 +59,8 @@ class ListSchema (colander.Schema):
         widget=widget.SelectWidget(values=[]),
         title='Partner'
     )
+    partner_id = colander.SchemaNode(colander.Integer(), widget=widget.SelectWidget(values=[]))
+    invoice_items = InvoiceItemsSequence()
 
     def after_bind(self, schema, appstruct):
         partners = Partner.query().all()
@@ -42,7 +68,7 @@ class ListSchema (colander.Schema):
 
 class UpdateSchema(CreateSchema):
     id = colander.SchemaNode(colander.Integer(), missing=colander.drop, widget=widget.HiddenWidget())
-    
+
 class Views(BaseViews):
     def __init__(self, request):
         super().__init__(request)
@@ -85,6 +111,7 @@ class Views(BaseViews):
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         self.save_items(invoice, form_data.get('invoice_items', []))
 =======
         self.save_items(invoice, form_data.get('invoice_items', []))
@@ -97,3 +124,7 @@ class Views(BaseViews):
 =======
         self.save_items(invoice, form_data.get('invoice_items', []))
 >>>>>>> f266096 (update invoice)
+=======
+        self.save_items(invoice, form_data.get('invoice_items', []))
+        self.save_items(invoice, form_data.get('invoice_items', []))
+>>>>>>> ed1299d (invoice dan form login)

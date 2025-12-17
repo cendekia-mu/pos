@@ -1,7 +1,7 @@
 import colander
-<<<<<<< HEAD
 from deform import widget
 from ..models import Kota,Provinsi
+<<<<<<< HEAD
 <<<<<<< HEAD
 from ..models import Kota, Provinsi
 =======
@@ -9,6 +9,9 @@ from ..models import Kota, Provinsi
 from ..models import Kota, Provinsi
 >>>>>>> fb37090 (update kota)
 >>>>>>> 2814337 (update kota)
+=======
+from ..models import Kota, Provinsi
+>>>>>>> ed1299d (invoice dan form login)
 from . import BaseViews
 from ..i18n import _
 
