@@ -199,7 +199,10 @@ class BaseViews(object):
 
         arg = kwargs and kwargs or {}
         arg.update(url=self.list_url, col_defs=self.list_col_defs,
+<<<<<<< HEAD
                 #    cols=self.list_cols, 
+=======
+>>>>>>> 84c5a9a (update invoice)
                    buttons=self.list_buttons)
         return arg
 
