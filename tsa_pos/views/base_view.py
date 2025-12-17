@@ -202,6 +202,7 @@ class BaseViews(object):
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         buttons=self.list_buttons)
 =======
 =======
@@ -214,6 +215,10 @@ class BaseViews(object):
 =======
         buttons=self.list_buttons)
 >>>>>>> 55d395b (base views)
+=======
+                #    cols=self.list_cols, 
+                   buttons=self.list_buttons)
+>>>>>>> 6c50c3f (feat: Add multiple database migrations for product, accounting, permissions, partner, invoice, wilayah, and payment models)
         return arg
 
 

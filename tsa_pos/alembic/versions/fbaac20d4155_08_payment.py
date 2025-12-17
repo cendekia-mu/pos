@@ -13,7 +13,11 @@ from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
 revision: str = 'fbaac20d4155'
+<<<<<<< HEAD
 down_revision: Union[str, Sequence[str], None] = '59ba13abd48d'
+=======
+down_revision: Union[str, Sequence[str], None] = '9ba048e11e8d'
+>>>>>>> 6c50c3f (feat: Add multiple database migrations for product, accounting, permissions, partner, invoice, wilayah, and payment models)
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
@@ -28,11 +32,140 @@ def upgrade() -> None:
     sa.Column('created_at', sa.DateTime(), server_default=sa.text('now()'), nullable=True),
     sa.PrimaryKeyConstraint('id', name=op.f('pk_payment'))
     )
+<<<<<<< HEAD
+=======
+    
+    
+    # op.drop_constraint(op.f('fk_invoice_items_invoice_det_id_invoices'), 'invoice_items', type_='foreignkey')
+    # op.create_foreign_key(op.f('fk_invoice_items_order_id_order_items'), 'invoice_items', 'order_items', ['order_id'], ['id'], ondelete='CASCADE')
+    # op.create_foreign_key(op.f('fk_invoice_items_order_item_id_order_items'), 'invoice_items', 'order_items', ['order_item_id'], ['id'], ondelete='CASCADE')
+    # op.drop_column('invoice_items', 'invoice_det_id')
+    # op.drop_column('invoice_items', 'id')
+    # op.drop_column('invoice_items', 'status')
+    # op.alter_column('invoices', 'update_uid',
+    #            existing_type=sa.INTEGER(),
+    #            nullable=False)
+    # op.drop_constraint(op.f('fk_invoices_update_uid_users'), 'invoices', type_='foreignkey')
+    # op.drop_constraint(op.f('fk_invoices_create_uid_users'), 'invoices', type_='foreignkey')
+    # op.create_foreign_key(op.f('fk_invoices_create_uid_users'), 'invoices', 'users', ['create_uid'], ['id'], onupdate='CASCADE', ondelete='CASCADE')
+    # op.create_foreign_key(op.f('fk_invoices_update_uid_users'), 'invoices', 'users', ['update_uid'], ['id'], onupdate='CASCADE', ondelete='CASCADE')
+    # op.alter_column('kecamatan', 'update_uid',
+    #            existing_type=sa.INTEGER(),
+    #            nullable=False)
+    
+    # op.drop_constraint(op.f('fk_kecamatan_update_uid_users'), 'kecamatan', type_='foreignkey')
+    # op.drop_constraint(op.f('fk_kecamatan_create_uid_users'), 'kecamatan', type_='foreignkey')
+    # op.create_foreign_key(op.f('fk_kecamatan_create_uid_users'), 'kecamatan', 'users', ['create_uid'], ['id'], onupdate='CASCADE', ondelete='CASCADE')
+    # op.create_foreign_key(op.f('fk_kecamatan_update_uid_users'), 'kecamatan', 'users', ['update_uid'], ['id'], onupdate='CASCADE', ondelete='CASCADE')
+    # op.alter_column('kota', 'update_uid',
+    #            existing_type=sa.INTEGER(),
+    #            nullable=False)
+    # op.drop_constraint(op.f('fk_kota_create_uid_users'), 'kota', type_='foreignkey')
+    # op.drop_constraint(op.f('fk_kota_update_uid_users'), 'kota', type_='foreignkey')
+    # op.create_foreign_key(op.f('fk_kota_create_uid_users'), 'kota', 'users', ['create_uid'], ['id'], onupdate='CASCADE', ondelete='CASCADE')
+    # op.create_foreign_key(op.f('fk_kota_update_uid_users'), 'kota', 'users', ['update_uid'], ['id'], onupdate='CASCADE', ondelete='CASCADE')
+    # op.alter_column('partner', 'update_uid',
+    #            existing_type=sa.INTEGER(),
+    #            nullable=False)
+    # op.drop_constraint(op.f('fk_partner_create_uid_users'), 'partner', type_='foreignkey')
+    # op.drop_constraint(op.f('fk_partner_update_uid_users'), 'partner', type_='foreignkey')
+    # op.create_foreign_key(op.f('fk_partner_update_uid_users'), 'partner', 'users', ['update_uid'], ['id'], onupdate='CASCADE', ondelete='CASCADE')
+    # op.create_foreign_key(op.f('fk_partner_create_uid_users'), 'partner', 'users', ['create_uid'], ['id'], onupdate='CASCADE', ondelete='CASCADE')
+    # op.alter_column('product', 'update_uid',
+    #            existing_type=sa.INTEGER(),
+    #            nullable=False)
+    # op.drop_constraint(op.f('fk_product_update_uid_users'), 'product', type_='foreignkey')
+    # op.drop_constraint(op.f('fk_product_create_uid_users'), 'product', type_='foreignkey')
+    # op.create_foreign_key(op.f('fk_product_create_uid_users'), 'product', 'users', ['create_uid'], ['id'], onupdate='CASCADE', ondelete='CASCADE')
+    # op.create_foreign_key(op.f('fk_product_update_uid_users'), 'product', 'users', ['update_uid'], ['id'], onupdate='CASCADE', ondelete='CASCADE')
+    # op.alter_column('product_category', 'update_uid',
+    #            existing_type=sa.INTEGER(),
+    #            nullable=False)
+    # op.drop_constraint(op.f('fk_product_category_update_uid_users'), 'product_category', type_='foreignkey')
+    # op.drop_constraint(op.f('fk_product_category_create_uid_users'), 'product_category', type_='foreignkey')
+    # op.create_foreign_key(op.f('fk_product_category_create_uid_users'), 'product_category', 'users', ['create_uid'], ['id'], onupdate='CASCADE', ondelete='CASCADE')
+    # op.create_foreign_key(op.f('fk_product_category_update_uid_users'), 'product_category', 'users', ['update_uid'], ['id'], onupdate='CASCADE', ondelete='CASCADE')
+    # op.alter_column('provinsi', 'update_uid',
+    #            existing_type=sa.INTEGER(),
+    #            nullable=False)
+    # op.drop_constraint(op.f('fk_provinsi_create_uid_users'), 'provinsi', type_='foreignkey')
+    # op.drop_constraint(op.f('fk_provinsi_update_uid_users'), 'provinsi', type_='foreignkey')
+    # op.create_foreign_key(op.f('fk_provinsi_update_uid_users'), 'provinsi', 'users', ['update_uid'], ['id'], onupdate='CASCADE', ondelete='CASCADE')
+    # op.create_foreign_key(op.f('fk_provinsi_create_uid_users'), 'provinsi', 'users', ['create_uid'], ['id'], onupdate='CASCADE', ondelete='CASCADE')
+>>>>>>> 6c50c3f (feat: Add multiple database migrations for product, accounting, permissions, partner, invoice, wilayah, and payment models)
     # ### end Alembic commands ###
 
 
 def downgrade() -> None:
     """Downgrade schema."""
+<<<<<<< HEAD
+=======
+    # ### commands auto generated by Alembic - please adjust! ###
+    # op.drop_constraint(op.f('fk_provinsi_create_uid_users'), 'provinsi', type_='foreignkey')
+    # op.drop_constraint(op.f('fk_provinsi_update_uid_users'), 'provinsi', type_='foreignkey')
+    # op.create_foreign_key(op.f('fk_provinsi_update_uid_users'), 'provinsi', 'users', ['update_uid'], ['id'], ondelete='RESTRICT')
+    # op.create_foreign_key(op.f('fk_provinsi_create_uid_users'), 'provinsi', 'users', ['create_uid'], ['id'], ondelete='RESTRICT')
+    # op.alter_column('provinsi', 'update_uid',
+    #            existing_type=sa.INTEGER(),
+    #            nullable=True)
+    # op.drop_constraint(op.f('fk_product_category_update_uid_users'), 'product_category', type_='foreignkey')
+    # op.drop_constraint(op.f('fk_product_category_create_uid_users'), 'product_category', type_='foreignkey')
+    # op.create_foreign_key(op.f('fk_product_category_create_uid_users'), 'product_category', 'users', ['create_uid'], ['id'], ondelete='RESTRICT')
+    # op.create_foreign_key(op.f('fk_product_category_update_uid_users'), 'product_category', 'users', ['update_uid'], ['id'], ondelete='RESTRICT')
+    # op.alter_column('product_category', 'update_uid',
+    #            existing_type=sa.INTEGER(),
+    #            nullable=True)
+    # op.drop_constraint(op.f('fk_product_update_uid_users'), 'product', type_='foreignkey')
+    # op.drop_constraint(op.f('fk_product_create_uid_users'), 'product', type_='foreignkey')
+    # op.create_foreign_key(op.f('fk_product_create_uid_users'), 'product', 'users', ['create_uid'], ['id'], ondelete='RESTRICT')
+    # op.create_foreign_key(op.f('fk_product_update_uid_users'), 'product', 'users', ['update_uid'], ['id'], ondelete='RESTRICT')
+    # op.alter_column('product', 'update_uid',
+    #            existing_type=sa.INTEGER(),
+    #            nullable=True)
+    # op.drop_constraint(op.f('fk_partner_create_uid_users'), 'partner', type_='foreignkey')
+    # op.drop_constraint(op.f('fk_partner_update_uid_users'), 'partner', type_='foreignkey')
+    # op.create_foreign_key(op.f('fk_partner_update_uid_users'), 'partner', 'users', ['update_uid'], ['id'], ondelete='RESTRICT')
+    # op.create_foreign_key(op.f('fk_partner_create_uid_users'), 'partner', 'users', ['create_uid'], ['id'], ondelete='RESTRICT')
+    # op.alter_column('partner', 'update_uid',
+    #            existing_type=sa.INTEGER(),
+    #            nullable=True)
+    # op.drop_constraint(op.f('fk_kota_update_uid_users'), 'kota', type_='foreignkey')
+    # op.drop_constraint(op.f('fk_kota_create_uid_users'), 'kota', type_='foreignkey')
+    # op.create_foreign_key(op.f('fk_kota_update_uid_users'), 'kota', 'users', ['update_uid'], ['id'], ondelete='RESTRICT')
+    # op.create_foreign_key(op.f('fk_kota_create_uid_users'), 'kota', 'users', ['create_uid'], ['id'], ondelete='RESTRICT')
+    # op.alter_column('kota', 'update_uid',
+    #            existing_type=sa.INTEGER(),
+    #            nullable=True)
+    # op.drop_constraint(op.f('fk_kecamatan_update_uid_users'), 'kecamatan', type_='foreignkey')
+    # op.drop_constraint(op.f('fk_kecamatan_create_uid_users'), 'kecamatan', type_='foreignkey')
+    # op.create_foreign_key(op.f('fk_kecamatan_create_uid_users'), 'kecamatan', 'users', ['create_uid'], ['id'], ondelete='RESTRICT')
+    # op.create_foreign_key(op.f('fk_kecamatan_update_uid_users'), 'kecamatan', 'users', ['update_uid'], ['id'], ondelete='RESTRICT')
+    # op.alter_column('kecamatan', 'update_uid',
+    #            existing_type=sa.INTEGER(),
+    #            nullable=True)
+    # op.drop_constraint(op.f('fk_invoices_update_uid_users'), 'invoices', type_='foreignkey')
+    # op.drop_constraint(op.f('fk_invoices_create_uid_users'), 'invoices', type_='foreignkey')
+    # op.create_foreign_key(op.f('fk_invoices_create_uid_users'), 'invoices', 'users', ['create_uid'], ['id'], ondelete='RESTRICT')
+    # op.create_foreign_key(op.f('fk_invoices_update_uid_users'), 'invoices', 'users', ['update_uid'], ['id'], ondelete='RESTRICT')
+    # op.alter_column('invoices', 'update_uid',
+    #            existing_type=sa.INTEGER(),
+    #            nullable=True)
+    # op.add_column('invoice_items', sa.Column('status', sa.SMALLINT(), autoincrement=False, nullable=True))
+    # op.add_column('invoice_items', sa.Column('id', sa.INTEGER(), autoincrement=True, nullable=False))
+    # op.add_column('invoice_items', sa.Column('invoice_det_id', sa.INTEGER(), autoincrement=False, nullable=False))
+    # op.drop_constraint(op.f('fk_invoice_items_order_item_id_order_items'), 'invoice_items', type_='foreignkey')
+    # op.drop_constraint(op.f('fk_invoice_items_order_id_order_items'), 'invoice_items', type_='foreignkey')
+    # op.create_foreign_key(op.f('fk_invoice_items_invoice_det_id_invoices'), 'invoice_items', 'invoices', ['invoice_det_id'], ['id'], ondelete='CASCADE')
+
+    # op.create_table('beaker_cache',
+    # sa.Column('id', sa.INTEGER(), autoincrement=True, nullable=False),
+    # sa.Column('namespace', sa.VARCHAR(length=255), autoincrement=False, nullable=False),
+    # sa.Column('accessed', postgresql.TIMESTAMP(), autoincrement=False, nullable=False),
+    # sa.Column('created', postgresql.TIMESTAMP(), autoincrement=False, nullable=False),
+    # sa.Column('data', postgresql.BYTEA(), autoincrement=False, nullable=False),
+    # sa.PrimaryKeyConstraint('id', name=op.f('beaker_cache_pkey')),
+    # sa.UniqueConstraint('namespace', name=op.f('beaker_cache_namespace_key'), postgresql_include=[], postgresql_nulls_not_distinct=False)
+>>>>>>> 6c50c3f (feat: Add multiple database migrations for product, accounting, permissions, partner, invoice, wilayah, and payment models)
 
     op.drop_table('payment')
     # ### end Alembic commands ###
