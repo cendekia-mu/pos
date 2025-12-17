@@ -1,10 +1,7 @@
 import colander
-<<<<<<< HEAD
 from deform import widget
 from ..models import Kota,Provinsi
-=======
 from ..models import Kota, Provinsi
->>>>>>> fb37090 (update kota)
 from . import BaseViews
 from ..i18n import _
 
