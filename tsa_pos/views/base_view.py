@@ -199,7 +199,12 @@ class BaseViews(object):
 
         arg = kwargs and kwargs or {}
         arg.update(url=self.list_url, col_defs=self.list_col_defs,
+<<<<<<< HEAD
         buttons=self.list_buttons)
+=======
+                #    cols=self.list_cols, 
+                   buttons=self.list_buttons)
+>>>>>>> 6c50c3f (feat: Add multiple database migrations for product, accounting, permissions, partner, invoice, wilayah, and payment models)
         return arg
 
 
