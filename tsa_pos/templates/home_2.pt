@@ -1,0 +1,423 @@
+<html metal:use-macro="load: ./layout.pt">
+
+<div metal:fill-slot="content">
+  
+  <style>
+    /* BASE AESTHETIC STYLES */
+    :root {
+      --primary-color: #6f42c1; /* Ungu gelap */
+      --secondary-color: #8e44ad; /* Ungu sedang */
+      --soft-purple-bg: #f3f0fc; /* Background sangat lembut */
+      --light-purple: #e0d4fc; /* Ungu muda */
+      --text-dark: #333;
+      --text-soft: #666;
+      --card-bg: white;
+      --card-shadow: 0 10px 30px rgba(111, 66, 193, 0.1);
+      --glass-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+      --border-radius-lg: 25px;
+      --border-radius-md: 15px;
+    }
+
+    body {
+      background-color: var(--soft-purple-bg);
+      font-family: 'Poppins', sans-serif;
+    }
+
+    /* DASHBOARD LAYOUT */
+    .dashboard-wrapper {
+      display: flex;
+      min-height: 100vh;
+      background-color: var(--soft-purple-bg);
+    }
+
+    /* SIDEBAR (AESTHETIC TOUCH) */
+    .sidebar {
+      width: 90px;
+      background: var(--card-bg);
+      border-right: 1px solid #f0f0f0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 30px;
+      box-shadow: 2px 0 10px rgba(0,0,0,0.03);
+      border-top-right-radius: var(--border-radius-lg);
+      border-bottom-right-radius: var(--border-radius-lg);
+    }
+
+    .sidebar-icon {
+      width: 60px;
+      height: 60px;
+      border-radius: var(--border-radius-md);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 20px;
+      color: var(--text-soft);
+      transition: all 0.3s ease;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .sidebar-icon:hover {
+      background-color: var(--light-purple);
+      color: var(--primary-color);
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(111, 66, 193, 0.1);
+    }
+    .sidebar-icon.active {
+      background-color: var(--primary-color);
+      color: white;
+      box-shadow: 0 5px 15px rgba(111, 66, 193, 0.4);
+    }
+    
+    .sidebar-icon i { font-size: 1.4rem; }
+    .edit-btn { background-color: var(--light-purple); color: var(--primary-color); }
+
+    /* MAIN CONTENT */
+    .main-content {
+      flex-grow: 1;
+      padding: 40px 60px;
+    }
+
+    .header-section {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 50px;
+      background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+      border-radius: var(--border-radius-lg);
+      padding: 30px 40px;
+      color: white;
+      box-shadow: 0 10px 30px rgba(111, 66, 193, 0.4);
+      position: relative;
+      overflow: hidden; /* Untuk efek dekorasi */
+    }
+    
+    .header-section::before { /* Efek gelombang/pattern */
+        content: '';
+        position: absolute;
+        bottom: -50px;
+        right: -50px;
+        width: 150px;
+        height: 150px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+        transform: rotate(20deg);
+    }
+
+    .app-title {
+      font-weight: 700;
+      color: white;
+      font-size: 2.5rem;
+      margin-bottom: 5px;
+      text-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .user-info span {
+        font-size: 1rem;
+        color: rgba(255, 255, 255, 0.9);
+        font-weight: 500;
+    }
+
+    .header-icons {
+      display: flex;
+      gap: 20px;
+      color: rgba(255, 255, 255, 0.8);
+    }
+    .header-icons i {
+        cursor: pointer;
+        transition: color 0.3s;
+    }
+    .header-icons i:hover {
+        color: white;
+    }
+    .profile-avatar {
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      overflow: hidden;
+      border: 2px solid rgba(255, 255, 255, 0.7);
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    /* MODULES GRID (Glassmorphism inspired) */
+    .section-title {
+      font-size: 1.3rem;
+      color: var(--text-dark);
+      margin-bottom: 30px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .modules-grid {
+      display: grid; /* Menggunakan grid untuk layout yang lebih rapi */
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); /* Responsif */
+      gap: 30px;
+      margin-bottom: 60px;
+    }
+
+    .module-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none; /* Untuk link */
+      color: var(--text-dark);
+    }
+
+    .module-item:hover {
+      transform: translateY(-8px);
+    }
+
+    .icon-circle {
+      width: 90px;
+      height: 90px;
+      background-color: var(--card-bg);
+      border-radius: 50%;
+      box-shadow: var(--glass-shadow);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 1.8rem;
+      color: var(--primary-color);
+      position: relative;
+      border: 1px solid rgba(255,255,255,0.8); /* Border tipis untuk efek kaca */
+      overflow: hidden;
+    }
+    
+    .icon-circle::before { /* Dekorasi internal */
+        content: '';
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background: var(--light-purple);
+        opacity: 0.15;
+        border-radius: 50%;
+        transform: scale(0.8) rotate(45deg);
+        transition: all 0.3s ease;
+    }
+    .module-item:hover .icon-circle::before {
+        transform: scale(1) rotate(0deg);
+        opacity: 0.25;
+    }
+
+    .module-label {
+      font-weight: 600;
+      font-size: 1rem;
+      color: var(--text-soft);
+      text-align: center;
+    }
+
+    /* INFO CARDS (NEUMORPHISM / SOFT UI) */
+    .info-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 25px;
+    }
+
+    .info-card {
+      background: var(--soft-purple-bg);
+      border-radius: var(--border-radius-lg);
+      padding: 25px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      box-shadow: inset 5px 5px 10px rgba(111, 66, 193, 0.05),
+                  inset -5px -5px 10px rgba(255, 255, 255, 0.8),
+                  5px 5px 15px rgba(0,0,0,0.05); /* Soft Neumorphism Shadow */
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .info-card:hover {
+      transform: translateY(-5px);
+      box-shadow: inset 3px 3px 8px rgba(111, 66, 193, 0.08),
+                  inset -3px -3px 8px rgba(255, 255, 255, 0.9),
+                  8px 8px 20px rgba(0,0,0,0.08);
+    }
+    
+    .card-icon {
+        font-size: 2.5rem;
+        color: var(--primary-color);
+        margin-bottom: 15px;
+        opacity: 0.7;
+    }
+
+    .card-title {
+        font-weight: 600;
+        font-size: 1.1rem;
+        color: var(--text-dark);
+        margin-bottom: 5px;
+    }
+
+    .card-value {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: var(--primary-color);
+    }
+    
+    .card-trend {
+        font-size: 0.85rem;
+        color: #28a745; /* Hijau */
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        margin-top: 10px;
+    }
+    .card-trend.negative {
+        color: #dc3545; /* Merah */
+    }
+
+    /* LOGIN STATE (if not logged in) */
+    .login-container {
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(135deg, #fdfbfd 0%, #e0d4fc 100%);
+    }
+    .login-box {
+      background: var(--card-bg);
+      padding: 40px;
+      border-radius: var(--border-radius-lg);
+      box-shadow: var(--card-shadow);
+      text-align: center;
+    }
+    .btn-primary-custom {
+      background-color: var(--primary-color);
+      color: white;
+      padding: 10px 20px;
+      border-radius: var(--border-radius-md);
+      text-decoration: none;
+      display: inline-block;
+      margin-top: 20px;
+      transition: background 0.3s, transform 0.2s;
+    }
+    .btn-primary-custom:hover {
+        background-color: var(--secondary-color);
+        transform: translateY(-2px);
+    }
+
+  </style>
+
+  <div tal:condition="request.user" class="dashboard-wrapper">
+    <!-- Jika sudah login -->
+    <div class="sidebar">
+      <div class="sidebar-icon edit-btn"><i class="fas fa-pencil-alt"></i></div>
+      <div class="sidebar-icon active"><i class="fas fa-home"></i></div>
+      <div class="sidebar-icon"><i class="fas fa-chart-line"></i></div>
+      <div class="sidebar-icon"><i class="fas fa-envelope"></i></div>
+      <div style="margin-top: auto; margin-bottom: 30px;">
+         <a href="${request.route_url('logout')}" class="sidebar-icon" title="Logout">
+           <i class="fas fa-sign-out-alt"></i>
+         </a>
+      </div>
+    </div>
+
+    <div class="main-content">
+      
+      <div class="header-section">
+        <div>
+          <div style="font-size: 1rem; opacity: 0.9;">Welcome back,</div>
+          <h1 class="app-title">TSA Kasir</h1>
+          <span class="user-info">
+            ${request.user.user_name} (${request.user.email})
+          </span>
+        </div>
+        <div class="header-icons">
+          <i class="fas fa-bell fa-lg"></i>
+          <i class="fas fa-cog fa-lg"></i>
+          <div class="profile-avatar">
+             <img src="https://ui-avatars.com/api/?name=${request.user.user_name}&background=8e44ad&color=fff" width="100%" height="100%" alt="User Avatar" style="object-fit: cover;"/>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-title">
+        <i class="fas fa-th-large" style="color: var(--primary-color);"></i> Select Module
+      </div>
+
+      <div class="modules-grid">
+        <a href="#" class="module-item">
+          <div class="icon-circle"><i class="fas fa-shopping-cart"></i></div>
+          <span class="module-label">Order</span>
+        </a>
+        
+        <a href="#" class="module-item">
+          <div class="icon-circle"><i class="fas fa-box-open"></i></div>
+          <span class="module-label">Product</span>
+        </a>
+
+        <a href="#" class="module-item">
+          <div class="icon-circle"><i class="fas fa-users"></i></div>
+          <span class="module-label">Customer</span>
+        </a>
+
+        <a href="#" class="module-item">
+          <div class="icon-circle"><i class="fas fa-file-invoice-dollar"></i></div>
+          <span class="module-label">Invoice</span>
+        </a>
+
+        <a href="#" class="module-item">
+          <div class="icon-circle"><i class="fas fa-wallet"></i></div>
+          <span class="module-label">Payment</span>
+        </a>
+
+        <a href="${request.route_url('manage_user') if 'manage_user' in request.matchdict else '#'}" class="module-item">
+          <div class="icon-circle"><i class="fas fa-user-cog"></i></div>
+          <span class="module-label">Manage User</span>
+        </a>
+      </div>
+
+      <div class="section-title">
+        <i class="fas fa-info-circle" style="color: var(--primary-color);"></i> Quick Overview
+      </div>
+
+      <div class="info-cards-grid">
+        <div class="info-card">
+           <i class="fas fa-dollar-sign card-icon"></i>
+           <div class="card-title">Total Sales</div>
+           <div class="card-value">$2,145.00</div>
+           <div class="card-trend"><i class="fas fa-arrow-up"></i> +12% this month</div>
+        </div>
+        <div class="info-card">
+           <i class="fas fa-chart-pie card-icon"></i>
+           <div class="card-title">New Orders</div>
+           <div class="card-value">124</div>
+           <div class="card-trend"><i class="fas fa-arrow-up"></i> +5% this week</div>
+        </div>
+        <div class="info-card">
+           <i class="fas fa-users card-icon"></i>
+           <div class="card-title">New Customers</div>
+           <div class="card-value">18</div>
+           <div class="card-trend"><i class="fas fa-arrow-up"></i> +2% this week</div>
+        </div>
+        <div class="info-card">
+           <i class="fas fa-box-open card-icon"></i>
+           <div class="card-title">Stock Issues</div>
+           <div class="card-value" style="color: #dc3545;">3</div>
+           <div class="card-trend negative"><i class="fas fa-arrow-down"></i> -1 this week</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div tal:condition="not request.user" class="login-container">
+    <div class="login-box">
+      <i class="fas fa-cash-register fa-4x" style="color: var(--primary-color); margin-bottom: 25px;"></i>
+      <h2 class="app-title" style="color: var(--text-dark); margin-bottom: 10px;">TSA Kasir</h2>
+      <p style="color: var(--text-soft); margin-bottom: 30px;">Silakan login untuk mengakses dashboard Anda.</p>
+      <a href="${request.route_url('login')}" class="btn-primary-custom">
+        Log In Now <i class="fas fa-arrow-right" style="margin-left: 8px;"></i>
+      </a>
+    </div>
+  </div>
+
+</div>
+</html>

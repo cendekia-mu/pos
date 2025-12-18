@@ -56,22 +56,31 @@ def get_title(request):
         return _('Not Found')
     return _(titles[route_name])
 
-def set_config(settings={}):
-    session_factory = session_factory_from_settings(settings)
-    config = Configurator(settings=settings,
-                          root_factory='tsa_pos.models.auth.RootFactory',
-                          session_factory=session_factory)
+def set_config(config, settings={}):
+
     config.set_default_csrf_options(require_csrf=False)
     config.set_security_policy(MySecurityPolicy(settings["session.secret"]))
+    config.add_request_method(get_title, 'title', reify=True)
+    config.add_request_method(get_user, 'user', reify=True)
+
+    config.add_static_view('static', 'tsa_pos:static',
+                           cache_max_age=3600)
+
+    config.add_static_view('deform_static', 'deform:static')
+    config.add_renderer('csv', 'tsa_pos.tools.CSVRenderer')
+    config.add_renderer('json', json_renderer())
+    config.add_renderer('json_rpc', json_rpc())
+    config.registry['mailer'] = mailer_factory_from_settings(settings)
+
+    return config
+
     # config.add_subscriber(add_cors_headers_response_callback, NewRequest)
     # config.add_request_method(get_app_name, 'app_name', reify=True)
     # config.add_request_method(get_menus, 'menus', reify=True)
     # # config.add_request_method(get_host, '_host', reify=True)
     # config.add_request_method(get_host, 'home', reify=True)
-    config.add_request_method(get_title, 'title', reify=True)
     # config.add_request_method(get_company, 'company', reify=True)
 
-    config.add_request_method(get_user, 'user', reify=True)
     # config.add_request_method(get_departement, 'departement', reify=True)
     # config.add_request_method(get_ibukota, 'ibukota', reify=True)
     # config.add_request_method(get_address, 'address', reify=True)
@@ -114,11 +123,7 @@ def set_config(settings={}):
     #     if not os.path.exists(partner_files):
     #         os.makedirs(partner_files)
 
-    config.add_static_view('static', 'tsa_pos:static',
-                           cache_max_age=3600)
-
-    config.add_static_view('deform_static', 'deform:static')
-
+    
     #     config.add_static_view(partner_idcard_url,
     #                            get_id_card_folder("/", settings=settings),
     #                            cache_max_age=3600)
@@ -126,12 +131,6 @@ def set_config(settings={}):
     #     config.add_static_view('captcha', captcha_files)
     #     config.add_static_view('partner/files', partner_files)
 
-    config.add_renderer('csv', 'tsa_pos.tools.CSVRenderer')
-    config.add_renderer('json', json_renderer())
-    config.add_renderer('json_rpc', json_rpc())
-    config.registry['mailer'] = mailer_factory_from_settings(settings)
-
-    return config
 
 def _add_view_config(config, paket, route):
     _add_route(config, route)
@@ -311,7 +310,7 @@ class AppClass:
     def route_from_csv(self, config, paket="tsa_pos.views", filename="routes.csv"):
         fullpath = os.path.join(self.base_dir, 'scripts', 'data', filename)
         if get_ext(filename) == ".csv":
-            with open(fullpath) as f:
+            with open(fullpath, encoding='utf-8') as f:
                 rows = csv.DictReader(f, skipinitialspace=True)
                 self.route_from_csv_(config, paket, rows=rows)
 
@@ -349,6 +348,7 @@ BASE_APP = AppClass()
 def main(global_config, **settings):
     """ This function returns a Pyramid WSGI application.
     """
+    _logging.info("Starting TSA POS Application")
     # default_resource_registry.registry['jquery.maskMoney'] = {
     #     None: {"js": "opensipkd.base:static/jquery/jquery.maskMoney.min.js"}}
     if not settings.get('localization', ''):
@@ -363,7 +363,12 @@ def main(global_config, **settings):
     settings['captcha_files'] = os.path.join(tmp, "captcha") + os.sep
 
     init_db(settings=settings)
-    config = set_config(settings=settings)
+    session_factory = session_factory_from_settings(settings)
+    config = Configurator(settings=settings,
+                               root_factory='tsa_pos.models.auth.RootFactory',
+                               session_factory=session_factory) 
+    
+    set_config(config=config, settings=settings)
     routes_file = settings.get("route_files") or "routes.csv"
     BASE_APP.route_from_csv(config=config, filename=routes_file)
     BASE_APP.static_view(config=config, settings=settings)

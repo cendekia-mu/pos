@@ -1,18 +1,20 @@
+import datetime
+import logging
 import colander
 import deform
+
+from deform import widget
 from pyramid.httpexceptions import HTTPFound
 from pyramid.csrf import new_csrf_token, get_csrf_token
-from pyramid.exceptions import HTTPNotFound, HTTPForbidden
-from deform import widget
+from pyramid.exceptions import HTTPNotFound
 from datatables import ColumnDT, DataTables
+
 from ..detable import DeTable
 from ..tools import *
-import logging
 from ..models import DBSession
-import datetime
-from ..models import User,UserGroup,UserPermission
-
-_logging = logging.getLogger(__name__)
+from ..widgets import tsa_widget
+from ..i18n import _
+_logging = logging.getLogger(__name__) # error, warning, info, debug
 
 class MemoryTmpStore(dict):
     """ Instances of this class implement the
@@ -49,6 +51,8 @@ class CreateSchema(colander.MappingSchema):
 class UpdateSchema(CreateSchema):
     pass
 
+class ListSchema(UpdateSchema):
+    pass
 
 class ReadSchema(UpdateSchema):
     def after_bind(self, node, kw):
@@ -59,10 +63,14 @@ class ReadSchema(UpdateSchema):
 class BaseViews(object):
     def __init__(self, request):
         self.request = request
+        self.home = request.route_url('home')
+        self.db_session = DBSession
         self.table = None  # Default table, must be overridden
         self.CreateSchema = CreateSchema  # Default schema, must be overridden
-        self.UpdateSchema = UpdateSchema  # Default schema, must be overridden
         self.ReadSchema = ReadSchema  # Default read schema, must be overridden
+        self.UpdateSchema = UpdateSchema  # Default schema, must be overridden
+        self.is_object = False
+        # datatable settings
         self.ListSchema = UpdateSchema  # Default list schema, must be overridden
         self.list_route_name = ''  # Default list route name, must be overridden
         self.allow_view=True
@@ -83,19 +91,21 @@ class BaseViews(object):
         self.scroll_x = False
         self.new_buttons = None
         self.list_col_defs = []
-        self.bindings = {}
         self.columns = []
         self.list_report = (btn_csv, btn_pdf)
         self.list_buttons = (btn_add,)
         self.list_upload = (btn_upload,)
-        self.home = request.route_url('home')
-        self.db_session = DBSession
+        self.column_filter = False
+        
+        # end of datatable settings
+        self.bindings = {}
         
     def get_bindings(self):
         return {}
 
+    # datatable start
     def view_list(self, **kwargs):
-         # Logic to fetch all users from the database goes here
+         # Logic to fetch all data from the database goes here
         """
         custom:
             allow_view = kwargs.get("allow_view", self.allow_view)
@@ -113,49 +123,26 @@ class BaseViews(object):
             html_buttons
         """
 
-        allow_view = kwargs.get("allow_view", self.allow_view)
-        allow_add = kwargs.get("allow_add", self.allow_add)
-        allow_edit = kwargs.get("allow_edit", self.allow_edit)
-        allow_delete = kwargs.get("allow_delete", self.allow_delete)
-        allow_post = kwargs.get("allow_post", self.allow_post)
-        allow_unpost = kwargs.get("allow_unpost", self.allow_unpost)
-        allow_check = kwargs.get("allow_check", self.allow_check)
-        check_field = kwargs.get("check_field", self.check_field)
+        allow_view = kwargs.pop("allow_view", self.allow_view)
+        allow_edit = kwargs.pop("allow_edit", self.allow_edit)
+        allow_delete = kwargs.pop("allow_delete", self.allow_delete)
+        allow_post = kwargs.pop("allow_post", self.allow_post)
+        allow_unpost = kwargs.pop("allow_unpost", self.allow_unpost)
+        allow_check = kwargs.pop("allow_check", self.allow_check)
+        check_field = kwargs.pop("check_field", self.check_field)
 
-        state_save = kwargs.get("state_save", self.state_save)
-        filter_columns = kwargs.get("filter_columns", self.filter_columns)
-        if "server_side" in kwargs:
-            server_side = kwargs.get("server_side")
-        else:
-            server_side = self.server_side
-        new_buttons = kwargs.get("new_buttons")
-        is_object = kwargs.get("is_object")
-        list_url = kwargs.get("list_url", self.list_url)
-        action_suffix = kwargs.get("action_suffix", self.action_suffix)
-        list_schema = kwargs.get("list_schema", self.ListSchema)
-        scroll_y = kwargs.get("scroll_y", self.scroll_y)
-        scroll_x = kwargs.get("scroll_x", self.scroll_x)
-        html_buttons = kwargs.get("html_buttons", self.html_buttons)
-        parent = kwargs.get("parent")
-        kwargs.pop("allow_view", None)
-        kwargs.pop("allow_edit", None)
-        kwargs.pop("allow_delete", None)
-        kwargs.pop("allow_post", None)
-        kwargs.pop("allow_unpost", None)
-        kwargs.pop("allow_check", None)
-        kwargs.pop("check_field", None)
-        kwargs.pop("state_save", None)
-        kwargs.pop("filter_columns", None)
-        kwargs.pop("server_side", None)
-        kwargs.pop("new_buttons", None)
-        kwargs.pop("is_object", None)
-        kwargs.pop("list_url", None)
-        kwargs.pop("action_suffix", None)
-        kwargs.pop("list_schema", None)
-        kwargs.pop("scroll_y", None)
-        kwargs.pop("scroll_x", None)
-        kwargs.pop("html_buttons", None)
-        kwargs.pop("parent", None)
+        state_save = kwargs.pop("state_save", self.state_save)
+        filter_columns = kwargs.pop("filter_columns", self.filter_columns)
+        server_side = kwargs.pop("server_side", self.server_side)
+        new_buttons = kwargs.pop("new_buttons", self.new_buttons)
+        is_object = kwargs.pop("is_object", self.is_object)
+        list_url = kwargs.pop("list_url", self.list_url)
+        action_suffix = kwargs.pop("action_suffix", self.action_suffix)
+        list_schema = kwargs.pop("list_schema", self.ListSchema)
+        scroll_y = kwargs.pop("scroll_y", self.scroll_y)
+        scroll_x = kwargs.pop("scroll_x", self.scroll_x)
+        html_buttons = kwargs.pop("html_buttons", self.html_buttons)
+        parent = kwargs.pop("parent", None)
 
         if list_schema:
             if parent:
@@ -203,7 +190,6 @@ class BaseViews(object):
                             **kwargs
                             )
             resources = table.get_widget_resources()
-            # resources=dict(css="", js="")
             if is_object:
                 return dict(form=table, scripts="", css=resources["css"],
                             js=resources["js"])
@@ -213,11 +199,12 @@ class BaseViews(object):
 
         arg = kwargs and kwargs or {}
         arg.update(url=self.list_url, col_defs=self.list_col_defs,
-                   cols=self.list_cols, buttons=self.list_buttons)
+        buttons=self.list_buttons)
         return arg
 
 
     def view_act(self, **kwargs):
+        #Standard Action grid csv pdf dan next_act
         url_dict = self.request.matchdict
         if url_dict['act'] == 'grid':
             return self.get_list(**kwargs)
@@ -231,6 +218,7 @@ class BaseViews(object):
         else:
             return self.next_act(**kwargs)
         
+
     def get_list(self, **kwargs):
         """
         parameter
@@ -282,21 +270,14 @@ class BaseViews(object):
         else:
             columns = self.columns
 
+        # Get Data From Database
         query = self.db_session.query().select_from(self.table)
         list_join = kwargs.get('list_join', self.list_join)
         query = list_join(query, **kwargs)
-        # if self.request.user and self.request.user.company_id and hasattr(self.table, "company_id"):
-        #     query = query.filter(
-        #         self.table.company_id == self.request.user.company_id)
         list_filter = kwargs.get('list_filter', self.list_filter)
         query = list_filter(query, **kwargs)
-        # if list_filter is not None:
-        # else:
-        #     query = self.list_filter(query, **kwargs)
+        # End Get Data From Database
 
-        # log.debug(str(columns))
-        # qry = query.add_columns(*[c.sqla_expr for c in columns])
-        # log.debug(str(qry))
         row_table = DataTables(self.request.GET, query, columns)
         result = row_table.output_result()
         data = result and result.get("data") or {}
@@ -323,7 +304,7 @@ class BaseViews(object):
         return query
 
     def next_act(self, **kwargs):
-        url_dict = self.request.matchdict
+        # url_dict = self.request.matchdict
         raise HTTPNotFound
 
     def pdf_response(self, **kwargs):
@@ -343,7 +324,7 @@ class BaseViews(object):
         }
         return csv_response(self.request, value, filename)
 
-
+    # data table end 
     def save(self, values, row=None):
         now = datetime.datetime.now()
         if not row:
@@ -380,9 +361,8 @@ class BaseViews(object):
                 controls = self.request.POST.items()
                 try:
                     appstruct = form.validate(controls)
-                    # Logic to add user to the database goes here
                     self.save(appstruct)
-                    self.request.session.flash('Data added successfully!')
+                    self.request.session.flash(_('Data added successfully!'))
                 except deform.ValidationFailure as e:
                     return {'form': e.render(), "scripts": ""}
 
@@ -391,7 +371,13 @@ class BaseViews(object):
         rendered_form = form.render()
         return {'form': rendered_form, "scripts": ""}
     
-
+    def get_form(self, schema_class, buttons=("cancel", )):
+        schema = schema_class(
+            validator=self.form_validator, request=self.request, widget=tsa_widget.FormWidget())
+        schema = schema.bind(request=self.request)
+        form = deform.Form(schema, buttons=buttons, )
+        return form
+    
     def form_validator(self, form, value):
         id_ = self.request.matchdict.get('id', 0)
         excs = self.table.validator(id_, value, form)
@@ -408,19 +394,12 @@ class BaseViews(object):
         id_ = self.request.matchdict.get('id')
         return self.db_session.query(self.table).filter(self.table.id == id_)
 
-    def get_form(self, schema_class, buttons=("cancel", )):
-        schema = schema_class(
-            validator=self.form_validator, request=self.request)
-        schema = schema.bind(request=self.request)
-        form = deform.Form(schema, buttons=buttons)
-        return form
-
     def view_read(self):
         # Logic to fetch user data from the database goes here
         query = self.query_id()
         row = query.first()
         if not row:
-            self.request.session.flash('Record not found!')
+            self.request.session.flash(_('Record not found!'), "error")
             return HTTPFound(location=self.request.route_url(self.list_route))
 
         form = self.get_form(self.ReadSchema)
@@ -429,7 +408,7 @@ class BaseViews(object):
 
         # Pre-fill form with existing user data
         appstruct = self.get_values(row)
-        rendered_form = form.render(appstruct)
+        rendered_form = form.render(appstruct, readonly=True)
         return {'form': rendered_form, "scripts": ""}
 
     def view_update(self):
@@ -437,8 +416,8 @@ class BaseViews(object):
         query = self.query_id()
         row = query.first()
         if not row:
-            self.request.session.flash('User not found!')
-            return HTTPFound(location=self.request.route_url('user'))
+            self.request.session.flash(_('Record not found!'), "error")
+            return HTTPFound(location=self.request.route_url(self.list_route))
 
         form = self.get_form(self.UpdateSchema, buttons=('save', 'cancel'))
         if self.request.POST:
