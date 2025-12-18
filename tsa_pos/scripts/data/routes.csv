@@ -131,6 +131,7 @@ retur-act,/return/{act}/act,return-list,Return Action,1,returns,Views,view_act,j
 retur-add,/return/add,return-list,Create Return,1,returns,Views,view_create,form.pt,,
 retur-edit,/return/{id}/edit,return-list,Edit Return,1,returns,Views,view_update,form.pt,,
 retur-view,/return/{id}/view,return-list,Read Return,1,returns,Views,view_read,form.pt,,
+
 # --- MODUL CHART OF ACCOUNT (CoA) ---
 coa-list,/coa,master-menu,Chart of Account,1,coa,Views,view_list,list.pt,,1
 coa-act,/coa/{act}/act,coa-list,CoA Action,1,coa,Views,view_act,json,,
