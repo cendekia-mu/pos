@@ -48,9 +48,7 @@ class ListSchema(colander.Schema):
 =======
 >>>>>>> 0010e7b (update invoice)
 
-# --------------------------
 # Create / Update Schema
-# --------------------------
 class CreateSchema(colander.Schema):
     name = colander.SchemaNode(colander.String(), validator=colander.Length(min=1, max=128))
     code = colander.SchemaNode(colander.String(), validator=colander.Length(min=1, max=128))
@@ -106,6 +104,10 @@ class ListSchema (colander.Schema):
         title='Partner'
     )
 
+    def after_bind(self, schema, appstruct):
+        partners = Partner.query().all()
+        schema['partner_id'].widget.values = [(str(p.id), p.name) for p in partners]
+
 class UpdateSchema(CreateSchema):
     id = colander.SchemaNode(colander.Integer(), missing=colander.drop, widget=widget.HiddenWidget())
 <<<<<<< HEAD
@@ -127,7 +129,6 @@ class Views(BaseViews):
         self.ListSchema = ListSchema
         self.list_route = 'invoice-list'
 
-<<<<<<< HEAD
     def form_validator(self, form, value):
         exc = colander.Invalid(form, 'Kesalahan pada pengisian data.')
         id_ = self.request.matchdict.get('id', 0)
@@ -163,6 +164,7 @@ class Views(BaseViews):
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         self.save_items(invoice, form_data.get('invoice_items', []))
 =======
         self.save_items(invoice, form_data.get('invoice_items', []))
@@ -189,3 +191,6 @@ class Views(BaseViews):
 =======
 >>>>>>> 84c5a9a (update invoice)
 >>>>>>> 0010e7b (update invoice)
+=======
+        self.save_items(invoice, form_data.get('invoice_items', []))
+>>>>>>> f266096 (update invoice)

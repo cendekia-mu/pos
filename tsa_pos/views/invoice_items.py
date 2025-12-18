@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+from tkinter.tix import Form
+>>>>>>> f266096 (update invoice)
 import colander
 from deform import widget , Form
 from ..models import Product    
