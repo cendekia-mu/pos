@@ -147,9 +147,13 @@ retur-add,/return/add,return-list,Create Return,1,returns,Views,view_create,form
 retur-edit,/return/{id}/edit,return-list,Edit Return,1,returns,Views,view_update,form.pt,,
 retur-view,/return/{id}/view,return-list,Read Return,1,returns,Views,view_read,form.pt,,
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> 79b6070 (menambahkan routes untuk menu)
+=======
+
+>>>>>>> 2b87096 (routes & partnmer)
 # --- MODUL CHART OF ACCOUNT (CoA) ---
 coa-list,/coa,master-menu,Chart of Account,1,coa,Views,view_list,list.pt,,1
 coa-act,/coa/{act}/act,coa-list,CoA Action,1,coa,Views,view_act,json,,
