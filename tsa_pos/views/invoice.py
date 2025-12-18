@@ -7,9 +7,7 @@ from ..i18n import _
 
 
 
-# --------------------------
 # Create / Update Schema
-# --------------------------
 class CreateSchema(colander.Schema):
     name = colander.SchemaNode(colander.String(), validator=colander.Length(min=1, max=128))
     code = colander.SchemaNode(colander.String(), validator=colander.Length(min=1, max=128))
@@ -37,6 +35,10 @@ class ListSchema (colander.Schema):
         widget=widget.SelectWidget(values=[]),
         title='Partner'
     )
+
+    def after_bind(self, schema, appstruct):
+        partners = Partner.query().all()
+        schema['partner_id'].widget.values = [(str(p.id), p.name) for p in partners]
 
 class UpdateSchema(CreateSchema):
     id = colander.SchemaNode(colander.Integer(), missing=colander.drop, widget=widget.HiddenWidget())
