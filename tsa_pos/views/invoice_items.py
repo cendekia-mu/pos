@@ -1,4 +1,3 @@
-from tkinter.tix import Form
 import colander
 from deform import widget, Form
 from ..models import Product
