@@ -39,47 +39,6 @@ def upgrade() -> None:
         'category_id', sa.Integer(), nullable=True))
     op.create_foreign_key(op.f('fk_invoices_category_id_invoice_category'), 'invoices', 'invoice_category', ['category_id'], ['id'], onupdate='CASCADE', ondelete='SET NULL')
 
-# op.create_table('orders',
-#                 sa.Column('id', sa.Integer(), nullable=False),
-#                 sa.Column('name', sa.String(length=128), nullable=True),
-#                 sa.Column('code', sa.String(length=128), nullable=True),
-#                 sa.Column('amount', sa.Float(), nullable=True),
-#                 sa.Column('status', sa.SmallInteger(), nullable=True),
-#                 sa.Column('est_delivery', sa.DateTime(), nullable=True),
-#                 sa.Column('order_date', sa.DateTime(), nullable=True),
-#                 sa.Column('partner_id', sa.Integer(), nullable=False),
-#                 sa.Column('created', sa.DateTime(), nullable=True),
-#                 sa.Column('updated', sa.DateTime(), nullable=True),
-#                 sa.Column('create_uid', sa.Integer(), nullable=False),
-#                 sa.Column('update_uid', sa.Integer(), nullable=False),
-#                 sa.ForeignKeyConstraint(['create_uid'], ['users.id'], name=op.f(
-#                     'fk_orders_create_uid_users'), onupdate='CASCADE', ondelete='CASCADE'),
-#                 sa.ForeignKeyConstraint(['partner_id'], ['partner.id'], name=op.f(
-#                     'fk_orders_partner_id_partner'), ondelete='SET NULL'),
-#                 sa.ForeignKeyConstraint(['update_uid'], ['users.id'], name=op.f(
-#                     'fk_orders_update_uid_users'), onupdate='CASCADE', ondelete='CASCADE'),
-#                 sa.PrimaryKeyConstraint('id', name=op.f('pk_orders'))
-#                 )
-
-# op.create_table('order_items',
-#                 sa.Column('order_id', sa.Integer(), nullable=False),
-#                 sa.Column('product_id', sa.Integer(), nullable=False),
-#                 sa.Column('qty', sa.Integer(), nullable=True),
-#                 sa.Column('amount', sa.Float(), nullable=True),
-#                 sa.Column('price', sa.Float(), nullable=True),
-#                 sa.Column('invoiced', sa.Integer(), nullable=True),
-#                 sa.Column('id', sa.Integer(), nullable=False),
-#                 sa.ForeignKeyConstraint(['order_id'], ['orders.id'], name=op.f(
-#                     'fk_order_items_invoice_id_orders'), ondelete='CASCADE'),
-#                 sa.ForeignKeyConstraint(['product_id'], ['product.id'], name=op.f(
-#                     'fk_order_items_product_id_product'), ondelete='RESTRICT'),
-#                 sa.PrimaryKeyConstraint('id', name=op.f('pk_order_items'))
-#                 )
-# # op.drop_table('beaker_cache')
-# op.add_column('invoice_items', sa.Column(
-#     'order_item_id', sa.Integer(), nullable=True))
-# op.add_column('invoice_items', sa.Column(
-#     'order_id', sa.Integer(), nullable=True))
 # ### end Alembic commands ###
 
 
