@@ -101,8 +101,8 @@ invoice-view,/invoice/{id}/view,invoice-list,Read Invoice,1,invoice,Views,view_r
 
 # --- ORDER / KASIR ---
 order-list,/order,master-menu,Order (Kasir),1,orders,Views,view_list,list.pt,,1
-order-create,/order/create,order-list,Buat Order Baru,1,orders,Views,view_create,form.pt,,
-order-detail,/order/{id}/detail,order-list,Detail Order,1,orders,Views,view_read,form.pt,,
+order-add,/order/add,order-list,Buat Order Baru,1,orders,Views,view_add,form.pt,,
+order-view,/order/{id}/view,order-list,Detail Order,1,orders,Views,view_read,form.pt,,
 order-checkout,/order/{id}/checkout,order-list,Proses Checkout,1,orders,Views,view_checkout,form.pt,,
 order-act,/order/{act}/act,order-list,Order Action,1,orders,Views,view_act,json,,
 

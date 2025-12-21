@@ -2,40 +2,38 @@ from pyramid.view import view_config
 from ..models import Orders, Partner, DBSession
 from . import BaseViews
 import colander
-from deform import widget
+from deform import widget, Form, ValidationFailure
 from ..i18n import _
 
+# DEFINISIKAN DISINI (DI LUAR CLASS)
 class ListSchema(colander.Schema):
-    id = colander.SchemaNode(colander.Integer(), title="ID")
+    id = colander.SchemaNode(colander.Integer(), title="ID", 
+                             missing=colander.drop, 
+                             widget=widget.HiddenWidget())
     code = colander.SchemaNode(colander.String(), title=_("Order Code"))
     name = colander.SchemaNode(colander.String(), title=_("Description"))
     partner_id = colander.SchemaNode(colander.Integer(), title=_("Partner"),
                                      widget=widget.SelectWidget(values=[]))
-    order_date = colander.SchemaNode(colander.DateTime(), title=_("Order Date"))
+    order_date = colander.SchemaNode(colander.Date(), title=_("Order Date"))
     amount = colander.SchemaNode(colander.Float(), title=_("Total Amount"))
-    status = colander.SchemaNode(colander.Integer(), title=_("Status"))
+    status = colander.SchemaNode(colander.Integer(), title=_("Status"), default=1)
 
 class Views(BaseViews):
     def __init__(self, request):
         super().__init__(request)
         self.table = Orders 
         self.list_route = 'order-list'
-        self.ListSchema = ListSchema
+        # SEKARANG ListSchema SUDAH TERDEFINISI DI ATAS
+        self.ListSchema = ListSchema 
 
-    # Handler AJAX untuk /order/grid/act (Mencegah Ajax Error 404)
-    def view_act(self):
-        return super().view_act()
-
-    # Handler Tampilan List
     def view_list(self):
         return super().view_list()
 
-    # Placeholders untuk route lain agar tidak 404
-    def view_create(self):
-        return super().add()
+    def view_add(self):
+        # Tambahkan logika form manual jika super().add() tidak ada
+        schema = self.ListSchema().bind(request=self.request)
+        form = Form(schema, buttons=('save', 'cancel'))
+        return {"form": form.render()}
 
-    def view_read(self):
-        return super().view_read()
-
-    def view_checkout(self):
-        return {"title": "Checkout Order"}
+    def view_act(self):
+        return super().view_act()
