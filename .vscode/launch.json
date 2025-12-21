@@ -10,7 +10,7 @@
       "request": "launch",
       "module": "pyramid.scripts.pserve",
       "args": [
-        "wanz.ini",
+        "liyya.ini",
         "--reload"
       ],
       "pyramid": true,

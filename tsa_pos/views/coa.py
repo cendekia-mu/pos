@@ -1,9 +1,10 @@
 from deform import widget
-import colander
+import colander 
+from sqlalchemy.orm import aliased
 from ..models import Coa  # Pastikan model Coa diimpor dengan benar
 from . import BaseViews
 from ..i18n import _
-
+ParentCoa = aliased(Coa)
 class ListSchema(colander.Schema):
     # Skema untuk list view (menampilkan data Coa dalam tabel)
     # Hanya definisikan field yang akan ditampilkan/di-edit di list
@@ -15,10 +16,12 @@ class ListSchema(colander.Schema):
                                title="Name")
     code = colander.SchemaNode(colander.String(),
                                title="Code")
-    parent_id = colander.SchemaNode(colander.Integer(),
+    parent_name = colander.SchemaNode(colander.String(),
                                 missing=colander.drop,
                                 title="Parent Coa",
-                                widget=widget.SelectWidget(values=[]))  
+                                #widget=widget.SelectWidget(values=[]),
+                                field = ParentCoa.name)  
+                                
     status = colander.SchemaNode(colander.Integer(),
                                  title="Status",
                                  validator=colander.OneOf([0, 1]),  
@@ -41,7 +44,15 @@ class CreateSchema(colander.Schema):
                                  title="Status",
                                  validator=colander.OneOf([0, 1]),
                                  widget=widget.SelectWidget(values=[(0, 'Inactive'), (1, 'Active')]))
-
+    def after_bind(self, schema, appstruct):
+        # Populate category_id choices
+        parent =Coa.query().all()
+        values = [
+        
+            (str(prt.id), prt.name) for prt in parent
+        ]
+        values.insert(0, ('', '-- No Parent --'))  # Opsi untuk root Coa    
+        schema["parent_id"].widget.values = values
 class UpdateSchema(CreateSchema):
     # Update schema mirip Create, tapi tambah id (hidden)
     id = colander.SchemaNode(colander.Integer(),
@@ -58,31 +69,9 @@ class Views(BaseViews):
         self.ListSchema = ListSchema
         self.list_route = 'coa-list'  # Sesuaikan dengan route name di aplikasi Anda
 
-    def get_parent_choices(self, exclude_id=None):
-        # Method helper untuk mendapatkan choices parent Coa
-        # Query Coa aktif (status=1), exclude jika ada (untuk update)
-        query = self.table.query().filter(self.table.status == 1)
-        if exclude_id:
-            query = query.filter(self.table.id != exclude_id)
-        choices = [(coa.id, coa.name) for coa in query.all()]
-        # Tambah opsi kosong untuk root (tidak ada parent)
-        choices.insert(0, ('', '-- No Parent --'))  # Atau _('No Parent') jika menggunakan i18n
-        return choices
-
-    def create(self):
-        # Override create untuk mengisi values parent_id
-        schema = self.CreateSchema()
-        schema['parent_id'].widget.values = self.get_parent_choices()
-        # Lanjutkan dengan logic create standar (asumsi BaseViews punya method ini)
-        return super().create(schema=schema)
-
-    def update(self):
-        # Override update untuk mengisi values parent_id, exclude current Coa
-        id_ = self.request.matchdict.get('id')
-        schema = self.UpdateSchema()
-        schema['parent_id'].widget.values = self.get_parent_choices(exclude_id=int(id_))
-        # Lanjutkan dengan logic update standar
-        return super().update(schema=schema)
+    
+    def list_join(self, query, **kwargs):
+        return query.outerjoin(ParentCoa, ParentCoa.id == Coa.parent_id)
 
     def form_validator(self, form, value):
         exc = colander.Invalid(
