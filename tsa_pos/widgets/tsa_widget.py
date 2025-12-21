@@ -14,6 +14,9 @@ from deform.i18n import _
 from datetime import date, datetime
 _logging = logging.getLogger(__name__)
 
+class FormWidget(widget.FormWidget):
+    readonly_template = "tsa_pos:templates/readonly/form.pt"
+
 
 class Select2Widget(widget.Select2Widget):
     """
@@ -24,15 +27,15 @@ class Select2Widget(widget.Select2Widget):
 
     Same as :func:`~deform.widget.Select2Widget`, with some extra options
     listed here.
-    url: url for slave select
-    slave: id of slave  select
-    widget = widget_os.Select2MsWidget(url="https://slave_item_url?item_key=selected_value,
-                                        slave="slave_id")
+    slave_url: url for slave select
+    slave_id: id of slave  select
+    widget = tsa_widget.Select2Widget(slave_url="https://slave_item_url?item_key=selected_value,
+                                      slave_id="slave_id")
     """
 
-    url = ""
-    slave = ""
-    template = "select2_ms.pt"
+    slave_id = ""
+    slave_url = ""
+    template = "tsa_pos.widgets:templates/select2_ms.pt"
 
 
 class AutocompleteInputWidget(widget.AutocompleteInputWidget):
@@ -55,8 +58,8 @@ class AutocompleteInputWidget(widget.AutocompleteInputWidget):
 
     url = ""
     slave = ""
-    template = "autocomplete_input_ms.pt"
-    readonly_template = "readonly/autocomplete_input_ms.pt"
+    template = "tsa_pos.widgets:autocomplete_input_ms.pt"
+    readonly_template = "tsa_pos.widgets:readonly/autocomplete_input_ms.pt"
     parent_oid = ""
 
 
@@ -217,8 +220,8 @@ class AutocompleteInputWidget(widget.AutocompleteInputWidget):
 #             return result
 
 class QtyWidget(widget.Widget):
-    template = "tangsel.base:/widgets/templates/qty.pt"
-    readonly_template = "tangsel.base:/viewswidgets/templates/readonly/qty.pt"
+    template = "tsa_pos.widgets:qty.pt"
+    readonly_template = "tsa_pos.widgets:readonly/qty.pt"
 
     _pstruct_schema = SchemaNode(
         Mapping(),
@@ -262,57 +265,57 @@ class QtyWidget(widget.Widget):
             return result
 
 
-class CaptchaWidget(widget.Widget):
-    """
-    Renders an ``<input type="text"/>`` widget.
+# class CaptchaWidget(widget.Widget):
+#     """
+#     Renders an ``<input type="text"/>`` widget.
 
-    **Attributes/Arguments**
+#     **Attributes/Arguments**
 
-    template
-       The template name used to render the widget.  Default:
-        ``textinput``.
+#     template
+#        The template name used to render the widget.  Default:
+#         ``textinput``.
 
-    readonly_template
-        The template name used to render the widget in read-only mode.
-        Default: ``readonly/textinput``.
+#     readonly_template
+#         The template name used to render the widget in read-only mode.
+#         Default: ``readonly/textinput``.
 
-    strip
-        If true, during deserialization, strip the value of leading
-        and trailing whitespace (default ``True``).
+#     strip
+#         If true, during deserialization, strip the value of leading
+#         and trailing whitespace (default ``True``).
 
-    """
+#     """
 
-    template = "tangsel.base:widgets/templates/captcha.pt"
-    readonly_template = "textinput"
-    strip = True
-    requirements = ()
-    request = None
-    url = ""
+#     template = "tangsel.base:widgets/templates/captcha.pt"
+#     readonly_template = "textinput"
+#     strip = True
+#     requirements = ()
+#     request = None
+#     url = ""
     
-    def __init__(self, **kw):
-        super(CaptchaWidget, self).__init__(**kw)
+#     def __init__(self, **kw):
+#         super(CaptchaWidget, self).__init__(**kw)
 
-    def serialize(self, field, cstruct, **kw):
-        kode_captcha, file_name = img_captcha(self.request)
-        self.request.session["captcha"] = kode_captcha
-        cstruct = self.url+file_name
-        readonly = kw.get("readonly", self.readonly)
-        template = readonly and self.readonly_template or self.template
-        values = self.get_template_values(field, cstruct, kw)
-        return field.renderer(template, **values)
+#     def serialize(self, field, cstruct, **kw):
+#         kode_captcha, file_name = img_captcha(self.request)
+#         self.request.session["captcha"] = kode_captcha
+#         cstruct = self.url+file_name
+#         readonly = kw.get("readonly", self.readonly)
+#         template = readonly and self.readonly_template or self.template
+#         values = self.get_template_values(field, cstruct, kw)
+#         return field.renderer(template, **values)
 
-    def deserialize(self, field, pstruct):
-        if pstruct is null:
-            return null
-        elif not isinstance(pstruct, string_types):
-            raise Invalid(field.schema, "Pstruct is not a string")
-        if self.strip:
-            pstruct = pstruct.strip()
-        if not pstruct:
-            return null
-        if pstruct != self.request.session.get("captcha"):
-            raise Invalid(field.schema, "Captcha tidak sesuai")
-        return pstruct
+#     def deserialize(self, field, pstruct):
+#         if pstruct is null:
+#             return null
+#         elif not isinstance(pstruct, string_types):
+#             raise Invalid(field.schema, "Pstruct is not a string")
+#         if self.strip:
+#             pstruct = pstruct.strip()
+#         if not pstruct:
+#             return null
+#         if pstruct != self.request.session.get("captcha"):
+#             raise Invalid(field.schema, "Captcha tidak sesuai")
+#         return pstruct
 
 
 class ImageWidget(widget.Widget):
@@ -335,8 +338,8 @@ class ImageWidget(widget.Widget):
 
     """
 
-    template = "tangsel.base:views/widgets/image.pt"
-    readonly_template = "image"
+    template = "tsa_pos.widgets:image.pt"
+    readonly_template = "tsa_pos.widgets:readonly/image.pt"
     strip = True
     requirements = ()
     height = "30px"
@@ -386,10 +389,10 @@ class BootStrapDateInputWidget(widget.Widget):
         The template name used to render the widget in read-only mode.
         Default: ``readonly/textinput``.
     """
-    template = "bootstrapdateinput"
-    readonly_template = "readonly/textinput"
+    template = "tsa_pos.widgets:bootstrapdateinput"
+    readonly_template = "textinput"
     type_name = "text"
-    req_path = "tangsel.base:static/js/plugin"
+    req_path = "tsa_pos:static/js/plugin"
     requirements = (
         ('deform', None),
         {
@@ -472,8 +475,8 @@ class BootStrapDateTimeInputWidget(widget.Widget):
         Default: ``readonly/textinput``.
     """
 
-    template = "datetimeinput"
-    readonly_template = "readonly/datetimeinput"
+    template = "tsa_pos.widgets:datetimeinput"
+    readonly_template = "tsa_pos.widgets:readonly/datetimeinput"
     type_name = "datetime"
     requirements = (("modernizr", None), ("pickadate", None))
     default_date_options = (
@@ -561,13 +564,13 @@ class BootStrapDateTimeInputWidget(widget.Widget):
             return result
 
 
-class TextInputWidget(widget.TextInputWidget):
-    template = "textinput_btn"
+class TextInputBtnWidget(widget.TextInputWidget):
+    template = "tsa_pos.widgets:textinput_btn"
     button = None
     js = None
 
     def __init__(self, **kw):
-        super(TextInputWidget, self).__init__(**kw)
+        super().__init__(**kw)
 
         # if isinstance(self.button, compat.string_types):
         if self.button:
@@ -659,8 +662,8 @@ class MoneyInputWidget(widget.MoneyInputWidget):
 
 
 class FilterWidget(widget.Widget):
-    template = "tangsel.base:/views/widgets/filters.pt"
-    readonly_template = "tangsel.base:/views/widgets/readonly/filters.pt"
+    template = "tsa_pos.widgets:filters.pt"
+    readonly_template = "tsa_pos.widgets:readonly/filters.pt"
     null_value = ""
     values = ()
     size = None

@@ -6,6 +6,7 @@ from sqlalchemy import (
     Float,
     Column,
     SmallInteger,
+    UniqueConstraint,
 )
 
 from sqlalchemy.orm import relationship, backref
@@ -16,7 +17,6 @@ from .meta import Base
 class Orders(StandardModel, Base):
     __tablename__ = 'orders'
     id = Column(Integer, primary_key=True)
-
     name = Column(String(128))
     code = Column(String(128))
     amount = Column(Float)
@@ -38,4 +38,6 @@ class OrderItems(DefaultModel, Base):
     price = Column(Float)
     invoiced = Column(Integer)
     product = relationship('Product', backref=backref('product'))
+    __table_args__ = (UniqueConstraint('invoice_id', 'product_id'),)
+    order = relationship('Orders', backref=backref('order_items'))
 

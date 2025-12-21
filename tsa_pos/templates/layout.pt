@@ -32,6 +32,7 @@
   <link rel="stylesheet" type="text/css" media="screen" href="${home}/static/css/smartadmin-production-plugins.min.css">
   <link rel="stylesheet" type="text/css" media="screen" href="${home}/static/css/smartadmin-production.min.css">
   <link rel="stylesheet" type="text/css" media="screen" href="${home}/static/css/smartadmin-skins.min.css">
+  <link rel="stylesheet" type="text/css" media="screen" href="${home}/deform_static/select2/select2.css">
 
   <!-- We recommend you use "your_style.css" to override SmartAdmin
          specific styles this will also ensure you retrain your customization with each SmartAdmin update. -->
@@ -244,6 +245,8 @@
 
   <!-- MAIN APP JS FILE -->
   <script src="${home}/static/js/app.min.js"></script>
+  <script src="${home}/deform_static/scripts/deform.js"></script>
+  <script src="${home}/deform_static/select2/select2.js"></script>
 
   <!-- PAGE RELATED PLUGIN(S) -->
   <!--?<script src="${home}/static/js/plugin/datatables/jquery.dataTables.min.js"></script>-->
@@ -254,14 +257,12 @@
 
   <!--?<script src="${home}/static/js/plugin/bootstrap-datepicker/js/bootstrap-datepicker.min.js"></script>-->
   <!--?<script src="${home}/static/js/plugin/bootstrap-timepicker/bootstrap-timepicker.min.js"></script>-->
-  <!--?<script src="${home}/deform_static/scripts/deform.js"></script>-->
   <!--?<script src="${home}/deform_static/scripts/typeahead.min.js"></script>-->
   <!--?<script src="${home}/deform_static/scripts/jquery.maskMoney-3.1.1.min.js"></script>-->
   <!--?<script src="${home}/deform_static/tinymce/tinymce.min.js"></script>-->
   <!--?<script src="${home}/static/js/tools.js"></script>-->
   <!--?<script src="${home}/static/js/notification/SmartNotification.min.js"></script>-->
   <!--?<script src="${home}/static/js/plugin/masked-input/jquery.maskedinput.min.js"></script>-->
-  <!--?<script src="${home}/static/js/select2.full.min.js"></script>-->
   <!--?<script src="${home}/deform_static/scripts/file_upload.js"></script>-->
   <script src="${home}/static/js/osipkd.js"></script>
   <!-- LOOP ON JS RESOURCE -->
