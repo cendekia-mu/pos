@@ -9,18 +9,13 @@ class ListSchema(colander.Schema):
     id = colander.SchemaNode(
         colander.Integer(),
         missing=colander.drop,
-        title="Action",
+        title="id",
         widget=widget.HiddenWidget(),
     )
     name = colander.SchemaNode(colander.String())
     provinsi = colander.SchemaNode(
         colander.String(), title="Provinsi", field=Provinsi.name
     )
-    id = colander.SchemaNode(colander.Integer(),
-                                missing=colander.drop,
-                                title="Action",
-                                widget=widget.HiddenWidget())
-    name = colander.SchemaNode(colander.String())
 
 
 class CreateSchema(colander.Schema):
@@ -56,23 +51,28 @@ class UpdateSchema(CreateSchema):
         schema["provinsi_id"].widget.values = [
             (str(prov.id), prov.name) for prov in provinsi
         ]
-    name = colander.SchemaNode(colander.String(),
-                               validator=colander.Length(min=3, max=50))
-    
-    provinsi_id = colander.SchemaNode(colander.Integer(),
-                                widget=widget.SelectWidget(values=[]),)   
+
+    name = colander.SchemaNode(
+        colander.String(), validator=colander.Length(min=3, max=50)
+    )
+
+    provinsi_id = colander.SchemaNode(
+        colander.Integer(),
+        widget=widget.SelectWidget(values=[]),
+    )
 
     def after_bind(self, schema, appstruct):
         # Populate category_id choices
         categories = Provinsi.query().all()
-        schema['category_id'].widget.values = [
+        schema["category_id"].widget.values = [
             (str(cat.id), cat.name) for cat in categories
         ]
 
+
 class UpdateSchema(CreateSchema):
-    id = colander.SchemaNode(colander.Integer(),
-                             missing=colander.drop,
-                             widget=widget.HiddenWidget())
+    id = colander.SchemaNode(
+        colander.Integer(), missing=colander.drop, widget=widget.HiddenWidget()
+    )
 
 
 class Views(BaseViews):
@@ -100,16 +100,12 @@ class Views(BaseViews):
         return query.join(Provinsi, Provinsi.id == Kota.provinsi_id)
 
     def form_validator(self, form, value):
-        exc = colander.Invalid(
-            form,
-            'Kesalahan pada pengisian data.'
-        )
-        id_ = self.request.matchdict.get('id', 0)
+        exc = colander.Invalid(form, "Kesalahan pada pengisian data.")
+        id_ = self.request.matchdict.get("id", 0)
 
         # Validate unique name
-        name = value.get('name')
+        name = value.get("name")
         row = self.table.query().filter(self.table.name == name).first()
         if row and (not id_ or row.id != int(id_)):
-            exc["name"] = _(
-                'Name {} already exists.'.format(name))
+            exc["name"] = _("Name {} already exists.".format(name))
             raise exc

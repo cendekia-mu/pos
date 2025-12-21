@@ -145,3 +145,12 @@ invoice-category-act,/invoice/category/{act}/act,invoice-category-list,Inv Categ
 invoice-category-add,/invoice/category/add,invoice-category-list,Create Inv Category,1,invoice_category,Views,view_create,form.pt,,
 invoice-category-edit,/invoice/category/{id}/edit,invoice-category-list,Edit Inv Category,1,invoice_category,Views,view_update,form.pt,,
 invoice-category-delete,/invoice/category/{id}/delete,invoice-category-list,Delete Inv Category,1,invoice_category,Views,view_delete,form.pt,,
+
+# --- INVOICE ITEMS (SUB-MENU UNDER INVOICE) ---
+
+invoice-items-list,/invoice_items/{invoice_id},master-menu,Invoice Items,1,invoice_items,Views,get_invoice_items,list.pt,,1
+invoice-items-act,/invoice_items/{invoice_id}/{act}/act,invoice-items-list,Invoice Items Action,1,invoice_items,Views,view_act,json,,
+invoice-items-add,/invoice_items/{invoice_id}/add,invoice-items-list,Add Invoice Item,1,invoice_items,Views,create_invoice_item,form.pt,,
+invoice-items-edit,/invoice_items/{invoice_id}/{product_id}/edit,invoice-items-list,Edit Invoice Item,1,invoice_items,Views,update_invoice_item,form.pt,,
+invoice-items-delete,/invoice_items/{invoice_id}/{product_id}/delete,invoice-items-list,Delete Invoice Item,1,invoice_items,Views,delete_invoice_item,form.pt,,
+invoice-items-view,/invoice_items/{invoice_id}/{product_id}/view,invoice-items-list,Read Invoice Item,1,invoice_items,Views,view_read,form.pt,,
