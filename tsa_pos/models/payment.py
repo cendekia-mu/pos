@@ -6,7 +6,7 @@ from sqlalchemy import (
     ForeignKey,
 )
 from sqlalchemy.orm import relationship
-
+from sqlalchemy.orm import backref
 from ..models import StandardModel
 from .meta import Base
 
@@ -17,6 +17,8 @@ class Payment(StandardModel, Base):
         'partner.id', ondelete='RESTRICT'), nullable=False)
     amount = Column(Float, nullable=False)
     description = Column(String(255))
+    payment_items = relationship(
+        'PaymentItems', back_populates='payment', passive_deletes=True)
 
 
 class PaymentItems(Base):
@@ -29,5 +31,5 @@ class PaymentItems(Base):
     payment = relationship(
         'Payment', back_populates='payment_items', passive_deletes=True)
     invoice = relationship(
-        'Invoices', back_populates='invoice_items', passive_deletes=True)
+        'Invoices', backref=backref('payment_items'), passive_deletes=True)
     amount = Column(Float, nullable=False)
