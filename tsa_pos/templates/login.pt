@@ -1,177 +1,196 @@
-<html metal:use-macro="load: ./layout.pt">
+<!DOCTYPE html>
+<html>
 
-<div metal:fill-slot="content">
+<head>
+  <meta charset="UTF-8">
 
   <style>
-    /* 1. Background Animasi Bergerak */
-    .login-wrapper {
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
       min-height: 100vh;
-      width: 100%;
-      background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
-      background-size: 400% 400%;
-      animation: gradientBG 15s ease infinite;
+      background: #fff;
       display: flex;
       align-items: center;
       justify-content: center;
-      position: relative;
-      overflow: hidden;
+      padding: 20px;
     }
 
-    @keyframes gradientBG {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
-    }
-
-    /* 2. Dekorasi Gelembung di Belakang Kaca */
-    .shape {
-      position: absolute;
-      border-radius: 50%;
-      filter: blur(50px);
-      z-index: 1;
-      animation: floatShape 6s infinite alternate;
-    }
-    .shape-1 {
-      height: 200px; width: 200px;
-      background: #ff6b6b;
-      top: 10%; left: 20%;
-    }
-    .shape-2 {
-      height: 300px; width: 300px;
-      background: #4ecdc4;
-      bottom: 10%; right: 20%;
-      animation-delay: -2s;
-    }
-
-    @keyframes floatShape {
-      from { transform: translate(0, 0); }
-      to { transform: translate(20px, -40px); }
-    }
-
-    /* 3. Kartu Kaca (Glassmorphism) */
-    .glass-card {
-      position: relative;
-      z-index: 10;
-      background: rgba(255, 255, 255, 0.15); /* Transparan */
-      backdrop-filter: blur(20px);            /* Efek Buram */
-      -webkit-backdrop-filter: blur(20px);
-      border: 1px solid rgba(255, 255, 255, 0.3);
-      padding: 50px 40px;
+    /* ===== WRAPPER LAYOUT ===== */
+    .login-wrapper {
+      width: 950px;
+      height: 520px;
+      background: #e9edc9;
+      display: flex;
       border-radius: 20px;
-      width: 100%;
-      max-width: 400px;
-      box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2);
-      text-align: center;
-      color: white;
+      overflow: hidden;
+      box-shadow: 0 0 40px rgba(0, 0, 0, 0.6);
     }
 
-    .glass-title {
-      font-weight: 700;
-      font-size: 2rem;
-      margin-bottom: 5px;
-      letter-spacing: 1px;
-      text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    /* ===== LEFT IMAGE PANEL ===== */
+    .left-panel {
+      width: 55%;
+      background-image: url('https://plus.unsplash.com/premium_vector-1682305862724-0fe3428b9f11?q=80&w=709&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+      background-size: contain;
+      background-position: center;
+      background-color: #ccd5ae;
+      background-repeat: no-repeat;
     }
-    
-    .glass-subtitle {
-      font-size: 0.9rem;
-      color: rgba(255, 255, 255, 0.8);
+
+    /* ===== RIGHT FORM PANEL ===== */
+    .right-panel {
+      width: 45%;
+      padding: 50px 60px;
+      background: #e9edc9;
+      color: black;
+      margin-top: 50px;
+    }
+
+    .right-panel h2 {
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .right-panel p {
+      opacity: .7;
       margin-bottom: 30px;
     }
 
-    /* Input Fields Transparan */
-    .glass-input-group {
-      margin-bottom: 20px;
-      position: relative;
-    }
-    
-    .glass-input {
-      width: 100%;
-      background: rgba(255, 255, 255, 0.2);
-      border: none;
-      padding: 15px 20px;
-      border-radius: 50px;
-      color: white;
-      font-size: 1rem;
-      outline: none;
-      transition: 0.3s;
-      border: 1px solid rgba(255,255,255,0.1);
-    }
-
-    .glass-input::placeholder {
-      color: rgba(255, 255, 255, 0.7);
-    }
-
-    .glass-input:focus {
-      background: rgba(255, 255, 255, 0.3);
-      box-shadow: 0 0 10px rgba(255,255,255,0.2);
-    }
-
-    /* Tombol Putih Kontras */
-    .btn-glass {
-      width: 100%;
-      padding: 15px;
-      border-radius: 50px;
-      border: none;
-      background: white;
-      color: #e73c7e; /* Warna teks senada background */
-      font-weight: bold;
-      font-size: 1.1rem;
-      cursor: pointer;
-      margin-top: 10px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-      transition: transform 0.2s;
-    }
-    
-    .btn-glass:hover {
-      transform: scale(1.05);
-    }
-
-    .alert-glass {
-      background: rgba(255, 0, 0, 0.3);
-      border: 1px solid rgba(255, 0, 0, 0.2);
+    /* FLASH MESSAGE */
+    .flash-box {
+      background: rgba(255, 0, 0, 0.25);
+      border: 1px solid rgba(255, 0, 0, 0.5);
       padding: 10px;
-      border-radius: 10px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+
+    /* INPUT LABEL */
+    form label {
+      display: block;
+      margin: 6px 0 5px;
+      font-size: 14px;
+    }
+
+
+
+
+    form input[type="text"]::placeholder,
+    form input[type="password"]::placeholder {
+      color: #888;
+    }
+
+    /* CHECKBOX AREA */
+    .checkbox-area {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 25px;
+    }
+
+    .checkbox-area label {
+      margin: 0;
+      font-size: 13px;
+    }
+
+
+    /* Input */
+    form input[type="text"],
+    form input[type="password"] {
+      width: 100%;
+      padding: 10px 12px;
       margin-bottom: 15px;
-      font-size: 0.9rem;
+      border-radius: 8px;
+      border: 1px solid rgba(0, 0, 0, 0.4);
+      color: white;
+      font-size: 15px;
+
+      outline: none;
+    }
+
+    form input::placeholder {
+      color: #eee;
+    }
+
+    /* Tombol */
+    form input[type="submit"],
+    form input[type="reset"],
+    form input[type="button"],
+    form button {
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+      background: rgba(0, 0, 0, 1);
+      color: white;
+      cursor: pointer;
+      transition: .3s;
+      width: 90px;
+      margin-left: 7px;
+    }
+
+    form input[type="submit"]:hover,
+    form input[type="reset"]:hover,
+    form input[type="button"]:hover,
+    form button:hover {
+      background: rgba(255, 255, 255, 0.8);
+      color: black;
+    }
+
+
+    button:hover,
+    form input[type="submit"]:hover {
+      background: #1a7bff;
+    }
+
+    /* REMOVE DEFORM FIELDSET BORDER */
+    form fieldset {
+      border: none !important;
+      padding: 0 !important;
+      margin: 0 !important;
+    }
+
+    form legend {
+      display: none !important;
+    }
+
+    .wel {
+      text-align: center;
     }
   </style>
 
+</head>
+
+<body>
+
   <div class="login-wrapper">
-    <div class="shape shape-1"></div>
-    <div class="shape shape-2"></div>
 
-    <div class="glass-card">
-      <div style="font-size: 3rem; margin-bottom: 10px;">
-        <i class="fas fa-rocket"></i>
+    <!-- LEFT PANEL -->
+    <div class="left-panel"></div>
+
+    <!-- RIGHT PANEL -->
+    <div class="right-panel">
+
+      <h2 class="wel">Sign up</h2>
+      <p class="wel">Welcome to the Smart Site System. Register to experience the system.</p>
+
+      <!-- FLASH MESSAGE -->
+      <div tal:repeat="message request.session.pop_flash()" class="flash-box">
+        <span tal:content="message"></span>
       </div>
-      
-      <h2 class="glass-title">TSA KASIR</h2>
-      <p class="glass-subtitle">Enter your credentials to access</p>
 
-      <div tal:repeat="message request.session.pop_flash()" class="alert-glass">
-         <span tal:content="message"></span>
-      </div>
+      <!-- FORM DEFORM -->
+      <div class="form" tal:content="structure form"></div>
 
-      <form action="${request.route_url('login')}" method="post">
-        <input type="hidden" name="csrf_token" value="${request.session.get_csrf_token()}" />
-
-        <div class="glass-input-group">
-          <input type="text" name="login" class="glass-input" placeholder="Username" required autocomplete="off"/>
-        </div>
-
-        <div class="glass-input-group">
-          <input type="password" name="password" class="glass-input" placeholder="Password" required/>
-        </div>
-
-        <button type="submit" class="btn-glass">Sign In</button>
-      </form>
-      
-      <div style="margin-top: 20px;">
-        <a href="#" style="color: rgba(255,255,255,0.7); text-decoration: none; font-size: 0.85rem;">Forgot Password?</a>
-      </div>
     </div>
+
   </div>
 
-</div>
+</body>
+
 </html>

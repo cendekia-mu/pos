@@ -6,3 +6,5 @@ class Views(BaseViews):
     def beranda(self):
         _logging.debug("Rendering home view")
         return {'message': 'Welcome to the Home Page'}
+    
+    

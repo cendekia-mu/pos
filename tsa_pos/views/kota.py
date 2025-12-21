@@ -22,9 +22,9 @@ class CreateSchema(colander.Schema):
 
     def after_bind(self, schema, appstruct):
         # Populate category_id choices
-        categories = Provinsi.query().all()
-        schema['provinsi_id'].widget.values = [
-            (str(cat.id), cat.name) for cat in categories
+        provinsi = Provinsi.query().all()
+        schema['provinsi_id'].widget.values = [ 
+            (str(prov.id), prov.name) for prov in provinsi
         ]
     
 
@@ -66,4 +66,10 @@ class Views(BaseViews):
         if row and (not id_ or row.id != int(id_)):
             exc["name"] = _(
                 'Name {} already exists.'.format(name))
+
             raise exc
+
+            raise exc
+    def list_join(self, query, **kwargs):
+        return query.join(Provinsi, Provinsi.id == Kota.provinsi_id )
+
