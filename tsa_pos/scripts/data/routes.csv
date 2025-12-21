@@ -104,6 +104,7 @@ order-list,/order,master-menu,Order (Kasir),1,orders,Views,view_list,list.pt,,1
 order-create,/order/create,order-list,Buat Order Baru,1,orders,Views,view_create,form.pt,,
 order-detail,/order/{id}/detail,order-list,Detail Order,1,orders,Views,view_read,form.pt,,
 order-checkout,/order/{id}/checkout,order-list,Proses Checkout,1,orders,Views,view_checkout,form.pt,,
+order-act,/order/{act}/act,order-list,Order Action,1,orders,Views,view_act,json,,
 
 # --- PAYMENT (KONSOLIDASI DI BAWAH SATU MENU) ---
 payment-menu,#,master-menu,Payment,1,,,,,,1
