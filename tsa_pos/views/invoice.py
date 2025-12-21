@@ -1,9 +1,12 @@
+from deform import widget, Form
+import colander
+from deform.widget import SequenceWidget
+from ..models import Partner, Product, Invoices, InvoiceItems
 from deform import widget
 import colander
 from ..models import Invoices, InvoiceItems, Partner, Product
 from . import BaseViews
 from ..i18n import _
-
 
 class InvoiceItemSchema(colander.Schema):
     product_id = colander.SchemaNode(
@@ -35,6 +38,27 @@ class CreateSchema(colander.Schema):
     amount = colander.SchemaNode(colander.Float())
     est_delivery = colander.SchemaNode(colander.DateTime())
     invoice_date = colander.SchemaNode(colander.DateTime())
+    partner_id = colander.SchemaNode(
+        colander.Integer(),
+        widget=widget.SelectWidget(values=[]),
+        title='Partner'
+    )
+   
+    def after_bind(self, schema, appstruct):
+        partners = Partner.query().all()
+        schema['partner_id'].widget.values = [(str(p.id), p.name) for p in partners]
+class ListSchema (colander.Schema):
+    id = colander.SchemaNode(colander.Integer())
+    name = colander.SchemaNode(colander.String(), validator=colander.Length(min=1, max=128))
+    code = colander.SchemaNode(colander.String(), validator=colander.Length(min=1, max=128))
+    amount = colander.SchemaNode(colander.Float())
+    est_delivery = colander.SchemaNode(colander.DateTime())
+    invoice_date = colander.SchemaNode(colander.DateTime())
+    partner_id = colander.SchemaNode(
+        colander.Integer(),
+        widget=widget.SelectWidget(values=[]),
+        title='Partner'
+    )
     partner_id = colander.SchemaNode(colander.Integer(), widget=widget.SelectWidget(values=[]))
     invoice_items = InvoiceItemsSequence()
 
@@ -44,7 +68,6 @@ class CreateSchema(colander.Schema):
 
 class UpdateSchema(CreateSchema):
     id = colander.SchemaNode(colander.Integer(), missing=colander.drop, widget=widget.HiddenWidget())
-
 
 class Views(BaseViews):
     def __init__(self, request):
@@ -85,4 +108,5 @@ class Views(BaseViews):
         self.save_items(invoice, form_data.get('invoice_items', []))
 
     def after_update(self, invoice, form_data):
+        self.save_items(invoice, form_data.get('invoice_items', []))
         self.save_items(invoice, form_data.get('invoice_items', []))
