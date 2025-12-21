@@ -388,8 +388,8 @@ class BootStrapDateInputWidget(widget.Widget):
         The template name used to render the widget in read-only mode.
         Default: ``readonly/textinput``.
     """
-    template = "tsa_pos.widgets:templates/bootstrapdateinput"
-    readonly_template = "tsa_pos.widgets:templates/readonly/textinput"
+    template = "tsa_pos.widgets:templates/bootstrapdateinput.pt"
+    readonly_template = "tsa_pos.widgets:templates/readonly/textinput.pt"
     type_name = "text"
     req_path = "tsa_pos:static/js/plugin"
     requirements = (
@@ -474,8 +474,8 @@ class BootStrapDateTimeInputWidget(widget.Widget):
         Default: ``readonly/textinput``.
     """
 
-    template = "tsa_pos.widgets:templates/datetimeinput"
-    readonly_template = "tsa_pos.widgets:templates/readonly/datetimeinput"
+    template = "tsa_pos.widgets:templates/datetimeinput.pt"
+    readonly_template = "tsa_pos.widgets:templates/readonly/datetimeinput.pt"
     type_name = "datetime"
     requirements = (("modernizr", None), ("pickadate", None))
     default_date_options = (
@@ -564,7 +564,7 @@ class BootStrapDateTimeInputWidget(widget.Widget):
 
 
 class TextInputBtnWidget(widget.TextInputWidget):
-    template = "tsa_pos.widgets:templates/textinput_btn"
+    template = "tsa_pos.widgets:templates/textinput_btn.pt"
     button = None
     js = None
 
@@ -629,7 +629,7 @@ class MoneyInputWidget(widget.MoneyInputWidget):
             use this setting to prevent users from inputing negative values.
             default: ``False``
     """
-    readonly_template = "tsa_pos.widgets:templates/readonly/textinput"
+    readonly_template = "tsa_pos.widgets:templates/readonly/textinput.pt"
 
     def get_template_values(self, field, cstruct, kw):
         options = json.loads(kw.get("mask_options", "{}"))
