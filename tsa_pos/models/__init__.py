@@ -7,5 +7,5 @@ from .partner import *
 from .orders import *
 from .invoice import *
 from .payment import *
-from .coa import Coa
+from .coa import *
 
