@@ -1,3 +1,4 @@
+from turtle import width
 from deform import widget
 import colander
 from ..models import Provinsi
@@ -11,6 +12,10 @@ class ListSchema(colander.Schema):
                              title="Action",
                              widget=widget.HiddenWidget())
     name = colander.SchemaNode(colander.String())
+    created = colander.SchemaNode(
+        colander.Date(),
+        width="150px")
+    created = colander.SchemaNode(colander.String())
 
 
 class CreateSchema(colander.Schema):
@@ -46,5 +51,5 @@ class Views(BaseViews):
         row = self.table.query().filter(self.table.name == name).first()
         if row and (not id_ or row.id != int(id_)):
             exc["name"] = _(
-                'Name {} already exists.'.format(name))
+                _('Name {} already exists.'.format(name)))
             raise exc

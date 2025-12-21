@@ -10,6 +10,7 @@
 <div metal:fill-slot="scripts">
   <script>
     $(document).ready(function () {
+      //     $(".read-only").attr("readonly", true);
       $(".readonly").attr("readonly", true);
       $(".date").attr("readonly", true);
       ${ structure: scripts }
