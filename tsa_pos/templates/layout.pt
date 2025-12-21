@@ -62,10 +62,9 @@
   <header id="header">
     <div id="logo-group">
       <!-- PLACE YOUR LOGO HERE -->
-      
-      <!-- <h3 id="logo">
-        <a href="${home}/"><img src="${home}/static/img/logo1.png"></a>
-      </h3> -->
+      <h3 id="logo">
+        <a href="${home}/"><img src="${home}/static/img/logo.png" alt="LOGO"></a>
+      </h3>
       <!-- END LOGO PLACEHOLDER -->
     </div>
 
@@ -104,9 +103,9 @@
 
       <!-- User info -->
       <ul tal:condition="not request.user" class="header-dropdown-list hidden-xs">
-        <!-- <li>
+        <li>
           <a href="${home}/login" class="dropdown-toggle"><i class="fa fa-lg fa-fw fa-user"></i>Login</a>
-        </li> -->
+        </li>
       </ul>
       <ul tal:condition="request.user" class="header-dropdown-list hidden-xs">
         <li>
@@ -141,11 +140,7 @@
 
   <!-- Left panel : Navigation area -->
   <!-- Note: This width of the aside area can be adjusted through LESS variables -->
-<<<<<<< HEAD
-  <aside class='sidebar9' id="left-panel" tal:condition="request.user" style="padding-bottom:67px">
-=======
   <aside id="left-panel" tal:condition="request.user" style="padding-bottom:67px">
->>>>>>> origin/main
     Menu
     <!-- NAVIGATION : This navigation is also responsive-->
     <nav class="smart-menu" id="menu">
@@ -315,12 +310,8 @@
   </div>
   <!-- END MAIN PANEL -->
 
-<<<<<<< HEAD
-  <!-- Define Script-->i
-=======
 
   <!-- Define Script-->
->>>>>>> origin/main
   <script metal:define-slot="scripts"></script>
 </body>
 
