@@ -5,7 +5,6 @@ from ..models import Payment
 from . import BaseViews
 from ..i18n import _
 
-
 class ListSchema(colander.Schema):
     id = colander.SchemaNode(
         colander.Integer(),

@@ -13,7 +13,6 @@ from sqlalchemy.sql import func
 from tsa_pos.models.base import StandardModel
 from .meta import Base
 
-
 class Payment(StandardModel):
     __tablename__ = 'payment'
 
