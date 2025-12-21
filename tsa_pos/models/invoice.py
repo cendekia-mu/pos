@@ -1,4 +1,5 @@
 from sqlalchemy import (
+    PrimaryKeyConstraint,
     SmallInteger,
     String,
     Integer,
@@ -36,9 +37,9 @@ class Invoices(StandardModel, Base):
 class InvoiceItems(Base):
     __tablename__ = 'invoice_items'
     invoice_id = Column(ForeignKey(
-        'invoices.id', ondelete='CASCADE'), nullable=False, primary_key=True)
+        'invoices.id', ondelete='CASCADE'), nullable=False)
     product_id = Column(ForeignKey(
-        'product.id', ondelete='CASCADE'), nullable=False, primary_key=True)
+        'product.id', ondelete='CASCADE'), nullable=False)
     qty = Column(Integer)
     amount = Column(Float)
     price = Column(Float)
@@ -54,5 +55,10 @@ class InvoiceItems(Base):
     # invoice_det_created = relationship('Order',back_populates='invoice_det_created', foreign_keys=[invoice_det_id])
     product = relationship('Product', back_populates='invoice_items', passive_deletes=True)
     invoice = relationship('Invoices', back_populates='invoice_items', passive_deletes=True)
+    __table_args__ = (
+        PrimaryKeyConstraint("invoice_id", "product_id",
+                             name="invoice_items_pkey"),
+    )
+
 
 
