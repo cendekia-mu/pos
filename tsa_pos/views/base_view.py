@@ -99,6 +99,7 @@ class BaseViews(object):
         
         # end of datatable settings
         self.bindings = {}
+        self.resources = {}
         
     def get_bindings(self):
         return {}
@@ -355,7 +356,6 @@ class BaseViews(object):
 
     def view_create(self):
         form = self.get_form(self.CreateSchema, buttons=('save', 'cancel'))
-
         if self.request.POST:
             if 'save' in self.request.POST:
                 controls = self.request.POST.items()
@@ -364,18 +364,19 @@ class BaseViews(object):
                     self.save(appstruct)
                     self.request.session.flash(_('Data added successfully!'))
                 except deform.ValidationFailure as e:
-                    return {'form': e.render(), "scripts": ""}
+                    return {'form': e.render(), "scripts": "", "tags": self.resources}
 
             return HTTPFound(location=self.request.route_url(self.list_route))
 
         rendered_form = form.render()
-        return {'form': rendered_form, "scripts": ""}
+        return {'form': rendered_form, "scripts": "", "tags": self.resources}
     
     def get_form(self, schema_class, buttons=("cancel", )):
         schema = schema_class(
             validator=self.form_validator, request=self.request, widget=tsa_widget.FormWidget())
         schema = schema.bind(request=self.request)
         form = deform.Form(schema, buttons=buttons, )
+        self.resources = form.get_widget_resources()
         return form
     
     def form_validator(self, form, value):
@@ -409,7 +410,8 @@ class BaseViews(object):
         # Pre-fill form with existing user data
         appstruct = self.get_values(row)
         rendered_form = form.render(appstruct, readonly=True)
-        return {'form': rendered_form, "scripts": ""}
+        return {'form': rendered_form, "scripts": "", "tags": self.resources}
+
 
     def view_update(self):
         # Logic to fetch user data from the database goes here
@@ -425,18 +427,18 @@ class BaseViews(object):
                 controls = self.request.POST.items()
                 try:
                     appstruct = form.validate(controls)
-                    # Logic to update user in the database goes here
-                    user = self.save(appstruct, row)
-                    self.request.session.flash('Record updated successfully!')
+                    self.save(appstruct, row)
+                    self.request.session.flash(
+                        _('Record updated successfully!'))
                 except deform.ValidationFailure as e:
-                    return {'form': e.render(),  "scripts": ""}
+                    return {'form': e.render(),  "scripts": "", "tags": self.resources}
 
             return HTTPFound(location=self.request.route_url(self.list_route))
 
         # Pre-fill form with existing user data
         appstruct = self.get_values(row)
         rendered_form = form.render(appstruct)
-        return {'form': rendered_form, "scripts": ""}
+        return {'form': rendered_form, "scripts": "", "tags": self.resources}
 
     def get_values(self, row):
         appstruct = dict(row.__dict__)
@@ -466,4 +468,4 @@ class BaseViews(object):
         app_struct = self.get_values(row)
         form.set_appstruct(app_struct)
         rendered_form = form.render()
-        return {'form': rendered_form, "scripts": ""}
+        return {'form': rendered_form, "scripts": "", "tags": self.resources}
