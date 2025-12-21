@@ -31,7 +31,7 @@ def upgrade() -> None:
     sa.Column('email', sa.Unicode(length=100), nullable=False),
     sa.Column('status', sa.SmallInteger(), nullable=False),
     sa.Column('security_code', sa.Unicode(length=256), nullable=True),
-        sa.Column('registered_date', sa.TIMESTAMP(),
+    sa.Column('registered_date', sa.TIMESTAMP(),
                   server_default=sa.text('now()'), nullable=True),
     sa.PrimaryKeyConstraint('id', name=op.f('pk_users')),
     sa.UniqueConstraint('email', name=op.f('uq_users_email')),
@@ -57,7 +57,7 @@ def upgrade() -> None:
     sa.Column('group_name', sa.Unicode(length=128), nullable=False),
     sa.Column('description', sa.Text(), nullable=True),
     sa.Column('member_count', sa.Integer(), nullable=False),
-        sa.Column('status', sa.SmallInteger(), nullable=True),
+    sa.Column('status', sa.SmallInteger(), nullable=True),
     sa.PrimaryKeyConstraint('id', name=op.f('pk_groups')),
     sa.UniqueConstraint('group_name', name=op.f('uq_groups_group_name')),
     mysql_charset='utf8',
@@ -75,8 +75,8 @@ def upgrade() -> None:
     sa.Column('group_id', sa.Integer(), nullable=False),
     sa.Column('perm_name', sa.Unicode(length=64), nullable=False),
     sa.Column('id', sa.Integer(), nullable=False),
-        sa.Column('status', sa.SmallInteger(), nullable=True),
-        sa.ForeignKeyConstraint(['group_id'], ['groups.id'], name=op.f(
+    sa.Column('status', sa.SmallInteger(), nullable=True),
+    sa.ForeignKeyConstraint(['group_id'], ['groups.id'], name=op.f(
             'fk_groups_permissions_group_id_groups'), onupdate='CASCADE', ondelete='CASCADE'),
     sa.PrimaryKeyConstraint('group_id', 'perm_name', name='pk_groups_permissions'),
     mysql_charset='utf8',
