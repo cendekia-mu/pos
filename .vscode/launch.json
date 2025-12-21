@@ -10,7 +10,7 @@
       "request": "launch",
       "module": "pyramid.scripts.pserve",
       "args": [
-        "wanz.ini",
+        "development.ini",
         "--reload"
       ],
       "pyramid": true,

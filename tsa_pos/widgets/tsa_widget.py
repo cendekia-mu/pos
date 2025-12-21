@@ -653,7 +653,7 @@ class MoneyInputWidget(widget.MoneyInputWidget):
         values.pop("template", None)
         return values
 
-
+# Testing FilterWidget
 class FilterWidget(widget.Widget):
     template = "tsa_pos.widgets:templates/filters.pt"
     readonly_template = "tsa_pos.widgets:templates/readonly/filters.pt"
