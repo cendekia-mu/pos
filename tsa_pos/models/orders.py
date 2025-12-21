@@ -39,4 +39,3 @@ class OrderItems(DefaultModel, Base):
     invoiced = Column(Integer)
     product = relationship('Product', backref=backref('product'))
 
-

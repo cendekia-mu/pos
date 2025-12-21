@@ -140,7 +140,13 @@
 
   <!-- Left panel : Navigation area -->
   <!-- Note: This width of the aside area can be adjusted through LESS variables -->
+<<<<<<< HEAD
   <aside id="left-panel" tal:condition="request.user" style="padding-bottom:67px">
+=======
+  <aside class='sidebar9' id="left-panel" tal:condition="request.user" style="padding-bottom:67px">
+  <!--<aside id="left-panel" tal:condition="request.user" style="padding-bottom:67px">-->
+
+>>>>>>> 6128115c20ea083a6bbd83fae6ccdb1825a2bb99
     Menu
     <!-- NAVIGATION : This navigation is also responsive-->
     <nav class="smart-menu" id="menu">

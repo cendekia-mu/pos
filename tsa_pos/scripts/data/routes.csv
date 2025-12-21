@@ -87,3 +87,10 @@ invoice-edit,/invoice/{id}/edit,invoice-list,Edit invoice,1,invoice,Views,view_u
 invoice-delete,/invoice/{id}/delete,invoice-list,Delete invoice,1,invoice,Views,view_delete,form.pt,,
 invoice-view,/invoice/{id}/view,invoice-list,Read invoice,1,invoice,Views,view_read,form.pt,,
 invoice-upload,/invoice/{id}/upload,invoice-list,Upload invoice,1,invoice,Views,view_upload,form.pt,,
+
+orders-list,/orders,master-menu,Orders,1,orders,Views,view_list,list.pt,,1
+orders-act,/orders/{act}/act,orders-list,Orders Action,1,orders,Views,view_act,json,,
+orders-add,/orders/add,orders-list,Create Orders,1,orders,Views,view_create,form.pt,,
+orders-edit,/orders/{id}/edit,orders-list,Edit Orders,1,orders,Views,view_update,form.pt,,
+orders-delete,/orders/{id}/delete,orders-list,Delete Orders,1,orders,Views,view_delete,form.pt,,
+orders-view,/orders/{id}/view,orders-list,Read Orders,1,orders,Views,view_read,form.pt,,

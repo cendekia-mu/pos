@@ -6,5 +6,6 @@ from .wilayah import *
 from .partner import *
 from .orders import *
 from .invoice import *
-from .payment import Payment
+from .orders import Orders, OrderItems
+
 
