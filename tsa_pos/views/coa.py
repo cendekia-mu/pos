@@ -16,12 +16,12 @@ class ListSchema(colander.Schema):
     code = colander.SchemaNode(colander.String(),
                                title="Code")
     parent_id = colander.SchemaNode(colander.Integer(),
-                                    missing=colander.drop,
-                                    title="Parent ID",
-                                    widget=widget.HiddenWidget())  # Atau gunakan SelectWidget jika perlu dropdown
+                                missing=colander.drop,
+                                title="Parent Coa",
+                                widget=widget.SelectWidget(values=[]))  
     status = colander.SchemaNode(colander.Integer(),
                                  title="Status",
-                                 validator=colander.OneOf([0, 1]),  # Misal 0=inactive, 1=active
+                                 validator=colander.OneOf([0, 1]),  
                                  widget=widget.SelectWidget(values=[(0, 'Inactive'), (1, 'Active')]))
 
 class CreateSchema(colander.Schema):
@@ -35,7 +35,7 @@ class CreateSchema(colander.Schema):
     parent_id = colander.SchemaNode(colander.Integer(),
                                     missing=colander.drop,  # Opsional untuk root Coa
                                     title="Parent Coa",
-                                    widget=widget.SelectWidget(values=[]))  # Isi values dengan query Coa aktif
+                                    widget=widget.SelectWidget(values=[]))  # Akan diisi dinamis
     status = colander.SchemaNode(colander.Integer(),
                                  missing=1,  # Default active
                                  title="Status",
@@ -57,6 +57,32 @@ class Views(BaseViews):
         self.ReadSchema = UpdateSchema  # Read bisa sama dengan Update
         self.ListSchema = ListSchema
         self.list_route = 'coa-list'  # Sesuaikan dengan route name di aplikasi Anda
+
+    def get_parent_choices(self, exclude_id=None):
+        # Method helper untuk mendapatkan choices parent Coa
+        # Query Coa aktif (status=1), exclude jika ada (untuk update)
+        query = self.table.query().filter(self.table.status == 1)
+        if exclude_id:
+            query = query.filter(self.table.id != exclude_id)
+        choices = [(coa.id, coa.name) for coa in query.all()]
+        # Tambah opsi kosong untuk root (tidak ada parent)
+        choices.insert(0, ('', '-- No Parent --'))  # Atau _('No Parent') jika menggunakan i18n
+        return choices
+
+    def create(self):
+        # Override create untuk mengisi values parent_id
+        schema = self.CreateSchema()
+        schema['parent_id'].widget.values = self.get_parent_choices()
+        # Lanjutkan dengan logic create standar (asumsi BaseViews punya method ini)
+        return super().create(schema=schema)
+
+    def update(self):
+        # Override update untuk mengisi values parent_id, exclude current Coa
+        id_ = self.request.matchdict.get('id')
+        schema = self.UpdateSchema()
+        schema['parent_id'].widget.values = self.get_parent_choices(exclude_id=int(id_))
+        # Lanjutkan dengan logic update standar
+        return super().update(schema=schema)
 
     def form_validator(self, form, value):
         exc = colander.Invalid(
