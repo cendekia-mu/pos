@@ -98,7 +98,6 @@ orders-add,/orders/add,orders-list,Create Orders,1,orders,Views,view_create,form
 orders-edit,/orders/{id}/edit,orders-list,Edit Orders,1,orders,Views,view_update,form.pt,,
 orders-delete,/orders/{id}/delete,orders-list,Delete Orders,1,orders,Views,view_delete,form.pt,,
 orders-view,/orders/{id}/view,orders-list,Read Orders,1,orders,Views,view_read,form.pt,,
-=======
 
 #--- MODUL CUSTOMER (PARTNER)---
 customer-list,/customer,master-menu,Customer (Partner),1,partner,Views,view_list,list.pt,,1
@@ -162,4 +161,4 @@ invoice-category-act,/invoice/category/{act}/act,invoice-category-list,Inv Categ
 invoice-category-add,/invoice/category/add,invoice-category-list,Create Inv Category,1,invoice_category,Views,view_create,form.pt,,
 invoice-category-edit,/invoice/category/{id}/edit,invoice-category-list,Edit Inv Category,1,invoice_category,Views,view_update,form.pt,,
 invoice-category-delete,/invoice/category/{id}/delete,invoice-category-list,Delete Inv Category,1,invoice_category,Views,view_delete,form.pt,,
->>>>>>> 55d395b44cc9004c3fbd15f5b2ab8112cd5154c8
+
