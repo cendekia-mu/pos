@@ -1,4 +1,3 @@
-import colander
 from deform import widget
 from ..models import Kota, Provinsi
 from . import BaseViews
@@ -100,16 +99,12 @@ class Views(BaseViews):
         return query.join(Provinsi, Provinsi.id == Kota.provinsi_id)
 
     def form_validator(self, form, value):
-        exc = colander.Invalid(
-            form,
-            'Kesalahan pada pengisian data.'
-        )
-        id_ = self.request.matchdict.get('id', 0)
+        exc = colander.Invalid(form, "Kesalahan pada pengisian data.")
+        id_ = self.request.matchdict.get("id", 0)
 
         # Validate unique name
-        name = value.get('name')
+        name = value.get("name")
         row = self.table.query().filter(self.table.name == name).first()
         if row and (not id_ or row.id != int(id_)):
-            exc["name"] = _(
-                'Name {} already exists.'.format(name))
+            exc["name"] = _("Name {} already exists.".format(name))
             raise exc
