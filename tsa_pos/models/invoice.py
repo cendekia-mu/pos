@@ -1,4 +1,5 @@
 from sqlalchemy import (
+    SmallInteger,
     String,
     Integer,
     ForeignKey,
@@ -43,6 +44,14 @@ class InvoiceItems(Base):
     price = Column(Float)
     order_item_id = Column(ForeignKey('order_items.id', ondelete='CASCADE'), nullable=True)
     order_id = Column(ForeignKey('order_items.id', ondelete='CASCADE'), nullable=True)
+    status = Column(SmallInteger)
+    
+    invoice_id = Column(ForeignKey('invoices.id', ondelete='CASCADE'), nullable=False)
+    product_id = Column(ForeignKey('product.id', ondelete='CASCADE'), nullable=False)
+    # invoice_det_id = Column(ForeignKey('invoices.id', ondelete='CASCADE'), nullable=False)
+
+    # invoice_created = relationship('Order',back_populates='invoice_created', foreign_keys=[invoice_id])
+    # invoice_det_created = relationship('Order',back_populates='invoice_det_created', foreign_keys=[invoice_det_id])
     product = relationship('Product', back_populates='invoice_items', passive_deletes=True)
     invoice = relationship('Invoices', back_populates='invoice_items', passive_deletes=True)
 
