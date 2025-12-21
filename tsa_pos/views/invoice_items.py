@@ -1,11 +1,10 @@
 import colander
-from deform import widget , Form
-from ..models import Product    
+from deform import widget, Form
+from ..models import Product
 from ..views import BaseViews
 from ..models import Partner, Product, Invoices, InvoiceItems
 from . import BaseViews
 from ..i18n import _
-
 
 # Invoice Item Schema
 class InvoiceItemSchema(colander.Schema):
@@ -26,21 +25,10 @@ class InvoiceItemSchema(colander.Schema):
 class InvoiceItemsSequence(colander.SequenceSchema):
     invoice_item = InvoiceItemSchema()
 
-class CreateSchema(colander.Schema):
-    invoice_items = InvoiceItemsSequence(
-        title=_("Invoice Items")
-    )
-
-
-class UpdateSchema(CreateSchema):
-    pass
-
-    
-
 class Views(BaseViews):
     def __init__(self, request):
         super().__init__(request)
-        self.table = InvoiceItems
+        self.table = Invoice_items
         self.CreateSchema = CreateSchema
         self.UpdateSchema = UpdateSchema
         self.ReadSchema = UpdateSchema
