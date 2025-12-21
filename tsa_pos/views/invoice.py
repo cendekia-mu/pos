@@ -91,3 +91,12 @@ class Views(BaseViews):
         self.ReadSchema = UpdateSchema
         self.ListSchema = ListSchema
         self.list_route = "invoice-list"
+
+    def form_validator(self, form, value):
+        exc = colander.Invalid(form, "Kesalahan pada pengisian data.")
+        id_ = self.request.matchdict.get("id", 0)
+        code = value.get("code")
+        row = self.table.query().filter(self.table.code == code).first()
+        if row and (not id_ or row.id != int(id_)):
+            exc["code"] = _("Code {} sudah ada.".format(code))
+            raise exc

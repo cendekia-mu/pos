@@ -1,9 +1,11 @@
-from tkinter.tix import Form
 import colander
 from deform import widget, Form
+
+# from tsa_pos.views import invoice
+from tsa_pos.views.coa import ListSchema
 from ..models import Product
 from ..views import BaseViews
-from ..models import Partner, Product, Invoices, InvoiceItems
+from ..models import Partner, Product, Invoices, InvoiceItems, OrderItems, Orders
 from . import BaseViews
 from ..i18n import _
 
@@ -12,6 +14,15 @@ from ..i18n import _
 class InvoiceItemSchema(colander.Schema):
     product_id = colander.SchemaNode(
         colander.Integer(), widget=widget.SelectWidget(values=[]), title="Product"
+    )
+    invoice_id = colander.SchemaNode(
+        colander.Integer(), widget=widget.SelectWidget(values=[]), title="Invoice"
+    )
+    order_item_id = colander.SchemaNode(
+        colander.Integer(), widget=widget.SelectWidget(values=[]), title="Order item"
+    )
+    order_id = colander.SchemaNode(
+        colander.Integer(), widget=widget.SelectWidget(values=[]), title="Order"
     )
     qty = colander.SchemaNode(colander.Integer(), title="Quantity")
     price = colander.SchemaNode(colander.Float(), title="Price")
@@ -24,14 +35,36 @@ class InvoiceItemSchema(colander.Schema):
 
 # Sequence Schema
 class InvoiceItemsSequence(colander.SequenceSchema):
-    invoice_item = InvoiceItemSchema()
+    invoice_items = InvoiceItemSchema()
 
 
 class CreateSchema(colander.Schema):
-    pass
+    product_id = colander.SchemaNode(
+        colander.Integer(), widget=widget.SelectWidget(values=[]), title="Product"
+    )
+    invoice_id = colander.SchemaNode(
+        colander.Integer(), widget=widget.SelectWidget(values=[]), title="Invoice"
+    )
+    order_item_id = colander.SchemaNode(
+        colander.Integer(), widget=widget.SelectWidget(values=[]), title="Order item"
+    )
+    order_id = colander.SchemaNode(
+        colander.Integer(), widget=widget.SelectWidget(values=[]), title="Order"
+    )
+    qty = colander.SchemaNode(colander.Integer(), title="Quantity")
+    price = colander.SchemaNode(colander.Float(), title="Price")
+    amount = colander.SchemaNode(colander.Float(), title="Amount")
+
+    def after_bind(self, schema, appstruct):
+        products = Product.query().all()
+        schema["product_id"].widget.values = [(str(p.id), p.name) for p in products]
 
 
 class UpdateSchema(CreateSchema):
+    pass
+
+
+class ListSchema(colander.Schema):
     pass
 
 
@@ -42,7 +75,7 @@ class Views(BaseViews):
         self.CreateSchema = CreateSchema
         self.UpdateSchema = UpdateSchema
         self.ReadSchema = UpdateSchema
-        self.ListSchema = None
+        self.ListSchema = ListSchema
         self.list_route = "invoice-items-list"
         self.list_cols = [
             "id",
