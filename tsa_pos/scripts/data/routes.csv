@@ -38,7 +38,6 @@ permissions-view,/permissions/{id}/view,permissions-list,Read permissions,1,perm
 
 # --- MASTER MENU ---
 master-menu,#,,Master,1,,,,,,1
-# ---
 product-category-list,/product/category,master-menu,Product Category,1,product_category,Views,view_list,list.pt,,1
 product-category-act,/product/category/{act}/act,product-category-list,Product Category Action,1,product_category,Views,view_act,json,,
 product-category-add,/product/category/add,product-category-list,Create Product Category,1,product_category,Views,view_create,form.pt,,
@@ -60,7 +59,7 @@ provinsi-edit,/provinsi/{id}/edit,provinsi-list,Edit Provinsi,1,provinsi,Views,v
 provinsi-delete,/provinsi/{id}/delete,provinsi-list,Delete Provinsi,1,provinsi,Views,view_delete,form.pt,,
 provinsi-view,/provinsi/{id}/view,provinsi-list,Read Provinsi,1,provinsi,Views,view_read,form.pt,,
 
-#---MODUL KOTA---
+# --- MODUL KOTA ---
 kota-list,/kota,master-menu,Kota,1,kota,Views,view_list,list.pt,,1
 kota-act,/kota/{act}/act,kota-list,Kota Action,1,kota,Views,view_act,json,,
 kota-add,/kota/add,kota-list,Create Kota,1,kota,Views,view_create,form.pt,,
@@ -76,7 +75,7 @@ kecamatan-edit,/kecamatan/{id}/edit,kecamatan-list,Edit Kecamatan,1,kecamatan,Vi
 kecamatan-delete,/kecamatan/{id}/delete,kecamatan-list,Delete Kecamatan,1,kecamatan,Views,view_delete,form.pt,,
 kecamatan-view,/kecamatan/{id}/view,kecamatan-list,Read Kecamatan,1,kecamatan,Views,view_read,form.pt,,
 
-#---MODUL PARTNER---
+# --- MODUL PARTNER ---
 partner-list,/partner,master-menu,Partner,1,partner,Views,view_list,list.pt,,1
 partner-act,/partner/{act}/act,partner-list,Partner Action,1,partner,Views,view_act,json,,
 partner-add,/partner/add,partner-list,Create Partner,1,partner,Views,view_create,form.pt,,
@@ -84,7 +83,7 @@ partner-edit,/partner/{id}/edit,partner-list,Edit Partner,1,partner,Views,view_u
 partner-delete,/partner/{id}/delete,partner-list,Delete Partner,1,partner,Views,view_delete,form.pt,,
 partner-view,/partner/{id}/view,partner-list,Read Partner,1,partner,Views,view_read,form.pt,,
 
-#--- MODUL CUSTOMER (PARTNER)---
+# --- MODUL CUSTOMER (PARTNER) ---
 customer-list,/customer,master-menu,Customer (Partner),1,partner,Views,view_list,list.pt,,1
 customer-add,/customer/add,customer-list,Create Customer,1,partner,Views,view_create,form.pt,,
 customer-edit,/customer/{id}/edit,customer-list,Edit Customer,1,partner,Views,view_update,form.pt,,
@@ -101,86 +100,25 @@ invoice-view,/invoice/{id}/view,invoice-list,Read Invoice,1,invoice,Views,view_r
 
 # --- ORDER / KASIR ---
 order-list,/order,master-menu,Order (Kasir),1,orders,Views,view_list,list.pt,,1
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-order-add,/order/add,order-list,Buat Order Baru,1,orders,Views,view_add,form.pt,,
+order-add,/order/add,order-list,Buat Order Baru,1,orders,Views,view_create,form.pt,,
 order-view,/order/{id}/view,order-list,Detail Order,1,orders,Views,view_read,form.pt,,
 order-checkout,/order/{id}/checkout,order-list,Proses Checkout,1,orders,Views,view_checkout,form.pt,,
 order-act,/order/{act}/act,order-list,Order Action,1,orders,Views,view_act,json,,
 order-delete,/order/{id}/delete,order-list,Delete Order,1,orders,Views,view_delete,form.pt,,    
 order-edit,/order/{id}/edit,order-list,Edit Order,1,orders,Views,view_update,form.pt,,
 
-# --- PAYMENT (KONSOLIDASI DI BAWAH SATU MENU) ---
-payment-list,/payment,master-menu, payment,1,payment,Views,view_list,list.pt,,1
-=======
-=======
->>>>>>> 79b6070 (menambahkan routes untuk menu)
-=======
->>>>>>> 3cd26d8 (menambahkan routes untuk menu)
-order-create,/order/create,order-list,Buat Order Baru,1,orders,Views,view_create,form.pt,,
-order-detail,/order/{id}/detail,order-list,Detail Order,1,orders,Views,view_read,form.pt,,
-=======
-<<<<<<< HEAD
-order-add,/order/add,order-list,Buat Order Baru,1,orders,Views,view_add,form.pt,,
-order-view,/order/{id}/view,order-list,Detail Order,1,orders,Views,view_read,form.pt,,
->>>>>>> 84ceb59 (menambahkan routes untuk menu)
-order-checkout,/order/{id}/checkout,order-list,Proses Checkout,1,orders,Views,view_checkout,form.pt,,
-
-# --- PAYMENT (KONSOLIDASI DI BAWAH SATU MENU) ---
-<<<<<<< HEAD
+# --- PAYMENT MENU ---
 payment-menu,#,master-menu,Payment,1,,,,,,1
 payment-list,/payment,payment-menu,Transaksi Payment,1,payment,Views,view_list,list.pt,,1
-<<<<<<< HEAD
-<<<<<<< HEAD
->>>>>>> 79b6070 (menambahkan routes untuk menu)
-=======
->>>>>>> 79b6070 (menambahkan routes untuk menu)
-=======
-=======
-payment-list,/payment,master-menu, payment,1,payment,Views,view_list,list.pt,,1
-=======
-order-create,/order/create,order-list,Buat Order Baru,1,orders,Views,view_create,form.pt,,
-order-detail,/order/{id}/detail,order-list,Detail Order,1,orders,Views,view_read,form.pt,,
-order-checkout,/order/{id}/checkout,order-list,Proses Checkout,1,orders,Views,view_checkout,form.pt,,
-
-# --- PAYMENT (KONSOLIDASI DI BAWAH SATU MENU) ---
-payment-menu,#,master-menu,Payment,1,,,,,,1
-payment-list,/payment,payment-menu,Transaksi Payment,1,payment,Views,view_list,list.pt,,1
->>>>>>> 79b6070 (menambahkan routes untuk menu)
->>>>>>> 84ceb59 (menambahkan routes untuk menu)
->>>>>>> 3cd26d8 (menambahkan routes untuk menu)
 payment-act,/payment/{act}/act,payment-list,Payment Action,1,payment,Views,view_act,json,,
 payment-add,/payment/add,payment-list,Create Payment,1,payment,Views,view_create,form.pt,,
 payment-edit,/payment/{id}/edit,payment-list,Edit Payment,1,payment,Views,view_update,form.pt,,
 payment-delete,/payment/{id}/delete,payment-list,Delete Payment,1,payment,Views,view_delete,form.pt,,
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
->>>>>>> 79b6070 (menambahkan routes untuk menu)
-=======
-=======
-<<<<<<< HEAD
-=======
->>>>>>> 84ceb59 (menambahkan routes untuk menu)
->>>>>>> 3cd26d8 (menambahkan routes untuk menu)
 payment-view,/payment/{id}/view,payment-list,Read Payment,1,payment,Views,view_read,form.pt,,
 payment-method-list,/payment/method,payment-menu,Metode Pembayaran,1,payment_method,Views,view_list,list.pt,,1
 payment-method-act,/payment/method/{act}/act,payment-method-list,Payment Method Action,1,payment_method,Views,view_act,json,,
 payment-method-add,/payment/method/add,payment-method-list,Create Payment Method,1,payment_method,Views,view_create,form.pt,,
 payment-method-edit,/payment/method/{id}/edit,payment-method-list,Edit Payment Method,1,payment_method,Views,view_update,form.pt,,
-<<<<<<< HEAD
-<<<<<<< HEAD
->>>>>>> 79b6070 (menambahkan routes untuk menu)
-=======
->>>>>>> 79b6070 (menambahkan routes untuk menu)
-=======
-=======
->>>>>>> 79b6070 (menambahkan routes untuk menu)
->>>>>>> 84ceb59 (menambahkan routes untuk menu)
->>>>>>> 3cd26d8 (menambahkan routes untuk menu)
 
 # --- MODUL DEPARTEMEN ---
 departmen-list,/department,master-menu,Departemen,1,department,Views,view_list,list.pt,,1
@@ -195,27 +133,7 @@ retur-act,/return/{act}/act,return-list,Return Action,1,returns,Views,view_act,j
 retur-add,/return/add,return-list,Create Return,1,returns,Views,view_create,form.pt,,
 retur-edit,/return/{id}/edit,return-list,Edit Return,1,returns,Views,view_update,form.pt,,
 retur-view,/return/{id}/view,return-list,Read Return,1,returns,Views,view_read,form.pt,,
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
 
-=======
->>>>>>> 79b6070 (menambahkan routes untuk menu)
-=======
-
->>>>>>> 2b87096 (routes & partnmer)
-=======
->>>>>>> 79b6070 (menambahkan routes untuk menu)
-=======
-
->>>>>>> 2b87096 (routes & partnmer)
-=======
-
-=======
->>>>>>> 79b6070 (menambahkan routes untuk menu)
->>>>>>> 3cd26d8 (menambahkan routes untuk menu)
 # --- MODUL CHART OF ACCOUNT (CoA) ---
 coa-list,/coa,master-menu,Chart of Account,1,coa,Views,view_list,list.pt,,1
 coa-act,/coa/{act}/act,coa-list,CoA Action,1,coa,Views,view_act,json,,
@@ -228,15 +146,7 @@ invoice-category-list,/invoice/category,master-menu,invoice Category,1,invoice_c
 invoice-category-act,/invoice/category/{act}/act,invoice-category-list,Inv Category Action,1,invoice_category,Views,view_act,json,,
 invoice-category-add,/invoice/category/add,invoice-category-list,Create Inv Category,1,invoice_category,Views,view_create,form.pt,,
 invoice-category-edit,/invoice/category/{id}/edit,invoice-category-list,Edit Inv Category,1,invoice_category,Views,view_update,form.pt,,
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
 invoice-category-delete,/invoice/category/{id}/delete,invoice-category-list,Delete Inv Category,1,invoice_category,Views,view_delete,form.pt,,
-=======
-invoice-category-delete,/invoice/category/{id}/delete,invoice-category-list,Delete Inv Category,1,invoice_category,Views,view_delete,form.pt,,
-<<<<<<< HEAD
-=======
->>>>>>> 3cd26d8 (menambahkan routes untuk menu)
 
 # --- MODUL INVOICE ITEMS ---
 invoice-item-list,/invoice/item,master-menu,Invoice Item,1,invoice_item,Views,view_list,list.pt,,1
@@ -244,13 +154,3 @@ invoice-item-act,/invoice/item/{act}/act,invoice-item-list,Invoice Item Action,1
 invoice-item-add,/invoice/item/add,invoice-item-list,Create Invoice Item,1,invoice_item,Views,view_create,form.pt,,
 invoice-item-edit,/invoice/item/{id}/edit,invoice-item-list,Edit Invoice Item,1,invoice_item,Views,view_update,form.pt,,
 invoice-item-delete,/invoice/item/{id}/delete,invoice-item-list,Delete Invoice Item,1,invoice_item,Views,view_delete,form.pt,,
-=======
-invoice-category-delete,/invoice/category/{id}/delete,invoice-category-list,Delete Inv Category,1,invoice_category,Views,view_delete,form.pt,,
->>>>>>> 79b6070 (menambahkan routes untuk menu)
-<<<<<<< HEAD
-=======
-invoice-category-delete,/invoice/category/{id}/delete,invoice-category-list,Delete Inv Category,1,invoice_category,Views,view_delete,form.pt,,
->>>>>>> 79b6070 (menambahkan routes untuk menu)
-=======
->>>>>>> 84ceb59 (menambahkan routes untuk menu)
->>>>>>> 3cd26d8 (menambahkan routes untuk menu)

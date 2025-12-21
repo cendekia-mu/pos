@@ -124,7 +124,7 @@ def upgrade() -> None:
     sa.Column('perm_name', sa.Unicode(length=64), nullable=False),
     sa.ForeignKeyConstraint(['resource_id'], ['resources.resource_id'], name=op.f('fk_users_resources_permissions_resource_id_resources'), onupdate='CASCADE', ondelete='CASCADE'),
     sa.ForeignKeyConstraint(['user_id'], ['users.id'], name=op.f('fk_users_resources_permissions_user_id_users'), onupdate='CASCADE', ondelete='CASCADE'),
-    sa.PrimaryKeyConstraint('user_id', 'resource_id', 'perm_name', name='pk_users_resources_permissions '),
+    sa.PrimaryKeyConstraint('user_id', 'resource_id', 'perm_name', name='pk_users_resources_permissions'),
     mysql_charset='utf8',
     mysql_engine='InnoDB'
     )

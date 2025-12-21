@@ -1,98 +1,33 @@
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
 import colander
-<<<<<<< HEAD
-<<<<<<< HEAD
->>>>>>> 2814337 (update kota)
-=======
->>>>>>> ed1299d (invoice dan form login)
-=======
->>>>>>> ee0465c (Perubahan)
-=======
-=======
->>>>>>> 3be0a97 (Perubahan)
-=======
-import colander
-<<<<<<< HEAD
-<<<<<<< HEAD
->>>>>>> ba4e848 (update kota)
-<<<<<<< HEAD
->>>>>>> 90e1579 (update kota)
-=======
-=======
->>>>>>> 77de8fe (invoice dan form login)
-<<<<<<< HEAD
->>>>>>> a044256 (invoice dan form login)
-=======
-=======
->>>>>>> 96545a2 (Perubahan)
->>>>>>> 3be0a97 (Perubahan)
+import deform
 from deform import widget
-import colander
-from ..models import Kota,Provinsi
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 90e1579 (update kota)
-=======
->>>>>>> a044256 (invoice dan form login)
 from ..models import Kota, Provinsi
-=======
-=======
-from ..models import Kota, Provinsi
->>>>>>> fb37090 (update kota)
->>>>>>> 2814337 (update kota)
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-from ..models import Kota, Provinsi
->>>>>>> ed1299d (invoice dan form login)
-=======
-=======
-from ..models import Kota, Provinsi
->>>>>>> fb37090 (update kota)
->>>>>>> 2814337 (update kota)
-=======
-from ..models import Kota, Provinsi
->>>>>>> ed1299d (invoice dan form login)
-=======
->>>>>>> 90e1579 (update kota)
-=======
-=======
-from ..models import Kota, Provinsi
->>>>>>> ed1299d (invoice dan form login)
->>>>>>> a044256 (invoice dan form login)
 from . import BaseViews
 from ..i18n import _
 
-
 class ListSchema(colander.Schema):
-    id = colander.SchemaNode(colander.Integer(),
-                                missing=colander.drop,
-                                title="Action",
-                                widget=widget.HiddenWidget(),
+    id = colander.SchemaNode(
+        colander.Integer(),
+        missing=colander.drop,
+        title="Action",
+        widget=widget.HiddenWidget(),
     )
     name = colander.SchemaNode(colander.String())
 
 
 class CreateSchema(colander.Schema):
-    # Define your schema fields here
-    name = colander.SchemaNode(colander.String(),
-                                validator=colander.Length(min=3, max=50)
+    name = colander.SchemaNode(
+        colander.String(),
+        validator=colander.Length(min=3, max=50)
     )
-    provinsi_id = colander.SchemaNode(colander.Integer(),
-                                widget=widget.SelectWidget(values=[]),
+    provinsi_id = colander.SchemaNode(
+        colander.Integer(),
+        title="Provinsi",
+        widget=widget.SelectWidget(values=[]),
     )
 
-    def after_bind(self, schema, appstruct):
-        # Populate category_id choices
+    def after_bind(self, schema, kwargs):
+        # Menggunakan kwargs untuk mendapatkan data dari DB
         provinsi = Provinsi.query().all()
         schema["provinsi_id"].widget.values = [
             (str(prov.id), prov.name) for prov in provinsi
@@ -100,20 +35,11 @@ class CreateSchema(colander.Schema):
 
 
 class UpdateSchema(CreateSchema):
-    id = colander.SchemaNode(colander.Integer(),
-                                missing=colander.drop,
-                                widget=widget.HiddenWidget()
+    id = colander.SchemaNode(
+        colander.Integer(),
+        missing=colander.drop,
+        widget=widget.HiddenWidget()
     )
-    provinsi_id = colander.SchemaNode(colander.Integer(),
-                                widget=widget.SelectWidget(values=[]),
-    )
-
-    def after_bind(self, schema, appstruct):
-        # Populate category_id choices
-        provinsi = Provinsi.query().all()
-        schema["provinsi_id"].widget.values = [
-            (str(prov.id), prov.name) for prov in provinsi
-        ]
 
 
 class Views(BaseViews):
@@ -127,71 +53,16 @@ class Views(BaseViews):
         self.list_route = "kota-list"
 
     def form_validator(self, form, value):
-        exc = colander.Invalid(form, "Kesalahan pada pengisian data.")
+        exc = colander.Invalid(form, _("Kesalahan pada pengisian data."))
         id_ = self.request.matchdict.get("id", 0)
 
-        # Validate unique name
+        # Validasi nama unik
         name = value.get("name")
         row = self.table.query().filter(self.table.name == name).first()
         if row and (not id_ or row.id != int(id_)):
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 2814337 (update kota)
-=======
->>>>>>> 3be0a97 (Perubahan)
-            exc["name"] = _("Name {} already exists.".format(name))
+            exc["name"] = _("Name {} already exists.").format(name)
             raise exc
 
     def list_join(self, query, **kwargs):
-
-        return query.join(Provinsi, Provinsi.id == Kota.provinsi_id )
-        return query.join(Provinsi, Provinsi.id == Kota.provinsi_id )
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 90e1579 (update kota)
+        # Join dengan tabel Provinsi agar data provinsi tersedia di grid jika diperlukan
         return query.join(Provinsi, Provinsi.id == Kota.provinsi_id)
-
-=======
-        
->>>>>>> d670049 (WIP: Perubahan lokal sebelum pull dari main)
-=======
-        return query.join(Provinsi, Provinsi.id == Kota.provinsi_id)
-
->>>>>>> 2814337 (update kota)
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-            exc["name"] = _(
-                'Name {} already exists.'.format(name))
-<<<<<<< HEAD
-            raise exc
-<<<<<<< HEAD
->>>>>>> ee0465c (Perubahan)
-=======
-    def list_join(self, query, **kwargs):
-
-        return query.join(Provinsi, Provinsi.id == Kota.provinsi_id )
-        return query.join(Provinsi, Provinsi.id == Kota.provinsi_id )
-        
->>>>>>> d670049 (WIP: Perubahan lokal sebelum pull dari main)
-=======
-        return query.join(Provinsi, Provinsi.id == Kota.provinsi_id)
-
->>>>>>> 2814337 (update kota)
-=======
-            raise exc
->>>>>>> ee0465c (Perubahan)
-=======
->>>>>>> 90e1579 (update kota)
-=======
-=======
-            exc["name"] = _(
-                'Name {} already exists.'.format(name))
-            raise exc
->>>>>>> ee0465c (Perubahan)
->>>>>>> 3be0a97 (Perubahan)
