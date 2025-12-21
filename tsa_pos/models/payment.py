@@ -25,8 +25,11 @@ class Payment(StandardModel):
 class PaymentItem(Base):
     __tablename__ = 'payment_item'
 
-    payment_id = Column(ForeignKey('payment.id', ondelete='CASCADE'), nullable=True)
-    invoice_id = Column(ForeignKey('invoice.id', ondelete='CASCADE'), nullable=True)
+    payment_id = Column(ForeignKey('payment.id', ondelete='CASCADE'), 
+                         nullable=False, primary_key=True)
+    invoice_id = Column(ForeignKey('invoice.id', ondelete='CASCADE'), 
+                         nullable=False, primary_key=True)
     payment = relationship('Payment', back_populates='payment_items', passive_deletes=True)
     invoice = relationship('Invoices', back_populates='invoice_items', passive_deletes=True)
     amount = Column(Float, nullable=False)
+
