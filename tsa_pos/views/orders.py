@@ -11,14 +11,28 @@ class ListSchema(colander.Schema):
     id = colander.SchemaNode(colander.Integer(), title="ID", 
                              missing=colander.drop, 
                              widget=widget.HiddenWidget())
+    
     code = colander.SchemaNode(colander.String(), title=_("Order Code"))
-    name = colander.SchemaNode(colander.String(), title=_("Description"))
+    
+    name = colander.SchemaNode(colander.String(), title=_("Description"),
+                               missing=colander.drop)
+    
     partner_id = colander.SchemaNode(colander.Integer(), title=_("Partner"),
                                      widget=widget.SelectWidget(values=[]))
-    order_date = colander.SchemaNode(colander.Date(), title=_("Order Date"),
-                                     default=datetime.date.today())
-    amount = colander.SchemaNode(colander.Float(), title=_("Total Amount"), default=0)
-    status = colander.SchemaNode(colander.Integer(), title=_("Status"), default=1)
+    
+    order_date = colander.SchemaNode(colander.DateTime(), title=_("Order Date"),
+                                     default=datetime.datetime.now())
+    
+    est_delivery = colander.SchemaNode(colander.DateTime(), title=_("Est. Delivery"),
+                                       missing=colander.drop,
+                                       widget=widget.DateInputWidget())
+    
+    amount = colander.SchemaNode(colander.Float(), title=_("Total Amount"), 
+                                 default=0)
+    
+    status = colander.SchemaNode(colander.Integer(), title=_("Status"), 
+                                 default=1,
+                                 widget=widget.SelectWidget(values=[(0, 'Draft'), (1, 'Active')]))
 
 class Views(BaseViews):
     def __init__(self, request):
@@ -27,7 +41,6 @@ class Views(BaseViews):
         self.list_route = 'order-list'
         self.ListSchema = ListSchema
 
-    # Fungsi pembantu untuk redirect ke halaman list
     def redirect_list(self):
         return HTTPFound(location=self.request.route_url(self.list_route))
 
@@ -35,6 +48,7 @@ class Views(BaseViews):
         return super().view_list()
 
     def view_add(self):
+        # 1. Ambil data Partner dari database
         query_p = DBSession.query(Partner.id, Partner.name).order_by(Partner.name)
         options = [(p.id, p.name) for p in query_p.all()]
         
@@ -44,12 +58,14 @@ class Views(BaseViews):
         form = Form(schema, buttons=('save', 'cancel'))
         resources = form.get_widget_resources()
         
+        # 2. Logika Simpan
         if self.request.POST:
             if 'save' in self.request.POST:
                 controls = self.request.POST.items()
                 try:
                     appstruct = form.validate(controls)
                     
+                    # Buat row baru berdasarkan model Orders
                     new_row = self.table()
                     for key in appstruct:
                         setattr(new_row, key, appstruct[key])
@@ -57,7 +73,6 @@ class Views(BaseViews):
                     DBSession.add(new_row)
                     DBSession.flush() 
                     
-                    # Ganti self.route_list() dengan ini:
                     return self.redirect_list()
                 except ValidationFailure as e:
                     return {
