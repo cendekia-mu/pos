@@ -13,7 +13,7 @@ from pyramid.config import Configurator
 from pyramid_beaker import session_factory_from_settings
 from pyramid_mailer import mailer_factory_from_settings
 from pyramid.events import subscriber, BeforeRender
-from pyramid.view import notfound_view_config, forbidden_view_``config
+from pyramid.view import notfound_view_config, forbidden_view_config
 
 from sqlalchemy.engine import engine_from_config
 from .tools import format_datetime, dmy, dmyhms, get_ext
