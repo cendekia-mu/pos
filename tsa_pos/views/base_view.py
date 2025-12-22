@@ -2,13 +2,11 @@ import datetime
 import logging
 import colander
 import deform
-
 from deform import widget
 from pyramid.httpexceptions import HTTPFound
 from pyramid.csrf import new_csrf_token, get_csrf_token
 from pyramid.exceptions import HTTPNotFound
 from datatables import ColumnDT, DataTables
-
 from ..detable import DeTable
 from ..tools import *
 from ..models import DBSession
@@ -297,10 +295,10 @@ class BaseViews(object):
     def next_act(self, **kwargs):
         raise HTTPNotFound
 
-    def pdf_response(self, **kwargs):
-        from opensipkd.base.tools.report import jasper_export
-        filename = jasper_export(self.report_file)
-        return file_response(self.request, filename=filename[0])
+    # def pdf_response(self, **kwargs):
+    #     from opensipkd.base.tools.report import jasper_export
+    #     filename = jasper_export(self.report_file)
+    #     return file_response(self.request, filename=filename[0])
 
     def csv_response(self, **kwargs):
         query = self.table.query_register()
