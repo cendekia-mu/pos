@@ -14,12 +14,11 @@ from ..tools import *
 from ..models import DBSession
 from ..widgets import tsa_widget
 from ..i18n import _
-
 _logging = logging.getLogger(__name__) # error, warning, info, debug
 
 class MemoryTmpStore(dict):
     """ Instances of this class implement the
-    :class:`deform.interfaces.FileUploadTempStore` interface"""
+    :class:`defWorm.interfaces.FileUploadTempStore` interface"""
 
     def preview_url(self, uid):
         return None
@@ -100,12 +99,31 @@ class BaseViews(object):
         
         # end of datatable settings
         self.bindings = {}
+        self.resources = {}
         
     def get_bindings(self):
         return {}
 
     # datatable start
     def view_list(self, **kwargs):
+         # Logic to fetch all data from the database goes here
+        """
+        custom:
+            allow_view = kwargs.get("allow_view", self.allow_view)
+            allow_edit = kwargs.get("allow_edit", self.allow_edit)
+            allow_delete = kwargs.get("allow_delete", self.allow_delete)
+            allow_post = kwargs.get("allow_post", self.allow_post)
+            allow_unpost = kwargs.get("allow_unpost", self.allow_unpost)
+            allow_check = kwargs.get("allow_check", self.allow_check)
+            state_save = kwargs.get("state_save", self.state_save)
+            filter_columns = kwargs.get("filter_columns", self.filter_columns)
+            server_side = kwargs.get("server_side", self.server_side)
+            new_buttons
+            list_url
+            action_suffix
+            html_buttons
+        """
+
         allow_view = kwargs.pop("allow_view", self.allow_view)
         allow_edit = kwargs.pop("allow_edit", self.allow_edit)
         allow_delete = kwargs.pop("allow_delete", self.allow_delete)
@@ -115,7 +133,7 @@ class BaseViews(object):
         check_field = kwargs.pop("check_field", self.check_field)
 
         state_save = kwargs.pop("state_save", self.state_save)
-        filter_columns = kwargs.pop("filter_columns", self.column_filter)
+        filter_columns = kwargs.pop("filter_columns", self.filter_columns)
         server_side = kwargs.pop("server_side", self.server_side)
         new_buttons = kwargs.pop("new_buttons", self.new_buttons)
         is_object = kwargs.pop("is_object", self.is_object)
@@ -131,7 +149,7 @@ class BaseViews(object):
             if parent:
                 action_suffix += f'?parent_id={parent.id}'
 
-            schema = list_schema()
+            schema = self.ListSchema()
             if "bindings" in kwargs and kwargs["bindings"]:
                 bindings = kwargs["bindings"]
             elif self.bindings:
@@ -147,7 +165,7 @@ class BaseViews(object):
             if not list_url and self.list_route:
                 list_url = self.request.route_url(self.list_route)
             else:
-                if list_url and list_url[:4] != 'http':
+                if list_url[:4] != 'http':
                     list_url = f"/{list_url}".replace("//", "/")
                     list_url = self.home + list_url
 
@@ -180,24 +198,35 @@ class BaseViews(object):
             return dict(form=table.render(), scripts="", css=resources["css"],
                         js=resources["js"])
 
-        arg = kwargs if kwargs else {}
-        arg.update(url=self.list_url, col_defs=self.list_col_defs, buttons=self.list_buttons)
+        arg = kwargs and kwargs or {}
+        arg.update(url=self.list_url, col_defs=self.list_col_defs,
+        buttons=self.list_buttons)
         return arg
 
 
     def view_act(self, **kwargs):
+        #Standard Action grid csv pdf dan next_act
         url_dict = self.request.matchdict
         if url_dict['act'] == 'grid':
             return self.get_list(**kwargs)
+
         elif url_dict['act'] == 'csv':
             return self.csv_response(**kwargs)
+
         elif url_dict['act'] == 'pdf':
             return self.pdf_response(**kwargs)
+
         else:
             return self.next_act(**kwargs)
         
 
     def get_list(self, **kwargs):
+        """
+        parameter
+        list_schema optional
+        list_join callback
+        list_filter callback
+        """
         url = []
         select_list = {}
         list_schema = kwargs.get("list_schema", self.ListSchema)
@@ -206,32 +235,49 @@ class BaseViews(object):
             columns = []
             for d in list_schema():
                 global_search = True
-                search_method = hasattr(d, "search_method") and getattr(d, "search_method") or "string_contains"
-                if hasattr(d, "global_search") and d.global_search == False:
-                    global_search = False
+                search_method = hasattr(d, "search_method") \
+                    and getattr(d, "search_method") or "string_contains"
+                if hasattr(d, "global_search"):
+                    if d.global_search == False:
+                        global_search = False
 
                 if hasattr(d, "field"):
                     if type(d.field) == str:
-                        columns.append(ColumnDT(getattr(self.table, d.field), mData=d.name, global_search=global_search, search_method=search_method))
+                        columns.append(
+                            ColumnDT(getattr(self.table, d.field),
+                                     mData=d.name,
+                                     global_search=global_search,
+                                     search_method=search_method))
                     else:
-                        columns.append(ColumnDT(d.field, mData=d.name, global_search=global_search, search_method=search_method))
+                        columns.append(
+                            ColumnDT(d.field, mData=d.name,
+                                     global_search=global_search,
+                                     search_method=search_method
+                                     ))
                 else:
-                    columns.append(ColumnDT(getattr(self.table, d.name), mData=d.name, global_search=global_search, search_method=search_method))
-                
-                if hasattr(d, "widget") and d.widget:
-                    if type(d.widget) is deform.widget.SelectWidget:
-                        select_list[d.name] = d.widget.values
+                    columns.append(
+                        ColumnDT(getattr(self.table, d.name),
+                                 mData=d.name,
+                                 global_search=global_search,
+                                 search_method=search_method))
+                if hasattr(d, "widget"):
+                    if d.widget:
+                        _logging.debug(d.widget)
+                        if type(d.widget) is deform.widget.SelectWidget:
+                            select_list[d.name] = d.widget.values
 
                 if hasattr(d, "url"):
                     url.append(d.name)
         else:
             columns = self.columns
 
+        # Get Data From Database
         query = self.db_session.query().select_from(self.table)
         list_join = kwargs.get('list_join', self.list_join)
         query = list_join(query, **kwargs)
         list_filter = kwargs.get('list_filter', self.list_filter)
         query = list_filter(query, **kwargs)
+        # End Get Data From Database
 
         row_table = DataTables(self.request.GET, query, columns)
         result = row_table.output_result()
@@ -243,6 +289,10 @@ class BaseViews(object):
                     for r in vals:
                         if r and str(r) == str(res[k]):
                             res[k] = vals[r]
+        #     for k, v in d.items():
+        #         if k in url and v:
+        #             link = "/".join([self.home, nik_url, v])
+        #             d[k] =f'<a href="{link}" target="_blank">View</a>'
         return result
 
     def filter_columns(self, query, **kwargs):
@@ -255,6 +305,7 @@ class BaseViews(object):
         return query
 
     def next_act(self, **kwargs):
+        # url_dict = self.request.matchdict
         raise HTTPNotFound
 
     def pdf_response(self, **kwargs):
@@ -268,9 +319,13 @@ class BaseViews(object):
         header = row._mapping.keys()
         rows = [list(item) for item in query.all()]
         filename = f"{get_random_string(16)}.csv"
-        value = {'header': header, 'rows': rows}
+        value = {
+            'header': header,
+            'rows': rows,
+        }
         return csv_response(self.request, value, filename)
 
+    # data table end 
     def save(self, values, row=None):
         now = datetime.datetime.now()
         if not row:
@@ -278,7 +333,7 @@ class BaseViews(object):
             if hasattr(row, 'create_uid'):
                 row.create_uid = self.request.user.id
             if hasattr(row, 'status'):
-                row.status = 1
+                row.status = 1  # Default to active status
             if hasattr(row, 'created'):
                 row.created = now
         else:
@@ -309,31 +364,39 @@ class BaseViews(object):
                     self.save(appstruct)
                     self.request.session.flash(_('Data added successfully!'))
                 except deform.ValidationFailure as e:
-                    return {'form': e.render(), "scripts": ""}
+                    return {'form': e.render(), "scripts": "", "tags": self.resources}
+
             return HTTPFound(location=self.request.route_url(self.list_route))
-        return {'form': form.render(), "scripts": ""}
+
+        rendered_form = form.render()
+        return {'form': rendered_form, "scripts": "", "tags": self.resources}
     
     def get_form(self, schema_class, buttons=("cancel", )):
-        schema = schema_class(validator=self.form_validator, request=self.request, widget=tsa_widget.FormWidget())
+        schema = schema_class(
+            validator=self.form_validator, request=self.request, widget=tsa_widget.FormWidget())
         schema = schema.bind(request=self.request)
-        form = deform.Form(schema, buttons=buttons)
+        form = deform.Form(schema, buttons=buttons, )
+        self.resources = form.get_widget_resources()
         return form
     
     def form_validator(self, form, value):
         id_ = self.request.matchdict.get('id', 0)
-        if hasattr(self.table, 'validator'):
-            excs = self.table.validator(id_, value, form)
-            if excs:
-                exc = colander.Invalid(form, 'Kesalahan pada pengisian data.')
-                for k, v in excs.items():
-                    exc[k] = v
-                raise exc
+        excs = self.table.validator(id_, value, form)
+        if excs:
+            exc = colander.Invalid(
+                form,
+                'Kesalahan pada pengisian data.'
+            )
+            for k, v in excs.items():
+                exc[k] = v
+            raise exc
 
     def query_id(self):
         id_ = self.request.matchdict.get('id')
         return self.db_session.query(self.table).filter(self.table.id == id_)
 
     def view_read(self):
+        # Logic to fetch user data from the database goes here
         query = self.query_id()
         row = query.first()
         if not row:
@@ -341,10 +404,17 @@ class BaseViews(object):
             return HTTPFound(location=self.request.route_url(self.list_route))
 
         form = self.get_form(self.ReadSchema)
+        if self.request.POST:
+            return HTTPFound(location=self.request.route_url(self.list_route))
+
+        # Pre-fill form with existing user data
         appstruct = self.get_values(row)
-        return {'form': form.render(appstruct, readonly=True), "scripts": ""}
+        rendered_form = form.render(appstruct, readonly=True)
+        return {'form': rendered_form, "scripts": "", "tags": self.resources}
+
 
     def view_update(self):
+        # Logic to fetch user data from the database goes here
         query = self.query_id()
         row = query.first()
         if not row:
@@ -358,20 +428,26 @@ class BaseViews(object):
                 try:
                     appstruct = form.validate(controls)
                     self.save(appstruct, row)
-                    self.request.session.flash('Record updated successfully!')
+                    self.request.session.flash(
+                        _('Record updated successfully!'))
                 except deform.ValidationFailure as e:
-                    return {'form': e.render(),  "scripts": ""}
+                    return {'form': e.render(),  "scripts": "", "tags": self.resources}
+
             return HTTPFound(location=self.request.route_url(self.list_route))
 
+        # Pre-fill form with existing user data
         appstruct = self.get_values(row)
-        return {'form': form.render(appstruct), "scripts": ""}
+        rendered_form = form.render(appstruct)
+        return {'form': rendered_form, "scripts": "", "tags": self.resources}
 
     def get_values(self, row):
         appstruct = dict(row.__dict__)
+        # Remove SQLAlchemy internal state
         appstruct.pop('_sa_instance_state', None)
         return appstruct
 
     def view_delete(self):
+        # Logic to fetch user data from the database goes here
         query = self.query_id()
         row = query.first()
         if not row:
@@ -383,9 +459,13 @@ class BaseViews(object):
                     query.delete()
                     self.request.session.flash('Record deleted successfully!')
                 except Exception as e:
-                    self.request.session.flash('Error deleting: {}'.format(e))
+                    self.request.session.flash(
+                        'Error deleting user: {}'.format(e))
+
             return HTTPFound(location=self.request.route_url(self.list_route))
 
         form = self.get_form(self.ReadSchema, buttons=('delete', 'cancel'))
         app_struct = self.get_values(row)
-        return {'form': form.render(app_struct), "scripts": ""}
+        form.set_appstruct(app_struct)
+        rendered_form = form.render()
+        return {'form': rendered_form, "scripts": "", "tags": self.resources}

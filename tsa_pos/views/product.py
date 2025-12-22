@@ -11,20 +11,9 @@ class ListSchema(colander.Schema):
                              title="Action",
                              widget=widget.HiddenWidget())
     name = colander.SchemaNode(colander.String())
-    stock = colander.SchemaNode(
-    colander.Integer(),
-    title="Stok Saat Ini",
-    default=0,
-    missing=0,
-    widget=widget.TextInputWidget(type='number', attributes={'min': '0'})
-)
-    min_stock = colander.SchemaNode(
-    colander.Integer(),
-    title="Minimal Stok (Peringatan)",
-    default=1,
-    missing=1,
-    widget=widget.TextInputWidget(type='number', attributes={'min': '0'})
-)
+    stock = colander.SchemaNode(colander.Integer(), missing=colander.drop   ,
+                                widget=widget.TextInputWidget(readonly=True),)
+    min_stock = colander.SchemaNode(colander.Integer(),)
     selleable = colander.SchemaNode(colander.Integer(),
                                     widget=widget.CheckboxWidget(true_val="1", false_val="0"),)
 
