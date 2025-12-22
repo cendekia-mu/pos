@@ -3,9 +3,7 @@ kode,path,parent_id,nama,status,file_name,class_name,func_name,template,permissi
 home,/,,Home,1,home,Views,beranda,home.pt,,
 login,/login,,Login,1,auth,Views,login,login.pt,,
 logout,/logout,,Logout,1,auth,Views,logout,logout.pt,,
-profile,/profile,,Profile,1,profile,Views,view_read,form.pt,,
-password,/password,,Ubah Password,1,password,Views,view_update,form.pt,,
-loginwe,/loginw,,loginw,1,home,Views,loginwe,login.pt,,
+
 
 # --- ADMIN MENU (USER MANAGEMENT) ---
 admin-menu,#,,Adminisrator,1,,,,,,1
@@ -112,15 +110,15 @@ payment-list,/payment,master-menu,Payment,1,payment,Views,view_list,list.pt,,1
 payment-act,/payment/{act}/act,payment-list,Payment Action,1,payment,Views,view_act,json,,
 payment-add,/payment/add,payment-list,Create Payment,1,payment,Views,view_create,form.pt,,
 payment-edit,/payment/{id}/edit,payment-list,Edit Payment,1,payment,Views,view_update,form.pt,,
-payment-delete,/payment/{id}/delete,payment-list,Delete Payment,1,payment,Views,view_delete,form.pt,,
+payment-delete,/payment/{id}/delete,payment-list,Delete Payment,1,payment,Views,view_update,form.pt,,
 payment-view,/payment/{id}/view,payment-list,Read Payment,1,payment,Views,view_read,form.pt,,
 
 # --- MODUL DEPARTEMEN ---
-departmen-list,/department,master-menu,Departemen,1,department,Views,view_list,list.pt,,1
-departmen-act,/department/{act}/act,department-list,Department Action,1,department,Views,view_act,json,,
-departmen-add,/department/add,department-list,Create Department,1,department,Views,view_create,form.pt,,
-departmen-edit,/department/{id}/edit,department-list,Edit Department,1,department,Views,view_update,form.pt,,
-departmen-delete,/department/{id}/delete,department-list,Delete Department,1,department,Views,view_delete,form.pt,,
+department-list,/department,master-menu,Departemen,1,department,Views,view_list,list.pt,,1
+department-act,/department/{act}/act,department-list,Department Action,1,department,Views,view_act,json,,
+department-add,/department/add,department-list,Create Department,1,department,Views,view_create,form.pt,,
+department-edit,/department/{id}/edit,department-list,Edit Department,1,department,Views,view_update,form.pt,,
+department-delete,/department/{id}/delete,department-list,Delete Department,1,department,Views,view_delete,form.pt,,
 
 # --- MODUL RETUR ---
 retur-list,/return,master-menu,Retur Barang,1,returns,Views,view_list,list.pt,,1
