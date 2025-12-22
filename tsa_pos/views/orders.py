@@ -7,13 +7,11 @@ from ..models import DBSession, Orders, Partner
 from . import BaseViews
 from ..i18n import _
 
-# Bypass library datatables agar server tidak crash jika library belum terpasang
 try:
     from sqlalchemy_datatables import DataTable
 except ImportError:
     DataTable = None
 
-# 1. SCHEMA UNTUK TAMPILAN TABEL
 class ListSchema(colander.Schema):
     id = colander.SchemaNode(colander.Integer(),
                              missing=colander.drop,
@@ -23,24 +21,34 @@ class ListSchema(colander.Schema):
     order_date = colander.SchemaNode(colander.String(), title="Tgl. Order")
     amount = colander.SchemaNode(colander.Integer(), title="Total")
 
-# 2. SCHEMA UNTUK FORM TAMBAH
 class CreateSchema(colander.Schema):
     code = colander.SchemaNode(
         colander.String(),
-        title="Kode Order",
-        validator=colander.Length(min=3, max=50))
+        title="Kode Order")
+    
+    name = colander.SchemaNode(
+        colander.String(),
+        title="Keterangan/Nama Order",
+        missing='-')
     
     order_date = colander.SchemaNode(
         colander.Date(),
-        title="Tanggal Order")
+        title="Tanggal Order",
+        widget=widget.DateInputWidget(attributes={'readonly':'readonly'}))
+
+    est_delivery = colander.SchemaNode(
+        colander.Date(),
+        title="Estimasi Pengiriman",
+        missing=colander.drop,
+        widget=widget.DateInputWidget(attributes={'readonly':'readonly'}))
     
     partner_id = colander.SchemaNode(
         colander.Integer(),
         title="Partner",
         widget=widget.SelectWidget())
-
+    
     amount = colander.SchemaNode(
-        colander.Integer(),
+        colander.Float(),
         title="Total Amount",
         default=0)
     
@@ -48,15 +56,19 @@ class CreateSchema(colander.Schema):
         colander.Integer(),
         title="Status",
         default=1,
-        widget=widget.SelectWidget(values=[(1, 'Draft'), (2, 'Posted')]))
+        widget=widget.SelectWidget(values=[('1', 'Draft'), ('2', 'Posted')]))
 
-# 3. SCHEMA UNTUK FORM EDIT
+    def after_bind(self, schema, kw):
+        from ..models import Partner
+        query_p = DBSession.query(Partner.id, Partner.name).order_by(Partner.name)
+        schema['partner_id'].widget.values = [(str(p.id), p.name) for p in query_p.all()]
+
+
 class UpdateSchema(CreateSchema):
-    id = colander.SchemaNode(colander.Integer(),
+    id = colander.SchemaNode(colander.Float(),
                              missing=colander.drop,
                              widget=widget.HiddenWidget())
 
-# 4. CONTROLLER / VIEWS
 class Views(BaseViews):
     def __init__(self, request):
         super().__init__(request)
@@ -66,43 +78,35 @@ class Views(BaseViews):
         self.ReadSchema = UpdateSchema
         self.ListSchema = ListSchema
         self.list_route = 'order-list'
-        # Kolom yang akan ditampilkan di DataTables
         self.columns = [Orders.id, Orders.code, Orders.order_date, Orders.amount]
 
     def view_act(self):
         """Fungsi DataTables Tanpa Library Eksternal"""
-        # 1. Ambil parameter pencarian dan paging dari DataTables
         params = self.request.params
         draw = int(params.get('draw', 1))
         start = int(params.get('start', 0))
         length = int(params.get('length', 10))
         search_value = params.get('search[value]', '')
 
-        # 2. Query dasar
+
         query = DBSession.query(self.table)
 
-        # 3. Fitur Pencarian (Opsional: jika user mengetik di kotak search)
         if search_value:
             query = query.filter(
                 sa.or_(
                     Orders.code.ilike(f'%{search_value}%'),
-                    # Tambahkan kolom lain jika ingin bisa dicari
                 )
             )
 
-        # 4. Hitung total data
         records_total = query.count()
 
-        # 5. Paging (Limit & Offset)
         rows = query.offset(start).limit(length).all()
 
-        # 6. Susun data ke format JSON
         data = []
         for row in rows:
             data.append({
                 "id": row.id,
                 "code": row.code,
-                # Pastikan tanggal diubah ke string agar tidak error JSON
                 "order_date": row.order_date.strftime('%Y-%m-%d') if row.order_date else '',
                 "amount": row.amount,
                 "status": row.status
@@ -118,7 +122,6 @@ class Views(BaseViews):
     def view_add(self):
         """Form Tambah Data"""
         schema = self.CreateSchema().bind(request=self.request)
-        # Mengisi dropdown Partner secara dinamis
         query_p = DBSession.query(Partner.id, Partner.name).order_by(Partner.name)
         schema['partner_id'].widget.values = [(p.id, p.name) for p in query_p.all()]
         
@@ -147,7 +150,6 @@ class Views(BaseViews):
             return HTTPFound(location=self.request.route_url(self.list_route))
 
         schema = self.UpdateSchema().bind(request=self.request)
-        # Mengisi dropdown Partner agar muncul saat edit
         query_p = DBSession.query(Partner.id, Partner.name).order_by(Partner.name)
         schema['partner_id'].widget.values = [(p.id, p.name) for p in query_p.all()]
         
@@ -165,7 +167,6 @@ class Views(BaseViews):
                     return {"form": e.render(), "title": f"Edit Order: {row.code}", "scripts": [], "styles": []}
             return HTTPFound(location=self.request.route_url(self.list_route))
 
-        # Sinkronisasi data model ke form
         values = {c.name: getattr(row, c.name) for c in sa.inspect(row).mapper.column_attrs}
         return {"form": form.render(appstruct=values), "title": f"Edit Order: {row.code}", "scripts": [], "styles": []}
 
