@@ -55,7 +55,8 @@ class User(UserMixin, DefaultModel, Base):
         return self.email
     
     external = sa.orm.relationship("ExternalIdentity",
-                            backref="user",)
+                            backref="user",
+                            overlaps="external_identities,user")
     
     def set_password(self, password):
         if not isinstance(password, str):
@@ -134,8 +135,10 @@ class Resource(ResourceMixin, Base):
 
 
 class ExternalIdentity(ExternalIdentityMixin, Base):
-    pass
-
+    owner = relationship(
+        "User", 
+        overlaps="external,user,external_identities"
+    )
 
 class RootFactory:
     def __init__(self, request):
