@@ -142,8 +142,8 @@ invoice-category-edit,/invoice/category/{id}/edit,invoice-category-list,Edit Inv
 invoice-category-delete,/invoice/category/{id}/delete,invoice-category-list,Delete Inv Category,1,invoice_category,Views,view_delete,form.pt,,
 
 # --- MODUL INVOICE ITEMS ---
-invoice-item-list,/invoice/item,master-menu,Invoice Item,1,invoice_item,Views,view_list,list.pt,,1
-invoice-item-act,/invoice/item/{act}/act,invoice-item-list,Invoice Item Action,1,invoice_item,Views,view_act,json,,
-invoice-item-add,/invoice/item/add,invoice-item-list,Create Invoice Item,1,invoice_item,Views,view_create,form.pt,,
-invoice-item-edit,/invoice/item/{id}/edit,invoice-item-list,Edit Invoice Item,1,invoice_item,Views,view_update,form.pt,,
-invoice-item-delete,/invoice/item/{id}/delete,invoice-item-list,Delete Invoice Item,1,invoice_item,Views,view_delete,form.pt,,
+invoice-item-list,/invoice/item,master-menu,Invoice Item,1,invoice_items,Views,view_list,list.pt,,1
+invoice-item-act,/invoice/item/{act}/act,invoice-item-list,Invoice Item Action,1,invoice_items,Views,view_act,json,,
+invoice-item-add,/invoice/item/add,invoice-item-list,Create Invoice Item,1,invoice_items,Views,view_create,form.pt,,
+invoice-item-edit,/invoice/item/{id}/edit,invoice-item-list,Edit Invoice Item,1,invoice_items,Views,view_update,form.pt,,
+invoice-item-delete,/invoice/item/{id}/delete,invoice-item-list,Delete Invoice Item,1,invoice_items,Views,view_delete,form.pt,,

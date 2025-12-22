@@ -54,9 +54,9 @@ class User(UserMixin, DefaultModel, Base):
             return self.user_name
         return self.email
     
-    external = sa.orm.relationship("ExternalIdentity",
-                            backref="user",
-                            overlaps="external_identities,user")
+    #external = sa.orm.relationship("ExternalIdentity",
+    #                         backref="user",
+    #                         overlaps="external_identities,user")
     
     def set_password(self, password):
         if not isinstance(password, str):
