@@ -14,7 +14,7 @@ from ..tools import *
 from ..models import DBSession
 from ..widgets import tsa_widget
 from ..i18n import _
-_logging = logging.getLogger(__name__) # error, warning, info, debug
+_logging = logging.getLogger(__name__)
 
 class MemoryTmpStore(dict):
     """ Instances of this class implement the
@@ -65,14 +65,14 @@ class BaseViews(object):
         self.request = request
         self.home = request.route_url('home')
         self.db_session = DBSession
-        self.table = None  # Default table, must be overridden
-        self.CreateSchema = CreateSchema  # Default schema, must be overridden
-        self.ReadSchema = ReadSchema  # Default read schema, must be overridden
-        self.UpdateSchema = UpdateSchema  # Default schema, must be overridden
+        self.table = None  
+        self.CreateSchema = CreateSchema  
+        self.ReadSchema = ReadSchema 
+        self.UpdateSchema = UpdateSchema  
         self.is_object = False
-        # datatable settings
-        self.ListSchema = UpdateSchema  # Default list schema, must be overridden
-        self.list_route_name = ''  # Default list route name, must be overridden
+
+        self.ListSchema = UpdateSchema 
+        self.list_route_name = '' 
         self.allow_view=True
         self.allow_add=True
         self.allow_edit=True
@@ -97,16 +97,13 @@ class BaseViews(object):
         self.list_upload = (btn_upload,)
         self.column_filter = False
         
-        # end of datatable settings
         self.bindings = {}
         self.resources = {}
         
     def get_bindings(self):
         return {}
 
-    # datatable start
     def view_list(self, **kwargs):
-         # Logic to fetch all data from the database goes here
         """
         custom:
             allow_view = kwargs.get("allow_view", self.allow_view)
@@ -205,7 +202,6 @@ class BaseViews(object):
 
 
     def view_act(self, **kwargs):
-        #Standard Action grid csv pdf dan next_act
         url_dict = self.request.matchdict
         if url_dict['act'] == 'grid':
             return self.get_list(**kwargs)
@@ -271,13 +267,11 @@ class BaseViews(object):
         else:
             columns = self.columns
 
-        # Get Data From Database
         query = self.db_session.query().select_from(self.table)
         list_join = kwargs.get('list_join', self.list_join)
         query = list_join(query, **kwargs)
         list_filter = kwargs.get('list_filter', self.list_filter)
         query = list_filter(query, **kwargs)
-        # End Get Data From Database
 
         row_table = DataTables(self.request.GET, query, columns)
         result = row_table.output_result()
@@ -289,10 +283,6 @@ class BaseViews(object):
                     for r in vals:
                         if r and str(r) == str(res[k]):
                             res[k] = vals[r]
-        #     for k, v in d.items():
-        #         if k in url and v:
-        #             link = "/".join([self.home, nik_url, v])
-        #             d[k] =f'<a href="{link}" target="_blank">View</a>'
         return result
 
     def filter_columns(self, query, **kwargs):
@@ -305,7 +295,6 @@ class BaseViews(object):
         return query
 
     def next_act(self, **kwargs):
-        # url_dict = self.request.matchdict
         raise HTTPNotFound
 
     def pdf_response(self, **kwargs):
@@ -325,7 +314,6 @@ class BaseViews(object):
         }
         return csv_response(self.request, value, filename)
 
-    # data table end 
     def save(self, values, row=None):
         now = datetime.datetime.now()
         if not row:
@@ -333,7 +321,7 @@ class BaseViews(object):
             if hasattr(row, 'create_uid'):
                 row.create_uid = self.request.user.id
             if hasattr(row, 'status'):
-                row.status = 1  # Default to active status
+                row.status = 1
             if hasattr(row, 'created'):
                 row.created = now
         else:
@@ -396,7 +384,6 @@ class BaseViews(object):
         return self.db_session.query(self.table).filter(self.table.id == id_)
 
     def view_read(self):
-        # Logic to fetch user data from the database goes here
         query = self.query_id()
         row = query.first()
         if not row:
@@ -407,14 +394,12 @@ class BaseViews(object):
         if self.request.POST:
             return HTTPFound(location=self.request.route_url(self.list_route))
 
-        # Pre-fill form with existing user data
         appstruct = self.get_values(row)
         rendered_form = form.render(appstruct, readonly=True)
         return {'form': rendered_form, "scripts": "", "tags": self.resources}
 
 
     def view_update(self):
-        # Logic to fetch user data from the database goes here
         query = self.query_id()
         row = query.first()
         if not row:
@@ -435,19 +420,16 @@ class BaseViews(object):
 
             return HTTPFound(location=self.request.route_url(self.list_route))
 
-        # Pre-fill form with existing user data
         appstruct = self.get_values(row)
         rendered_form = form.render(appstruct)
         return {'form': rendered_form, "scripts": "", "tags": self.resources}
 
     def get_values(self, row):
         appstruct = dict(row.__dict__)
-        # Remove SQLAlchemy internal state
         appstruct.pop('_sa_instance_state', None)
         return appstruct
 
     def view_delete(self):
-        # Logic to fetch user data from the database goes here
         query = self.query_id()
         row = query.first()
         if not row:
