@@ -30,7 +30,7 @@ class CreateSchema(colander.Schema):
     est_delivery = colander.SchemaNode(
         colander.String(), widget=tsa_widget.BootStrapDateInputWidget()
     )
-    invoice_items = colander.SchemaNode(
+    invoice_date = colander.SchemaNode(
         colander.String(), widget=tsa_widget.BootStrapDateInputWidget()
     )
     partner_id = colander.SchemaNode(

@@ -39,25 +39,7 @@ class InvoiceItemsSequence(colander.SequenceSchema):
 
 
 class CreateSchema(colander.Schema):
-    product_id = colander.SchemaNode(
-        colander.Integer(), widget=widget.SelectWidget(values=[]), title="Product"
-    )
-    invoice_id = colander.SchemaNode(
-        colander.Integer(), widget=widget.SelectWidget(values=[]), title="Invoice"
-    )
-    order_item_id = colander.SchemaNode(
-        colander.Integer(), widget=widget.SelectWidget(values=[]), title="Order item"
-    )
-    order_id = colander.SchemaNode(
-        colander.Integer(), widget=widget.SelectWidget(values=[]), title="Order"
-    )
-    qty = colander.SchemaNode(colander.Integer(), title="Quantity")
-    price = colander.SchemaNode(colander.Float(), title="Price")
-    amount = colander.SchemaNode(colander.Float(), title="Amount")
-
-    def after_bind(self, schema, appstruct):
-        products = Product.query().all()
-        schema["product_id"].widget.values = [(str(p.id), p.name) for p in products]
+    pass
 
 
 class UpdateSchema(CreateSchema):
