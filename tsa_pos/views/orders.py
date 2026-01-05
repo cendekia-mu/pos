@@ -6,6 +6,7 @@ from datetime import datetime
 from ..models import DBSession, Orders, Partner
 from . import BaseViews
 from tsa_pos.widgets import tsa_widget 
+from tsa_pos.detable import DeTable # Pastikan ini diimport untuk view_list
 
 class CreateSchema(colander.Schema):
     code = colander.SchemaNode(
@@ -19,7 +20,6 @@ class CreateSchema(colander.Schema):
         missing='-',
         validator=colander.Length(max=128)
     )
-
     order_date = colander.SchemaNode(
         colander.DateTime(),
         title="Tanggal Order",
@@ -45,7 +45,7 @@ class CreateSchema(colander.Schema):
         colander.Integer(),
         title="Status",
         default=1,
-        widget=widget.SelectWidget(values=[('1', 'Draft'), ('2', 'Posted')])
+        widget=widget.SelectWidget(values=[(1, 'Draft'), (2, 'Posted')])
     )
 
 class UpdateSchema(CreateSchema):
@@ -65,8 +65,43 @@ class Views(BaseViews):
 
     def get_partners(self, schema):
         query_p = DBSession.query(Partner.id, Partner.name).order_by(Partner.name)
-        schema['partner_id'].widget.values = [(str(p.id), p.name) for p in query_p.all()]
+        schema['partner_id'].widget.values = [(p.id, p.name) for p in query_p.all()]
         return schema
+
+    def view_list(self):
+        """Menampilkan tabel daftar order"""
+        schema = self.UpdateSchema().bind()
+        # Menggunakan DeTable untuk integrasi DataTables
+        form = DeTable(schema, action='/order', action_suffix='/grid/act', buttons=('add', 'edit', 'delete'))
+        return dict(
+            form=form.render(),
+            scripts=form.scripts,
+            buttons=form.buttons
+        )
+
+    def view_act(self):
+        """Endpoint JSON untuk DataTables"""
+        act = self.request.matchdict.get('act')
+        if act == 'grid':
+            query = DBSession.query(self.table)
+            rows = query.all()
+            data = []
+            for row in rows:
+                data.append({
+                    "id": row.id,
+                    "code": row.code,
+                    "name": row.name,
+                    "order_date": row.order_date.strftime('%Y-%m-%d') if row.order_date else '',
+                    "amount": row.amount,
+                    "status": row.status
+                })
+            return {
+                "draw": int(self.request.params.get('draw', 1)),
+                "recordsTotal": len(data),
+                "recordsFiltered": len(data),
+                "data": data
+            }
+        return {"error": "Action not found"}
 
     def view_add(self):
         schema = self.CreateSchema().bind(request=self.request)
@@ -80,13 +115,11 @@ class Views(BaseViews):
                     obj = self.table()
                     for key, value in appstruct.items():
                         setattr(obj, key, value)
-                    
                     DBSession.add(obj)
                     return HTTPFound(location=self.request.route_url(self.list_route))
                 except ValidationFailure as e:
                     return {"form": e.render(), "title": "Add Order"}
             return HTTPFound(location=self.request.route_url(self.list_route))
-            
         return {"form": form.render(), "title": "Add Order"}
 
     def view_edit(self):
@@ -96,7 +129,7 @@ class Views(BaseViews):
             return HTTPFound(location=self.request.route_url(self.list_route))
 
         schema = self.UpdateSchema().bind(request=self.request)
-        schema = self.get_partners(schema)
+        schema = self.get_partners(schema) # Perbaikan: panggil get_partners, bukan get_parents
         form = Form(schema, buttons=('save', 'cancel'))
 
         if self.request.POST:
@@ -109,34 +142,7 @@ class Views(BaseViews):
                 except ValidationFailure as e:
                     return {"form": e.render(), "title": f"Edit Order: {row.code}"}
             return HTTPFound(location=self.request.route_url(self.list_route))
-
-    def view_checkout(self):
-        return {"project": "tsa_pos"}
-   
-    def view_act(self):
-        act = self.request.matchdict.get('act')
-        if act == 'grid':
-            query = DBSession.query(self.table)
-            rows = query.all()
-            
-            data = []
-            for row in rows:
-                data.append({
-                    "code": row.code,
-                    "name": row.name,
-                    "order_date": row.order_date.strftime('%Y-%m-%d') if row.order_date else '',
-                    "est_delivery": row.est_delivery.strftime('%Y-%m-%d') if row.est_delivery else '',
-                    "partner_id": row.partner_id,
-                    "amount": row.amount,
-                    "status": row.status,
-                    "id": row.id 
-                })
-            
-            return {
-                "draw": int(self.request.params.get('draw', 1)),
-                "recordsTotal": len(data),
-                "recordsFiltered": len(data),
-                "data": data
-            }
+        
+        # Inisialisasi data lama ke dalam form
         values = {c.name: getattr(row, c.name) for c in sa.inspect(row).mapper.column_attrs}
         return {"form": form.render(appstruct=values), "title": f"Edit Order: {row.code}"}
