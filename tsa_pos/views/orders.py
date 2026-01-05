@@ -112,6 +112,31 @@ class Views(BaseViews):
 
     def view_checkout(self):
         return {"project": "tsa_pos"}
-    
+   
+    def view_act(self):
+        act = self.request.matchdict.get('act')
+        if act == 'grid':
+            query = DBSession.query(self.table)
+            rows = query.all()
+            
+            data = []
+            for row in rows:
+                data.append({
+                    "code": row.code,
+                    "name": row.name,
+                    "order_date": row.order_date.strftime('%Y-%m-%d') if row.order_date else '',
+                    "est_delivery": row.est_delivery.strftime('%Y-%m-%d') if row.est_delivery else '',
+                    "partner_id": row.partner_id,
+                    "amount": row.amount,
+                    "status": row.status,
+                    "id": row.id 
+                })
+            
+            return {
+                "draw": int(self.request.params.get('draw', 1)),
+                "recordsTotal": len(data),
+                "recordsFiltered": len(data),
+                "data": data
+            }
         values = {c.name: getattr(row, c.name) for c in sa.inspect(row).mapper.column_attrs}
         return {"form": form.render(appstruct=values), "title": f"Edit Order: {row.code}"}
