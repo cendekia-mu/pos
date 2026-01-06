@@ -1,4 +1,3 @@
-from turtle import width
 from deform import widget
 import colander
 from ..models import Provinsi

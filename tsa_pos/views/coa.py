@@ -1,9 +1,10 @@
 from deform import widget
-import colander
+import colander 
+from sqlalchemy.orm import aliased
 from ..models import Coa  # Pastikan model Coa diimpor dengan benar
 from . import BaseViews
 from ..i18n import _
-
+ParentCoa = aliased(Coa)
 class ListSchema(colander.Schema):
     # Skema untuk list view (menampilkan data Coa dalam tabel)
     # Hanya definisikan field yang akan ditampilkan/di-edit di list
@@ -15,13 +16,15 @@ class ListSchema(colander.Schema):
                                title="Name")
     code = colander.SchemaNode(colander.String(),
                                title="Code")
-    parent_id = colander.SchemaNode(colander.Integer(),
-                                    missing=colander.drop,
-                                    title="Parent ID",
-                                    widget=widget.HiddenWidget())  # Atau gunakan SelectWidget jika perlu dropdown
+    parent_name = colander.SchemaNode(colander.String(),
+                                missing=colander.drop,
+                                title="Parent Coa",
+                                #widget=widget.SelectWidget(values=[]),
+                                field = ParentCoa.name)  
+                                
     status = colander.SchemaNode(colander.Integer(),
                                  title="Status",
-                                 validator=colander.OneOf([0, 1]),  # Misal 0=inactive, 1=active
+                                 validator=colander.OneOf([0, 1]),  
                                  widget=widget.SelectWidget(values=[(0, 'Inactive'), (1, 'Active')]))
 
 class CreateSchema(colander.Schema):
@@ -35,13 +38,21 @@ class CreateSchema(colander.Schema):
     parent_id = colander.SchemaNode(colander.Integer(),
                                     missing=colander.drop,  # Opsional untuk root Coa
                                     title="Parent Coa",
-                                    widget=widget.SelectWidget(values=[]))  # Isi values dengan query Coa aktif
+                                    widget=widget.SelectWidget(values=[]))  # Akan diisi dinamis
     status = colander.SchemaNode(colander.Integer(),
                                  missing=1,  # Default active
                                  title="Status",
                                  validator=colander.OneOf([0, 1]),
                                  widget=widget.SelectWidget(values=[(0, 'Inactive'), (1, 'Active')]))
-
+    def after_bind(self, schema, appstruct):
+        # Populate category_id choices
+        parent =Coa.query().all()
+        values = [
+        
+            (str(prt.id), prt.name) for prt in parent
+        ]
+        values.insert(0, ('', '-- No Parent --'))  # Opsi untuk root Coa    
+        schema["parent_id"].widget.values = values
 class UpdateSchema(CreateSchema):
     # Update schema mirip Create, tapi tambah id (hidden)
     id = colander.SchemaNode(colander.Integer(),
@@ -57,6 +68,10 @@ class Views(BaseViews):
         self.ReadSchema = UpdateSchema  # Read bisa sama dengan Update
         self.ListSchema = ListSchema
         self.list_route = 'coa-list'  # Sesuaikan dengan route name di aplikasi Anda
+
+    
+    def list_join(self, query, **kwargs):
+        return query.outerjoin(ParentCoa, ParentCoa.id == Coa.parent_id)
 
     def form_validator(self, form, value):
         exc = colander.Invalid(
