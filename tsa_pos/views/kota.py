@@ -1,4 +1,3 @@
-import colander
 from deform import widget
 from ..models import Kota, Provinsi
 from . import BaseViews

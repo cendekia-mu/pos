@@ -10,11 +10,15 @@
       "request": "launch",
       "module": "pyramid.scripts.pserve",
       "args": [
-        "${workspaceFolder}\\development.ini"
+        "liyya.ini",
+        "--reload"
       ],
       "pyramid": true,
       "jinja": true,
-      "justMyCode": false
+      "justMyCode": false,
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}"
+      }
     }
   ]
 }
