@@ -1,148 +1,127 @@
-import sqlalchemy as sa
+from deform import widget
 import colander
-from deform import widget, Form, ValidationFailure
-from pyramid.httpexceptions import HTTPFound
-from datetime import datetime
-from ..models import DBSession, Orders, Partner
+from tsa_pos.models.partner import Partner
+from tsa_pos.widgets import tsa_widget
+from ..models import Orders
 from . import BaseViews
-from tsa_pos.widgets import tsa_widget 
-from tsa_pos.detable import DeTable # Pastikan ini diimport untuk view_list
+from ..i18n import _
+from datetime import datetime
+
+class ListSchema(colander.Schema):
+    id = colander.SchemaNode(colander.Integer(),
+                             missing=colander.drop,
+                             title="Action",
+                             widget=widget.TextInputWidget(readonly=True))
+    code = colander.SchemaNode(colander.String(),
+                               title="Kode Order")
+    name = colander.SchemaNode(colander.String(),
+                               title="Keterangan")
+    partner_id = colander.SchemaNode(colander.String(),
+                                     title="Partner",
+                                     field=Partner.name)
+    amount = colander.SchemaNode(colander.Decimal(),
+                                 title="Total Amount")
+    order_date = colander.SchemaNode(colander.DateTime(),
+                                     title="Tgl Order")
+    status = colander.SchemaNode(colander.Integer(),
+                                 title="Status")
 
 class CreateSchema(colander.Schema):
     code = colander.SchemaNode(
-        colander.String(), 
-        title="Kode Order",
-        validator=colander.Length(min=1, max=128)
-    )
+        colander.String(),
+        validator=colander.Length(min=1, max=128),
+        title="Kode Order")
+    
     name = colander.SchemaNode(
-        colander.String(), 
-        title="Nama/Keterangan", 
-        missing='-',
-        validator=colander.Length(max=128)
-    )
+        colander.String(),
+        validator=colander.Length(min=1, max=128),
+        title="Nama/Keterangan")
+
+    partner_id = colander.SchemaNode(
+        colander.Integer(),
+        oid="partner_id",
+        widget=tsa_widget.Select2Widget(values=[]),
+        title="Partner")
+
+    amount = colander.SchemaNode(
+        colander.Decimal(),
+        default=0,
+        title="Total Amount")
+
     order_date = colander.SchemaNode(
         colander.DateTime(),
+        default=datetime.now(),
         title="Tanggal Order",
-        widget=tsa_widget.BootStrapDateInputWidget()
-    )
+        widget=widget.DateInputWidget())
+
     est_delivery = colander.SchemaNode(
         colander.DateTime(),
+        missing=colander.drop,
         title="Estimasi Pengiriman",
-        missing=None,
-        widget=tsa_widget.BootStrapDateInputWidget()
-    )
-    partner_id = colander.SchemaNode(
-        colander.Integer(), 
-        title="Partner", 
-        widget=widget.SelectWidget(values=[])
-    )
-    amount = colander.SchemaNode(
-        colander.Float(), 
-        title="Total Amount", 
-        default=0
-    )
+        widget=widget.DateInputWidget())
+
     status = colander.SchemaNode(
         colander.Integer(),
+        default=0,
         title="Status",
-        default=1,
-        widget=widget.SelectWidget(values=[(1, 'Draft'), (2, 'Posted')])
-    )
+        widget=widget.SelectWidget(values=[
+            (0, 'Draft'),
+            (1, 'Confirmed'),
+            (2, 'Done'),
+            (3, 'Cancelled')
+        ]))
+
+    def after_bind(self, schema, kw):
+        request = kw.get('request')
+        partners = Partner.query().order_by(Partner.name).all()
+        partner_choices = [(str(p.id), p.name) for p in partners]
+        partner_choices.insert(0, ('', 'Pilih Partner...'))
+        schema['partner_id'].widget.values = partner_choices
 
 class UpdateSchema(CreateSchema):
-    id = colander.SchemaNode(
-        colander.Integer(), 
-        missing=colander.drop, 
-        widget=widget.HiddenWidget()
-    )
+    id = colander.SchemaNode(colander.Integer(),
+                             missing=colander.drop,
+                             widget=widget.HiddenWidget())
 
 class Views(BaseViews):
     def __init__(self, request):
         super().__init__(request)
         self.table = Orders
         self.CreateSchema = CreateSchema
-        self.UpdateSchema = UpdateSchema  
+        self.UpdateSchema = UpdateSchema
+        self.ReadSchema = UpdateSchema
+        self.ListSchema = ListSchema
+        # Menyesuaikan dengan route: order-list,/order
         self.list_route = 'order-list'
 
-    def get_partners(self, schema):
-        query_p = DBSession.query(Partner.id, Partner.name).order_by(Partner.name)
-        schema['partner_id'].widget.values = [(p.id, p.name) for p in query_p.all()]
-        return schema
+    def form_validator(self, form, value):
+        exc = colander.Invalid(form, 'Kesalahan pada pengisian data.')
+        id_ = self.request.matchdict.get('id', 0)
 
-    def view_list(self):
-        """Menampilkan tabel daftar order"""
-        schema = self.UpdateSchema().bind()
-        # Menggunakan DeTable untuk integrasi DataTables
-        form = DeTable(schema, action='/order', action_suffix='/grid/act', buttons=('add', 'edit', 'delete'))
-        return dict(
-            form=form.render(),
-            scripts=form.scripts,
-            buttons=form.buttons
-        )
+        code = value.get('code')
+        if code:
+            row = self.table.query().filter(self.table.code == code).first()
+            if row and (not id_ or row.id != int(id_)):
+                exc["code"] = _('Kode Order {} already exists.'.format(code))
+                raise exc
 
+    def list_join(self, query):
+        return query.outerjoin(Partner, Partner.id == Orders.partner_id)
+
+    # Menangani route: order-act,/order/{act}/act
     def view_act(self):
-        """Endpoint JSON untuk DataTables"""
         act = self.request.matchdict.get('act')
-        if act == 'grid':
-            query = DBSession.query(self.table)
-            rows = query.all()
-            data = []
-            for row in rows:
-                data.append({
-                    "id": row.id,
-                    "code": row.code,
-                    "name": row.name,
-                    "order_date": row.order_date.strftime('%Y-%m-%d') if row.order_date else '',
-                    "amount": row.amount,
-                    "status": row.status
-                })
-            return {
-                "draw": int(self.request.params.get('draw', 1)),
-                "recordsTotal": len(data),
-                "recordsFiltered": len(data),
-                "data": data
-            }
-        return {"error": "Action not found"}
+        # Tambahkan logika ajax di sini jika diperlukan
+        # Contoh: mengambil harga produk otomatis
+        return super().next_act()
 
-    def view_add(self):
-        schema = self.CreateSchema().bind(request=self.request)
-        schema = self.get_partners(schema)
-        form = Form(schema, buttons=('save', 'cancel'))
-        
-        if self.request.POST:
-            if 'save' in self.request.POST:
-                try:
-                    appstruct = form.validate(self.request.POST.items())
-                    obj = self.table()
-                    for key, value in appstruct.items():
-                        setattr(obj, key, value)
-                    DBSession.add(obj)
-                    return HTTPFound(location=self.request.route_url(self.list_route))
-                except ValidationFailure as e:
-                    return {"form": e.render(), "title": "Add Order"}
-            return HTTPFound(location=self.request.route_url(self.list_route))
-        return {"form": form.render(), "title": "Add Order"}
-
-    def view_edit(self):
+    # Menangani route: order-checkout,/order/{id}/checkout
+    def view_checkout(self):
         id_ = self.request.matchdict.get('id')
-        row = DBSession.query(self.table).filter_by(id=id_).first()
+        row = self.table.query().filter(self.table.id == id_).first()
         if not row:
-            return HTTPFound(location=self.request.route_url(self.list_route))
-
-        schema = self.UpdateSchema().bind(request=self.request)
-        schema = self.get_partners(schema) # Perbaikan: panggil get_partners, bukan get_parents
-        form = Form(schema, buttons=('save', 'cancel'))
-
-        if self.request.POST:
-            if 'save' in self.request.POST:
-                try:
-                    appstruct = form.validate(self.request.POST.items())
-                    for key, value in appstruct.items():
-                        setattr(row, key, value)
-                    return HTTPFound(location=self.request.route_url(self.list_route))
-                except ValidationFailure as e:
-                    return {"form": e.render(), "title": f"Edit Order: {row.code}"}
-            return HTTPFound(location=self.request.route_url(self.list_route))
+            return {"error": "Data tidak ditemukan"}
         
-        # Inisialisasi data lama ke dalam form
-        values = {c.name: getattr(row, c.name) for c in sa.inspect(row).mapper.column_attrs}
-        return {"form": form.render(appstruct=values), "title": f"Edit Order: {row.code}"}
+        # Logika checkout Anda di sini (misal: merubah status menjadi 'Done')
+        # row.status = 2 
+        return {"id": id_, "status": "processed"}
