@@ -4,6 +4,7 @@
         route_name route_name|request.matched_route and request.matched_route.name;
         css css|[];
         js js|[];
+        tags tags|{};
         ">
 
 <head>
@@ -38,6 +39,13 @@
          specific styles this will also ensure you retrain your customization with each SmartAdmin update. -->
 
   <!-- LOOP FORM CSS INCLUDED-->
+  <tal:loop tal:condition="tags" tal:repeat="tag tags.get('css')">
+    <link tal:condition="tag[:4]!='http'" rel="stylesheet" href="${home}${request.static_path(tag)}" type="text/css">
+    <link tal:condition="tag[:4]=='http'" rel="stylesheet" href="${tag}" type="text/css">
+  </tal:loop>"
+  
+  
+  <!-- LOOP ON CSS RESOURCE -->
   <tal:loop tal:repeat="css_resource css">
     <link rel="stylesheet" href="${home}${request.static_path(css_resource)}" type="text/css"
       tal:condition="css_resource[:4]!='http'">
@@ -48,8 +56,6 @@
   <link href="${home}/deform_static/css/form.css" rel="stylesheet">
   <!--?    <link href="${home}/static/css/select2.min.css" rel="stylesheet" type="text/css">-->
   <metal:css define-slot="css_files"></metal:css>
-
-
 </head>
 
 <body class="fixed-header">
@@ -63,10 +69,9 @@
   <header id="header">
     <div id="logo-group">
       <!-- PLACE YOUR LOGO HERE -->
-      
-      <!-- <h3 id="logo">
-        <a href="${home}/"><img src="${home}/static/img/logo1.png"></a>
-      </h3> -->
+      <h3 id="logo">
+        <a href="${home}/"><img src="${home}/static/img/logo.png" alt="LOGO"></a>
+      </h3>
       <!-- END LOGO PLACEHOLDER -->
     </div>
 
@@ -105,9 +110,9 @@
 
       <!-- User info -->
       <ul tal:condition="not request.user" class="header-dropdown-list hidden-xs">
-        <!-- <li>
+        <li>
           <a href="${home}/login" class="dropdown-toggle"><i class="fa fa-lg fa-fw fa-user"></i>Login</a>
-        </li> -->
+        </li>
       </ul>
       <ul tal:condition="request.user" class="header-dropdown-list hidden-xs">
         <li>
@@ -142,9 +147,7 @@
 
   <!-- Left panel : Navigation area -->
   <!-- Note: This width of the aside area can be adjusted through LESS variables -->
-  <aside class='sidebar9' id="left-panel" tal:condition="request.user" style="padding-bottom:67px">
-  <!--<aside id="left-panel" tal:condition="request.user" style="padding-bottom:67px">-->
-
+  <aside id="left-panel" tal:condition="request.user" style="padding-bottom:67px">
     Menu
     <!-- NAVIGATION : This navigation is also responsive-->
     <nav class="smart-menu" id="menu">
@@ -263,6 +266,10 @@
   <!--?<script src="${home}/deform_static/scripts/file_upload.js"></script>-->
   <script src="${home}/static/js/osipkd.js"></script>
   <!-- LOOP ON JS RESOURCE -->
+  <tal:loop tal:condition="tags" tal:repeat="tag tags.get('js')">
+    <script tal:condition="tag[:4]!='http'" src="${home}${request.static_path(tag)}"></script>
+    <script tal:condition="tag[:4]=='http'" src="${tag}"></script>
+  </tal:loop>
   <tal:loop tal:repeat="js_resource js">
     <script src="${home}${request.static_path(js_resource)}" tal:condition="js_resource[:4]!='http'"></script>
     <script src="${js_resource}" tal:condition="js_resource[:4]=='http'"></script>

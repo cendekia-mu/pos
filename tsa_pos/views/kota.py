@@ -1,3 +1,4 @@
+import colander
 from deform import widget
 from ..models import Kota, Provinsi
 from . import BaseViews
@@ -50,6 +51,28 @@ class UpdateSchema(CreateSchema):
         schema["provinsi_id"].widget.values = [
             (str(prov.id), prov.name) for prov in provinsi
         ]
+
+    name = colander.SchemaNode(
+        colander.String(), validator=colander.Length(min=3, max=50)
+    )
+
+    provinsi_id = colander.SchemaNode(
+        colander.Integer(),
+        widget=widget.SelectWidget(values=[]),
+    )
+
+    def after_bind(self, schema, appstruct):
+        # Populate category_id choices
+        categories = Provinsi.query().all()
+        schema["category_id"].widget.values = [
+            (str(cat.id), cat.name) for cat in categories
+        ]
+
+
+class UpdateSchema(CreateSchema):
+    id = colander.SchemaNode(
+        colander.Integer(), missing=colander.drop, widget=widget.HiddenWidget()
+    )
 
 
 class Views(BaseViews):
