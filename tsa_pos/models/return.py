@@ -9,6 +9,8 @@ from sqlalchemy import (
 from sqlalchemy.orm import relationship, backref
 from .base import StandardModel, Base
 
+from .meta import Base
+
 class ReturnCategory(StandardModel, Base):
     __tablename__ = 'return_category'
     name = Column(String(128), unique=True)
