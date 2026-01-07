@@ -7,7 +7,7 @@ from sqlalchemy import (
     Column,
 )
 from sqlalchemy.orm import relationship, backref
-from .base import StandardModel, Base
+from .base import StandardModel, DefaultModel
 
 from .meta import Base
 
