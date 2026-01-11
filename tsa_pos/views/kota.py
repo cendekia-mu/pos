@@ -9,7 +9,7 @@ class ListSchema(colander.Schema):
     id = colander.SchemaNode(
         colander.Integer(),
         missing=colander.drop,
-        title="id",
+        title="Action",
         widget=widget.HiddenWidget(),
     )
     name = colander.SchemaNode(colander.String())
@@ -98,14 +98,4 @@ class Views(BaseViews):
 
     def list_join(self, query, **kwargs):
         return query.join(Provinsi, Provinsi.id == Kota.provinsi_id)
-
-    def form_validator(self, form, value):
-        exc = colander.Invalid(form, "Kesalahan pada pengisian data.")
-        id_ = self.request.matchdict.get("id", 0)
-
-        # Validate unique name
-        name = value.get("name")
-        row = self.table.query().filter(self.table.name == name).first()
-        if row and (not id_ or row.id != int(id_)):
-            exc["name"] = _("Name {} already exists.".format(name))
-            raise exc
+        

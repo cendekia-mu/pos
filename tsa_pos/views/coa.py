@@ -3,7 +3,7 @@ import colander
 from ..models import coa
 from . import BaseViews
 from ..i18n import _
-
+ParentCoa = aliased(Coa)
 class ListSchema(colander.Schema):
     id = colander.SchemaNode(colander.Integer(),
                              missing=colander.drop,
@@ -38,7 +38,15 @@ class CreateSchema(colander.Schema):
                                  title="Status",
                                  validator=colander.OneOf([0, 1]),
                                  widget=widget.SelectWidget(values=[(0, 'Inactive'), (1, 'Active')]))
-
+    def after_bind(self, schema, appstruct):
+        # Populate category_id choices
+        parent =Coa.query().all()
+        values = [
+        
+            (str(prt.id), prt.name) for prt in parent
+        ]
+        values.insert(0, ('', '-- No Parent --'))  # Opsi untuk root Coa    
+        schema["parent_id"].widget.values = values
 class UpdateSchema(CreateSchema):
     id = colander.SchemaNode(colander.Integer(),
                              missing=colander.drop,
@@ -53,6 +61,10 @@ class Views(BaseViews):
         self.ReadSchema = UpdateSchema  
         self.ListSchema = ListSchema
         self.list_route = 'coa-list'  
+
+    
+    def list_join(self, query, **kwargs):
+        return query.outerjoin(ParentCoa, ParentCoa.id == Coa.parent_id)
 
     def form_validator(self, form, value):
         exc = colander.Invalid(

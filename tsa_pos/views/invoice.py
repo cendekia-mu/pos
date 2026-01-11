@@ -9,30 +9,17 @@ from . import BaseViews
 from ..i18n import _
 
 
-class CreateSchema(colander.Schema):
-    id = colander.SchemaNode(
-        colander.Integer(),
-        missing=colander.drop,
-        title="ID",
-        widget=widget.HiddenWidget(),
-    )
-
-    name = colander.SchemaNode(
-        colander.String(), validator=colander.Length(min=1, max=128)
-    )
-
     code = colander.SchemaNode(
         colander.String(), validator=colander.Length(min=1, max=128)
     )
 
+# Create / Update Schema
+class CreateSchema(colander.Schema):
+    name = colander.SchemaNode(colander.String(), validator=colander.Length(min=1, max=128))
+    code = colander.SchemaNode(colander.String(), validator=colander.Length(min=1, max=128))
     amount = colander.SchemaNode(colander.Float())
-
-    est_delivery = colander.SchemaNode(
-        colander.String(), widget=tsa_widget.BootStrapDateInputWidget()
-    )
-    invoice_items = colander.SchemaNode(
-        colander.String(), widget=tsa_widget.BootStrapDateInputWidget()
-    )
+    est_delivery = colander.SchemaNode(colander.DateTime())
+    invoice_date = colander.SchemaNode(colander.DateTime())
     partner_id = colander.SchemaNode(
         colander.Integer(), widget=widget.SelectWidget(values=[]), title="Partner"
     )
@@ -77,11 +64,8 @@ class ListSchema(colander.Schema):
 
 
 class UpdateSchema(CreateSchema):
-    id = colander.SchemaNode(
-        colander.Integer(), missing=colander.drop, widget=widget.HiddenWidget()
-    )
-
-
+    id = colander.SchemaNode(colander.Integer(), missing=colander.drop, widget=widget.HiddenWidget())
+    
 class Views(BaseViews):
     def __init__(self, request):
         super().__init__(request)
