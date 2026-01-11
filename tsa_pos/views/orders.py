@@ -91,7 +91,6 @@ class Views(BaseViews):
         self.UpdateSchema = UpdateSchema
         self.ReadSchema = UpdateSchema
         self.ListSchema = ListSchema
-        # Menyesuaikan dengan route: order-list,/order
         self.list_route = 'order-list'
 
     def form_validator(self, form, value):
@@ -108,20 +107,14 @@ class Views(BaseViews):
     def list_join(self, query):
         return query.outerjoin(Partner, Partner.id == Orders.partner_id)
 
-    # Menangani route: order-act,/order/{act}/act
     def view_act(self):
         act = self.request.matchdict.get('act')
-        # Tambahkan logika ajax di sini jika diperlukan
-        # Contoh: mengambil harga produk otomatis
         return super().next_act()
 
-    # Menangani route: order-checkout,/order/{id}/checkout
     def view_checkout(self):
         id_ = self.request.matchdict.get('id')
         row = self.table.query().filter(self.table.id == id_).first()
         if not row:
             return {"error": "Data tidak ditemukan"}
         
-        # Logika checkout Anda di sini (misal: merubah status menjadi 'Done')
-        # row.status = 2 
         return {"id": id_, "status": "processed"}
