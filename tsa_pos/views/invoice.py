@@ -74,5 +74,4 @@ class Views(BaseViews):
         self.UpdateSchema = UpdateSchema
         self.ReadSchema = UpdateSchema
         self.ListSchema = ListSchema
-        self.list_route = 'invoice-list'
-
+        self.list_route = "invoice-list"

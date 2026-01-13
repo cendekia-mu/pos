@@ -41,3 +41,4 @@ class OrderItems(DefaultModel, Base):
     __table_args__ = (UniqueConstraint('invoice_id', 'product_id'),)
     order = relationship('Orders', backref=backref('order_items'))
 
+
