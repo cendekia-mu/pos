@@ -23,7 +23,6 @@ class Payment(StandardModel, Base):
 
 class PaymentItems(Base):
     __tablename__ = 'payment_items'
-
     payment_id = Column(ForeignKey('payment.id', ondelete='CASCADE'),
                         nullable=False, primary_key=True)
     invoice_id = Column(ForeignKey('invoices.id', ondelete='CASCADE'),

@@ -14,12 +14,18 @@ class ListSchema(colander.Schema):
         colander.Integer(),
         missing=colander.drop,
         widget=widget.HiddenWidget(),
+        title="Action"
     )
 
     partner = colander.SchemaNode(
         colander.String(),
         title="Partner",
         field=Partner.kode,
+    )
+    partner_name = colander.SchemaNode(
+        colander.String(),
+        title="Nama",
+        field=Partner.name,
     )
 
     amount = colander.SchemaNode(

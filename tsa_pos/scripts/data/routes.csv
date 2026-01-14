@@ -155,3 +155,10 @@ invoice-items-add,/invoice_items/{invoice_id}/add,invoice-items-list,Add Invoice
 invoice-items-edit,/invoice_items/{invoice_id}/{product_id}/edit,invoice-items-list,Edit Invoice Item,1,invoice_items,Views,update_invoice_item,form.pt,,
 invoice-items-delete,/invoice_items/{invoice_id}/{product_id}/delete,invoice-items-list,Delete Invoice Item,1,invoice_items,Views,delete_invoice_item,form.pt,,
 invoice-items-view,/invoice_items/{invoice_id}/{product_id}/view,invoice-items-list,Read Invoice Item,1,invoice_items,Views,view_read,form.pt,,
+
+payment-items-list,/payment/items,master-menu,payment Items,1,payment_items,Views,view_list,list.pt,,1
+payment-items-act,/payment/items/{act}/act,payment-items-list,payment Items Action,1,payment_items,Views,view_act,json,,
+payment-items-add,/payment/items/add,payment-items-list,Add payment Item,1,payment_items,Views,view_create,form.pt,,
+payment-items-edit,/payment/items/{id}/edit,payment-items-list,Edit payment Item,1,payment_items,Views,view_update,form.pt,,
+payment-items-delete,/payment_items/{id}/delete,payment-items-list,Delete payment Item,1,payment_items,Views,view_delete,form.pt,,
+

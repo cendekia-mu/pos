@@ -1,81 +1,144 @@
 import colander
 from deform import widget
 
-from ..models import Payment, PaymentItems, Invoices
+from ..models import PaymentItems, Payment, Invoices, Partner
 from . import BaseViews
 from ..i18n import _
+
+
+    # =========================
+    # LIST (Tampilan Tabel)
+    # =========================
+class ListSchema(colander.Schema):
+        id = colander.SchemaNode(colander.Integer(),
+                                missing=colander.drop,
+                                title="Action",
+                                widget=widget.HiddenWidget())
+        payment_id = colander.SchemaNode(
+            colander.Integer(),
+            title=_("Payment ID"),
+        )
+
+        partner_nama = colander.SchemaNode(
+            colander.String(),
+            title=_("Nama Partner"),
+        )
+
+        invoice_code = colander.SchemaNode(
+            colander.String(),
+            title=_("Invoice"),
+        )
+
+        amount = colander.SchemaNode(
+            colander.Float(),
+            title=_("Amount"),
+        )
+
+
+    # =========================
+    # CREATE / UPDATE (Form)
+    # =========================
 class CreateSchema(colander.Schema):
-    payment_id = colander.SchemaNode(
-        colander.Integer(),
-        widget=widget.HiddenWidget(),
-    )
 
-    invoice_id = colander.SchemaNode(
-        colander.Integer(),
-        title="Invoice",
-        widget=widget.SelectWidget(values=[]),
-    )
+        payment_id = colander.SchemaNode(
+            colander.Integer(),
+            title=_("Payment"),
+            widget=widget.SelectWidget(values=[]),
+        )
 
-    amount = colander.SchemaNode(
-        colander.Float(),
-        title="Amount",
-        widget=widget.TextInputWidget(css_class="form-control"),
-    )
+        invoice_id = colander.SchemaNode(
+            colander.Integer(),
+            title=_("Invoice"),
+            widget=widget.SelectWidget(values=[]),
+        )
 
-    def after_bind(self, schema, appstruct):
-        invoices = Invoices.query().all()
-        choices = [(str(i.id), i.number) for i in invoices]
-        choices.insert(0, ("", "Pilih Invoice"))
+        amount = colander.SchemaNode(
+            colander.Float(),
+            title=_("Amount"),
+        )
 
-        schema["invoice_id"].widget.values = choices
+        def after_bind(self, schema, appstruct):
+            payments = (
+                Payment.query()
+                .join(Partner, Payment.partner_id == Partner.id)
+                .with_entities(
+                    Payment.id,
+                    Partner.name.label("partner_name"),
+                )
+                .all()
+            )
 
-        if appstruct is None:
-            schema["amount"].default = 0
+            schema["payment_id"].widget.values = [
+                (p.id, p.partner_name) for p in payments
+            ]
+
+            invoices = Invoices.query().all()
+            schema["invoice_id"].widget.values = [
+                (i.id, i.code) for i in invoices
+            ]
+
+
+
 class UpdateSchema(CreateSchema):
-    pass
+        payment_id = colander.SchemaNode(
+            colander.Integer(),
+            widget=widget.HiddenWidget(),
+            missing=colander.drop,
+        )
+
+        invoice_id = colander.SchemaNode(
+            colander.Integer(),
+            widget=widget.HiddenWidget(),
+            missing=colander.drop,
+        )
+
+
+    # =========================
+    # VIEWS
+    # =========================
 class Views(BaseViews):
     def __init__(self, request):
-        super().__init__(request)
-        self.table = PaymentItems
-        self.CreateSchema = CreateSchema
-        self.UpdateSchema = UpdateSchema
-        self.ReadSchema = UpdateSchema
-        self.list_route = "payment_items"
+                super().__init__(request)
+                self.table = PaymentItems
+                self.ListSchema = ListSchema
+                self.CreateSchema = CreateSchema
+                self.UpdateSchema = UpdateSchema
+                self.ReadSchema = UpdateSchema
+                self.list_route = "payment-items-list"
+                self.column_filter = True
+
+    def list_join(self, query):
+                return (
+                    query
+                    .join(Payment, Payment.id == PaymentItems.payment_id)
+                    .join(Partner, Partner.id == Payment.partner_id)
+                    .join(Invoices, Invoices.id == PaymentItems.invoice_id)
+                )
+
+    def list_columns(self):
+                return [
+                    PaymentItems.id.label("id"),
+                    PaymentItems.payment_id.label("payment_id"),
+                    Partner.name.label("partner_nama"),
+                    Invoices.code.label("invoice_code"),
+                    PaymentItems.amount.label("amount"),
+                ]
+
     def form_validator(self, form, value):
-        exc = colander.Invalid(form, "Kesalahan pada pengisian data.")
+                exc = colander.Invalid(form, _("Kesalahan pada pengisian data"))
 
-        payment_id = value.get("payment_id")
-        invoice_id = value.get("invoice_id")
-        amount = value.get("amount")
+                payment_id = value.get("payment_id")
+                invoice_id = value.get("invoice_id")
 
-        # AMOUNT HARUS > 0
-        if amount is not None and amount <= 0:
-            exc["amount"] = _("Amount must be greater than 0")
-            raise exc
+                exists = (
+                    PaymentItems.query()
+                    .filter(
+                        PaymentItems.payment_id == payment_id,
+                        PaymentItems.invoice_id == invoice_id,
+                    )
+                    .first()
+                )
 
-        # CEK PAYMENT ADA
-        payment = Payment.query().get(payment_id)
-        if not payment:
-            raise exc
-
-        # CEK INVOICE TIDAK BOLEH DOBEL
-        q = PaymentItems.query().filter(
-            PaymentItems.payment_id == payment_id,
-            PaymentItems.invoice_id == invoice_id
-        )
-
-        if q.first():
-            exc["invoice_id"] = _("Invoice ini sudah ada di payment.")
-            raise exc
-    def after_save(self, obj, form):
-        payment = Payment.query().get(obj.payment_id)
-
-        payment.amount = sum(
-            item.amount for item in payment.payment_items
-        )
-    def after_delete(self, obj):
-        payment = Payment.query().get(obj.payment_id)
-        if payment:
-            payment.amount = sum(
-                item.amount for item in payment.payment_items
-            )
+                if exists:
+                    exc["payment_id"] = _("Item payment ini sudah ada di invoice terpilih")
+                    raise exc
