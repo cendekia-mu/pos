@@ -10,7 +10,6 @@ from deform.compat import sequence_types, text_type, text_
 from deform.form import Button
 from deform.i18n import _
 # from tangsel.tools.captcha import img_captcha
-# from opensipkd.tools.captcha import img_captcha
 from datetime import date, datetime
 _logging = logging.getLogger(__name__)
 
@@ -578,12 +577,6 @@ class TextInputBtnWidget(widget.TextInputWidget):
                 self.button = Button(self.button, type="button")
 
 
-# class DateInputWidget(widget.WidgetDateInputWidget):
-#     type_name = "text"
-class DateInputWidget(widget.DateInputWidget):
-    type_name = "text"
-
-
 class MoneyInputWidget(widget.MoneyInputWidget):
     """
     Renders an ``<input type="text"/>`` widget with Javascript which enforces
@@ -752,4 +745,3 @@ class FilterWidget(widget.Widget):
             #     raise Invalid(field.schema, "No Dokumen tidak lengkap", result)
 
             return result
-
