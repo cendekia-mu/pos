@@ -1,53 +1,106 @@
-from deform import widget, Form
+import logging
 import colander
-from tsa_pos.widgets import tsa_widget
-from ..models import Partner, Product, Orders 
+from deform import widget
+from pyramid.view import view_config
+from sqlalchemy import func
+
+from ..models import DBSession, Partner, Orders
 from . import BaseViews
 from ..i18n import _
 
-class CreateSchema(colander.Schema):
-    id = colander.SchemaNode(colander.Integer(), missing=colander.drop, widget=widget.HiddenWidget())
-    name = colander.SchemaNode(colander.String(), validator=colander.Length(min=1, max=128))
-    code = colander.SchemaNode(colander.String(), validator=colander.Length(min=1, max=128))
-    amount = colander.SchemaNode(colander.Float(), missing=0)
-    order_date = colander.SchemaNode(colander.String(), widget=tsa_widget.BootStrapDateInputWidget())
-    est_delivery = colander.SchemaNode(colander.String(), widget=tsa_widget.BootStrapDateInputWidget())
-    status = colander.SchemaNode(colander.Integer(), widget=widget.SelectWidget(values=[(0, 'Draft'), (1, 'Confirmed')]))
-    partner_id = colander.SchemaNode(colander.Integer(), widget=widget.SelectWidget(values=[]), title="Partner")
+log = logging.getLogger(__name__)
 
+
+# =========================================================
+# SCHEMA LIST / DATATABLES
+# =========================================================
 class ListSchema(colander.Schema):
-    id = colander.SchemaNode(colander.Integer())
-    name = colander.SchemaNode(colander.String())
-    code = colander.SchemaNode(colander.String())
-    amount = colander.SchemaNode(colander.Float())
-    order_date = colander.SchemaNode(colander.String())
-    est_delivery = colander.SchemaNode(colander.String())
-    status = colander.SchemaNode(colander.Integer())
-    partner_id = colander.SchemaNode(colander.Integer())
+    id = colander.SchemaNode(colander.Integer(), missing=colander.drop)
+    code = colander.SchemaNode(colander.String(), title=_("Nomor Order"), missing="-")
+    name = colander.SchemaNode(colander.String(), title=_("Customer"), missing="-")
+    amount = colander.SchemaNode(colander.Float(), title=_("Total"), missing=0)
+    order_date = colander.SchemaNode(colander.String(), title=_("Tanggal"), missing="-")
+    status = colander.SchemaNode(colander.Integer(), title=_("Status"), missing=0)
 
-class UpdateSchema(CreateSchema):
-    pass
 
+# =========================================================
+# SCHEMA FORM CREATE / UPDATE
+# =========================================================
+class OrderSchema(colander.Schema):
+    code = colander.SchemaNode(colander.String(), title=_("Kode Order"))
+    name = colander.SchemaNode(colander.String(), title=_("Nama Transaksi"), missing="-")
+    amount = colander.SchemaNode(colander.Float(), title=_("Total"), missing=0)
+    partner_id = colander.SchemaNode(
+        colander.Integer(),
+        title=_("Partner"),
+        widget=widget.SelectWidget(values=[]),
+    )
+
+    def after_bind(self, schema, appstruct):
+        partners = DBSession.query(Partner).all()
+        schema["partner_id"].widget.values = [
+            (str(p.id), p.name) for p in partners
+        ]
+
+
+# =========================================================
+# VIEWS
+# =========================================================
 class Views(BaseViews):
+
     def __init__(self, request):
         super().__init__(request)
         self.table = Orders
-        self.CreateSchema = CreateSchema
-        self.UpdateSchema = UpdateSchema
-        self.ReadSchema = UpdateSchema
         self.ListSchema = ListSchema
+        self.CreateSchema = OrderSchema
+        self.UpdateSchema = OrderSchema
         self.list_route = "order-list"
 
-    def after_bind(self, schema, kw):
-        # Mengisi dropdown partner
-        partners = Partner.query().all()
-        if 'partner_id' in schema:
-            schema['partner_id'].widget.values = [(str(p.id), p.name) for p in partners]
+    # -----------------------------------------------------
+    # QUERY UNTUK DATATABLES
+    # -----------------------------------------------------
+    def query_data(self):
+        query = DBSession.query(
+            Orders.id.label("id"),
+            Orders.code.label("code"),
+            Partner.name.label("name"),
+            Orders.amount.label("amount"),
+            func.to_char(
+                Orders.order_date, 'YYYY-MM-DD'
+            ).label("order_date"),
+            Orders.status.label("status"),
+        ).outerjoin(
+            Partner, Partner.id == Orders.partner_id
+        )
 
-    def list_join(self, query):
-        # Sangat penting: Join ke partner agar grid bisa render partner_id
-        return query.outerjoin(Partner, Partner.id == Orders.partner_id)
+        self._columns = {
+            "code": Orders.code,
+            "name": Partner.name,
+            "amount": Orders.amount,
+            "order_date": Orders.order_date,
+            "status": Orders.status,
+        }
 
+        return query
+
+    # -----------------------------------------------------
+    # AJAX DATATABLES (FINAL – PAKAI grid())
+    # -----------------------------------------------------
+    @view_config(renderer="json")
     def view_act(self):
-        # Endpoint untuk Ajax DataTables
-        return self.grid_data()
+        try:
+            return self.grid()
+        except Exception as e:
+            log.exception("DATATABLES ERROR")
+            return {
+                "data": [],
+                "recordsTotal": 0,
+                "recordsFiltered": 0,
+                "error": str(e),
+            }
+
+    # -----------------------------------------------------
+    # HALAMAN LIST
+    # -----------------------------------------------------
+    def view_list(self):
+        return super().view_list()

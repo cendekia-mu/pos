@@ -7,7 +7,16 @@ from . import BaseViews
 from ..i18n import _
 
 
-# Create / Update Schema
+class ListSchema(colander.Schema):
+    id = colander.SchemaNode(
+        colander.Integer(), missing=colander.drop, widget=widget.HiddenWidget()
+    )
+    name = colander.SchemaNode(colander.String())
+    code = colander.SchemaNode(colander.String())
+    amount = colander.SchemaNode(colander.Float())
+    partner_id = colander.SchemaNode(colander.Integer(), title="Partner")
+
+
 class CreateSchema(colander.Schema):
     name = colander.SchemaNode(
         colander.String(), validator=colander.Length(min=1, max=128)
@@ -32,13 +41,7 @@ class CreateSchema(colander.Schema):
 
 
 class ListSchema(colander.Schema):
-    id = colander.SchemaNode(
-        colander.String(),
-        missing=colander.drop,
-        title="Action",
-        widget=widget.HiddenWidget(),
-        field=Invoices.partner_id,
-    )
+    id = colander.SchemaNode(colander.Integer())
     name = colander.SchemaNode(
         colander.String(), validator=colander.Length(min=1, max=128)
     )
@@ -53,11 +56,10 @@ class ListSchema(colander.Schema):
         colander.String(), widget=tsa_widget.BootStrapDateInputWidget()
     )
     partner_id = colander.SchemaNode(
-        colander.Integer(),
-        widget=widget.SelectWidget(values=[]),
-        title="Partner",
-        searchable=True,
-        search_method="numeric",
+        colander.Integer(), widget=widget.SelectWidget(values=[]), title="Partner"
+    )
+    partner_id = colander.SchemaNode(
+        colander.Integer(), widget=widget.SelectWidget(values=[])
     )
 
     def after_bind(self, schema, appstruct):
@@ -80,3 +82,12 @@ class Views(BaseViews):
         self.ReadSchema = UpdateSchema
         self.ListSchema = ListSchema
         self.list_route = "invoice-list"
+
+    def form_validator(self, form, value):
+        exc = colander.Invalid(form, "Kesalahan pada pengisian data.")
+        id_ = self.request.matchdict.get("id", 0)
+        code = value.get("code")
+        row = self.table.query().filter(self.table.code == code).first()
+        if row and (not id_ or row.id != int(id_)):
+            exc["code"] = _("Code {} sudah ada.".format(code))
+            raise exc
