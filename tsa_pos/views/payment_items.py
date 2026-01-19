@@ -1,6 +1,8 @@
+from dataclasses import field
+from re import search
 import colander
 from deform import widget
-
+from tsa_pos.widgets.tsa_widget import Select2Widget
 from ..models import PaymentItems, Payment, Invoices, Partner
 from . import BaseViews
 from ..i18n import _
@@ -13,10 +15,20 @@ class ListSchema(colander.Schema):
         id = colander.SchemaNode(colander.Integer(),
                                 missing=colander.drop,
                                 title="Action",
-                                widget=widget.HiddenWidget())
+                                widget=widget.HiddenWidget(),
+                                field=PaymentItems.payment_id)
+        
         payment_id = colander.SchemaNode(
-            colander.Integer(),
+            colander.String(),
             title=_("Payment ID"),
+            widget=widget.Select2Widget(values=[]),
+            searchable=True,
+            search_method="numeric"
+        )
+        invoice_id = colander.SchemaNode(
+            colander.String(),
+            title=_("Invoice"),
+            widget=widget.Select2Widget(values=[]),
         )
 
         partner_nama = colander.SchemaNode(
@@ -34,6 +46,25 @@ class ListSchema(colander.Schema):
             title=_("Amount"),
         )
 
+        def after_bind(self, schema, appstruct):
+            payments = (
+                Payment.query()
+                .join(Partner, Payment.partner_id == Partner.id)
+                .with_entities(
+                    Payment.id,
+                    Partner.name.label("partner_name"),
+                )
+                .all()
+            )
+
+            schema["payment_id"].widget.values = [
+                (p.id, p.partner_name) for p in payments
+            ]
+
+            invoices = Invoices.query().all()
+            schema["invoice_id"].widget.values = [
+                (i.id, i.code) for i in invoices
+            ]
 
     # =========================
     # CREATE / UPDATE (Form)
