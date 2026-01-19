@@ -98,13 +98,12 @@ invoice-delete,/invoice/{id}/delete,invoice-list,Delete Invoice,1,invoice,Views,
 invoice-view,/invoice/{id}/view,invoice-list,Read Invoice,1,invoice,Views,view_read,form.pt,,
 
 # --- ORDER / KASIR ---
-order-list,/order,master-menu,Order (Kasir),1,orders,Views,view_list,list.pt,,1
+order-list,/order,master-menu,Order,1,orders,Views,view_list,list.pt,,1
+order-act,/order/grid/act,order-list,Order Action,1,orders,Views,view_act,json,,
 order-add,/order/add,order-list,Buat Order Baru,1,orders,Views,view_create,form.pt,,
+order-edit,/order/{id}/edit,order-list,Edit Order,1,orders,Views,view_read,form.pt,,
+order-delete,/order/{id}/delete,order-list,Delete Order,1,orders,Views,view_delete,form.pt,,
 order-view,/order/{id}/view,order-list,Detail Order,1,orders,Views,view_read,form.pt,,
-order-checkout,/order/{id}/checkout,order-list,Proses Checkout,1,orders,Views,view_checkout,form.pt,,
-order-act,/order/{act}/act,order-list,Order Action,1,order,Views,view_act,json,,
-order-delete,/order/{id}/delete,order-list,Delete Order,1,orders,Views,view_delete,form.pt,,    
-order-edit,/order/{id}/edit,order-list,Edit Order,1,orders,Views,view_update,form.pt,,
 
 # --- PAYMENT MENU ---
 payment-list,/payment,master-menu,Payment,1,payment,Views,view_list,list.pt,,1

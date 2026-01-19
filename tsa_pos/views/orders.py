@@ -1,87 +1,32 @@
-from deform import widget
+from deform import widget, Form
 import colander
-from tsa_pos.models.partner import Partner
 from tsa_pos.widgets import tsa_widget
-from ..models import Orders
+from ..models import Partner, Product, Orders 
 from . import BaseViews
 from ..i18n import _
-from datetime import datetime
-
-class ListSchema(colander.Schema):
-    id = colander.SchemaNode(colander.Integer(),
-                             missing=colander.drop,
-                             title="Action",
-                             widget=widget.TextInputWidget(readonly=True))
-    code = colander.SchemaNode(colander.String(),
-                               title="Kode Order")
-    name = colander.SchemaNode(colander.String(),
-                               title="Keterangan")
-    partner_id = colander.SchemaNode(colander.String(),
-                                     title="Partner",
-                                     field=Partner.name)
-    amount = colander.SchemaNode(colander.Decimal(),
-                                 title="Total Amount")
-    order_date = colander.SchemaNode(colander.DateTime(),
-                                     title="Tgl Order")
-    status = colander.SchemaNode(colander.Integer(),
-                                 title="Status")
 
 class CreateSchema(colander.Schema):
-    code = colander.SchemaNode(
-        colander.String(),
-        validator=colander.Length(min=1, max=128),
-        title="Kode Order")
-    
-    name = colander.SchemaNode(
-        colander.String(),
-        validator=colander.Length(min=1, max=128),
-        title="Nama/Keterangan")
+    id = colander.SchemaNode(colander.Integer(), missing=colander.drop, widget=widget.HiddenWidget())
+    name = colander.SchemaNode(colander.String(), validator=colander.Length(min=1, max=128))
+    code = colander.SchemaNode(colander.String(), validator=colander.Length(min=1, max=128))
+    amount = colander.SchemaNode(colander.Float(), missing=0)
+    order_date = colander.SchemaNode(colander.String(), widget=tsa_widget.BootStrapDateInputWidget())
+    est_delivery = colander.SchemaNode(colander.String(), widget=tsa_widget.BootStrapDateInputWidget())
+    status = colander.SchemaNode(colander.Integer(), widget=widget.SelectWidget(values=[(0, 'Draft'), (1, 'Confirmed')]))
+    partner_id = colander.SchemaNode(colander.Integer(), widget=widget.SelectWidget(values=[]), title="Partner")
 
-    partner_id = colander.SchemaNode(
-        colander.Integer(),
-        oid="partner_id",
-        widget=tsa_widget.Select2Widget(values=[]),
-        title="Partner")
-
-    amount = colander.SchemaNode(
-        colander.Decimal(),
-        default=0,
-        title="Total Amount")
-
-    order_date = colander.SchemaNode(
-        colander.DateTime(),
-        default=datetime.now(),
-        title="Tanggal Order",
-        widget=widget.DateInputWidget())
-
-    est_delivery = colander.SchemaNode(
-        colander.DateTime(),
-        missing=colander.drop,
-        title="Estimasi Pengiriman",
-        widget=widget.DateInputWidget())
-
-    status = colander.SchemaNode(
-        colander.Integer(),
-        default=0,
-        title="Status",
-        widget=widget.SelectWidget(values=[
-            (0, 'Draft'),
-            (1, 'Confirmed'),
-            (2, 'Done'),
-            (3, 'Cancelled')
-        ]))
-
-    def after_bind(self, schema, kw):
-        request = kw.get('request')
-        partners = Partner.query().order_by(Partner.name).all()
-        partner_choices = [(str(p.id), p.name) for p in partners]
-        partner_choices.insert(0, ('', 'Pilih Partner...'))
-        schema['partner_id'].widget.values = partner_choices
+class ListSchema(colander.Schema):
+    id = colander.SchemaNode(colander.Integer())
+    name = colander.SchemaNode(colander.String())
+    code = colander.SchemaNode(colander.String())
+    amount = colander.SchemaNode(colander.Float())
+    order_date = colander.SchemaNode(colander.String())
+    est_delivery = colander.SchemaNode(colander.String())
+    status = colander.SchemaNode(colander.Integer())
+    partner_id = colander.SchemaNode(colander.Integer())
 
 class UpdateSchema(CreateSchema):
-    id = colander.SchemaNode(colander.Integer(),
-                             missing=colander.drop,
-                             widget=widget.HiddenWidget())
+    pass
 
 class Views(BaseViews):
     def __init__(self, request):
@@ -91,30 +36,18 @@ class Views(BaseViews):
         self.UpdateSchema = UpdateSchema
         self.ReadSchema = UpdateSchema
         self.ListSchema = ListSchema
-        self.list_route = 'order-list'
+        self.list_route = "order-list"
 
-    def form_validator(self, form, value):
-        exc = colander.Invalid(form, 'Kesalahan pada pengisian data.')
-        id_ = self.request.matchdict.get('id', 0)
-
-        code = value.get('code')
-        if code:
-            row = self.table.query().filter(self.table.code == code).first()
-            if row and (not id_ or row.id != int(id_)):
-                exc["code"] = _('Kode Order {} already exists.'.format(code))
-                raise exc
+    def after_bind(self, schema, kw):
+        # Mengisi dropdown partner
+        partners = Partner.query().all()
+        if 'partner_id' in schema:
+            schema['partner_id'].widget.values = [(str(p.id), p.name) for p in partners]
 
     def list_join(self, query):
+        # Sangat penting: Join ke partner agar grid bisa render partner_id
         return query.outerjoin(Partner, Partner.id == Orders.partner_id)
 
     def view_act(self):
-        act = self.request.matchdict.get('act')
-        return super().next_act()
-
-    def view_checkout(self):
-        id_ = self.request.matchdict.get('id')
-        row = self.table.query().filter(self.table.id == id_).first()
-        if not row:
-            return {"error": "Data tidak ditemukan"}
-        
-        return {"id": id_, "status": "processed"}
+        # Endpoint untuk Ajax DataTables
+        return self.grid_data()
